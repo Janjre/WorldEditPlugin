@@ -1,0 +1,13 @@
+{
+  "uuid": "b5be7ebc-0af7-495a-a29d-d4f1995437dd",
+  "plugin_name": "WorldEdit",
+  "plugin_author": "HushedCandle753",
+  "plugin_description": "My amazing plugin description that I forgot to change for some reason.",
+  "plugin_version": "1.0.0",
+  "game_version": "1.21.82",
+  "supported_game_version_ranges": [
+    "0.0.0-9.99.9"
+  ],
+  "runtime_version": 1,
+  "target_assembly": "WorldEdit.dll"
+}

@@ -1,0 +1,14 @@
+C:\Users\ms\AppData\Local\Packages\Microsoft.MinecraftUWP_8wekyb3d8bbwe\RoamingState\OnixClient\Plugins\makingPlugins\WorldEdit\WorldEdit\bin\x64\Debug\net8.0\WorldEdit.deps.json
+C:\Users\ms\AppData\Local\Packages\Microsoft.MinecraftUWP_8wekyb3d8bbwe\RoamingState\OnixClient\Plugins\makingPlugins\WorldEdit\WorldEdit\bin\x64\Debug\net8.0\WorldEdit.dll
+C:\Users\ms\AppData\Local\Packages\Microsoft.MinecraftUWP_8wekyb3d8bbwe\RoamingState\OnixClient\Plugins\makingPlugins\WorldEdit\WorldEdit\bin\x64\Debug\net8.0\WorldEdit.pdb
+C:\Users\ms\AppData\Local\Packages\Microsoft.MinecraftUWP_8wekyb3d8bbwe\RoamingState\OnixClient\Plugins\makingPlugins\WorldEdit\WorldEdit\bin\x64\Debug\net8.0\OnixRuntime.dll
+C:\Users\ms\AppData\Local\Packages\Microsoft.MinecraftUWP_8wekyb3d8bbwe\RoamingState\OnixClient\Plugins\makingPlugins\WorldEdit\WorldEdit\obj\x64\Debug\net8.0\WorldEdit.csproj.AssemblyReference.cache
+C:\Users\ms\AppData\Local\Packages\Microsoft.MinecraftUWP_8wekyb3d8bbwe\RoamingState\OnixClient\Plugins\makingPlugins\WorldEdit\WorldEdit\obj\x64\Debug\net8.0\WorldEdit.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\ms\AppData\Local\Packages\Microsoft.MinecraftUWP_8wekyb3d8bbwe\RoamingState\OnixClient\Plugins\makingPlugins\WorldEdit\WorldEdit\obj\x64\Debug\net8.0\WorldEdit.AssemblyInfoInputs.cache
+C:\Users\ms\AppData\Local\Packages\Microsoft.MinecraftUWP_8wekyb3d8bbwe\RoamingState\OnixClient\Plugins\makingPlugins\WorldEdit\WorldEdit\obj\x64\Debug\net8.0\WorldEdit.AssemblyInfo.cs
+C:\Users\ms\AppData\Local\Packages\Microsoft.MinecraftUWP_8wekyb3d8bbwe\RoamingState\OnixClient\Plugins\makingPlugins\WorldEdit\WorldEdit\obj\x64\Debug\net8.0\WorldEdit.csproj.CoreCompileInputs.cache
+C:\Users\ms\AppData\Local\Packages\Microsoft.MinecraftUWP_8wekyb3d8bbwe\RoamingState\OnixClient\Plugins\makingPlugins\WorldEdit\WorldEdit\obj\x64\Debug\net8.0\WorldEdit.csproj.Up2Date
+C:\Users\ms\AppData\Local\Packages\Microsoft.MinecraftUWP_8wekyb3d8bbwe\RoamingState\OnixClient\Plugins\makingPlugins\WorldEdit\WorldEdit\obj\x64\Debug\net8.0\WorldEdit.dll
+C:\Users\ms\AppData\Local\Packages\Microsoft.MinecraftUWP_8wekyb3d8bbwe\RoamingState\OnixClient\Plugins\makingPlugins\WorldEdit\WorldEdit\obj\x64\Debug\net8.0\refint\WorldEdit.dll
+C:\Users\ms\AppData\Local\Packages\Microsoft.MinecraftUWP_8wekyb3d8bbwe\RoamingState\OnixClient\Plugins\makingPlugins\WorldEdit\WorldEdit\obj\x64\Debug\net8.0\WorldEdit.pdb
+C:\Users\ms\AppData\Local\Packages\Microsoft.MinecraftUWP_8wekyb3d8bbwe\RoamingState\OnixClient\Plugins\makingPlugins\WorldEdit\WorldEdit\obj\x64\Debug\net8.0\ref\WorldEdit.dll
