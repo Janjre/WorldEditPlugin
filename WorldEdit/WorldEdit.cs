@@ -33,7 +33,7 @@ namespace WorldEdit {
             Console.WriteLine($"Plugin {CurrentPluginManifest.Name} loaded!");
             Config = new WorldEditConfig(PluginDisplayModule);
             Onix.Events.Common.Tick += OnTick;
-            Onix.Events.Common.HudRender += OnHudRender;
+            // Onix.Events.Common.HudRender += OnHudRender;
             Onix.Events.Common.WorldRender += OnWorldRender;
             Onix.Events.Common.HudRenderDirect2D += OnHudRenderDirect2D;
             Onix.Events.Input.Input += OnInput;
@@ -56,7 +56,7 @@ namespace WorldEdit {
             // You can give them base.PluginEjectionCancellationToken which will be cancelled when this function returns. 
             Console.WriteLine($"Plugin {CurrentPluginManifest.Name} unloaded!");
             Onix.Events.Common.Tick -= OnTick;
-            Onix.Events.Common.HudRender -= OnHudRender;
+            // Onix.Events.Common.HudRender -= OnHudRender;
             Onix.Events.Common.WorldRender -= OnWorldRender;
             Onix.Events.Common.HudRenderDirect2D -= OnHudRenderDirect2D;
             Onix.Events.Input.Input -= OnInput;
@@ -70,9 +70,9 @@ namespace WorldEdit {
             
         }
 
-        private void OnHudRender(RendererGame gfx, float delta) {
-            
-        }
+        // private void OnHudRender(RendererGame gfx, float delta) {
+        //     
+        // }
 
         private void OnWorldRender(RendererWorld gfx, float delta) {
             Vec3 posMin = new Vec3(
