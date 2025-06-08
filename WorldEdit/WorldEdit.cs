@@ -74,21 +74,26 @@ namespace WorldEdit {
              
             if (Globals.CommandTypyBox.HasConfirmedText)
             {
+
+                String message = Globals.CommandTypyBox.Text;
                 
-                Console.WriteLine(Globals.CommandTypyBox.Text);
-                
-                
+                String[] splitMessage = message.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                    
+                switch (splitMessage[0])
+                {
+                        
+                    case "fill":
+                            
+                        Onix.Game.ExecuteCommand("fill "+Globals.pos1.X + " " + Globals.pos1.Y + " " + Globals.pos1.Z + " " + Globals.pos2.X + " " + Globals.pos2.Y + " " + Globals.pos2.Z +" " + splitMessage[1]);
+                        break;
+                }
                 
                 Globals.CommandTypyBox.IsEmpty = true;
             }
 
-            // Console.WriteLine(Onix.Gui.ScreenName);
-            // Console.WriteLine(Globals.InGui);
         }
 
-        // private void OnHudRender(RendererGame gfx, float delta) {
-        //     
-        // }
+
 
         private void OnWorldRender(RendererWorld gfx, float delta) {
             Vec3 posMin = new Vec3(
