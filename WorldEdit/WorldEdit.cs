@@ -1,3 +1,4 @@
+using System.Runtime.InteropServices.JavaScript;
 using System.Xml;
 using OnixRuntime.Api;
 using OnixRuntime.Api.Entities;
@@ -17,7 +18,8 @@ namespace WorldEdit {
         public static bool NotInGui = true;
         public static OnixTextbox CommandTypyBox = new OnixTextbox(128, "", "World edit command here");
         public static List<MyBlock> HistoryAsBlocks = new List<MyBlock>(); // list of blocks associated with actions
-        public static List<long> History = new List<long>(); // list of action numbers
+        public static List<(long Id, string Name)> History = new List<(long Id, string Name)>(); // list of action numbers and display text
+
 
         public static (Vec3, Vec3) FindExtremes (Vec3 a, Vec3 b)
         {
@@ -67,9 +69,9 @@ namespace WorldEdit {
             Onix.Client.ExecuteCommand("execute setblock " + position.X + " " + position.Y + " " + position.Z + " " + blockName + " " + data, true);
         }
 
-        public static void FinishAction(long actionNumber)
+        public static void FinishAction(long actionNumber,string displayText)
         {
-            Globals.History.Add(actionNumber);
+            Globals.History.Add((actionNumber,displayText));
         }
         
         
@@ -162,7 +164,7 @@ namespace WorldEdit {
                                 }
                             }
                         }
-                        HistoryActions.FinishAction(actionId);
+                        HistoryActions.FinishAction(actionId, "Filled area with "+splitMessage[1]);
 
                         break;
                 }
@@ -228,20 +230,25 @@ namespace WorldEdit {
                 Onix.Render.Direct2D.FillRoundedRectangle(sidebarArea,darkGray,10,10);
                 Onix.Render.Direct2D.DrawRoundedRectangle(sidebarArea, ColorF.White , 0.25f, 10);
 
-                float startIterationsPosition = screenHeight * 0.12f;
-                float characterHeight = 5;
+                float startIterationsPosition = screenHeight * 0.14f;
+                float characterHeight = 7;
                 float endPoint = screenHeight * 0.83f;
                 
                 for (int i = 0; i <= 1000; i++)
                 {
+                    
                     Vec2 tlTextPos = new Vec2 (screenWidth*0.67f, startIterationsPosition + characterHeight * i);
                     Vec2 brTextPos = new Vec2 (screenWidth*0.83f, startIterationsPosition +(characterHeight*i) + characterHeight);
-                    // Rect textRect = new Rect(tlTextPos, brTextPos);
+                    
                     if (brTextPos.Y >= endPoint)
                     {
                         break;
                     }
-                    Onix.Render.Direct2D.RenderText(tlTextPos,ColorF.White,"test text",TextAlignment.Left,TextAlignment.Top,characterHeight/5);
+                    if (i >= 0 && i < Globals.History.Count)
+                    {
+                        Onix.Render.Direct2D.RenderText(tlTextPos,ColorF.White,Globals.History[i].Name,TextAlignment.Left,TextAlignment.Top,characterHeight/6);
+                    }
+                    
                 }
                 
 
