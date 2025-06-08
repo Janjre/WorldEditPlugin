@@ -54,6 +54,8 @@ namespace WorldEdit {
 
         }
     }
+    
+    
 
     public static class HistoryActions
     {
@@ -127,6 +129,7 @@ namespace WorldEdit {
 
         }
         private void OnTick() {
+            
             
              
             if (Globals.CommandTypyBox.HasConfirmedText)
@@ -206,19 +209,43 @@ namespace WorldEdit {
         private void OnHudRenderDirect2D(RendererDirect2D gfx, float delta) {
             if (!Globals.NotInGui)
             {
-                Rect myRect = new Rect(new Vec2(90,30), new Vec2(585,245));
+                float screenWidth = Onix.Gui.ScreenSize.X;
+                float screenHeight = Onix.Gui.ScreenSize.Y;
+                
+                Rect consoleArea = new Rect(new Vec2(screenWidth * 0.13f, screenHeight * 0.10f), new Vec2(screenWidth * 0.60f, screenHeight * 0.85f));
                 // Onix.Render.Direct2D.DrawRoundedRectangle(myRect, ColorF.Gray, 10,10);
                 
                 ColorF darkGray = new ColorF(0.1f, 0.1f, 0.1f,0.95f);
-                Onix.Render.Direct2D.FillRoundedRectangle(myRect, darkGray , 10, 10);
-                Onix.Render.Direct2D.DrawRoundedRectangle(myRect, ColorF.White , 0.25f, 10);
+                Onix.Render.Direct2D.FillRoundedRectangle(consoleArea, darkGray , 10, 10);
+                Onix.Render.Direct2D.DrawRoundedRectangle(consoleArea, ColorF.White , 0.25f, 10);
 
                 ColorF lightGray = new ColorF(0.34f, 0.34f, 0.34f, 1f);
-                Rect commandLine = new Rect(new Vec2(100,215), new Vec2(575, 235));
+                Rect commandLine = new Rect(new Vec2(screenWidth * 0.15f, screenHeight * 0.75f), new Vec2(screenWidth * 0.58f, screenHeight * 0.82f));
                 Onix.Render.Direct2D.FillRoundedRectangle(commandLine, lightGray , 5f, 10);
                 Globals.CommandTypyBox.Render(commandLine);
+
+                Rect sidebarArea = new Rect(new Vec2(screenWidth * 0.65f, screenHeight * 0.10f), new Vec2(screenWidth * 0.85f, screenHeight * 0.85f));
+                Onix.Render.Direct2D.FillRoundedRectangle(sidebarArea,darkGray,10,10);
+                Onix.Render.Direct2D.DrawRoundedRectangle(sidebarArea, ColorF.White , 0.25f, 10);
+
+                float startIterationsPosition = screenHeight * 0.12f;
+                float characterHeight = 5;
+                float endPoint = screenHeight * 0.83f;
                 
+                for (int i = 0; i <= 1000; i++)
+                {
+                    Vec2 tlTextPos = new Vec2 (screenWidth*0.67f, startIterationsPosition + characterHeight * i);
+                    Vec2 brTextPos = new Vec2 (screenWidth*0.83f, startIterationsPosition +(characterHeight*i) + characterHeight);
+                    // Rect textRect = new Rect(tlTextPos, brTextPos);
+                    if (brTextPos.Y >= endPoint)
+                    {
+                        break;
+                    }
+                    Onix.Render.Direct2D.RenderText(tlTextPos,ColorF.White,"test text",TextAlignment.Left,TextAlignment.Top,characterHeight/5);
+                }
                 
+
+
 
             } 
             Globals.CommandTypyBox.IsFocused = !Globals.NotInGui;
@@ -264,7 +291,7 @@ namespace WorldEdit {
                     Onix.Gui.MouseGrabbed = false;
                 }
 
-                if (key.Value == InputKey.Type.Escape && isDown)
+                if (key.Value == InputKey.Type.Escape && isDown && Globals.NotInGui == false)
                 {
                     
                     Globals.NotInGui = true;
