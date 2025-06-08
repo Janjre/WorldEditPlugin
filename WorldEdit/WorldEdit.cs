@@ -13,7 +13,7 @@ namespace WorldEdit {
     {
         public static Vec3 pos1 = new Vec3();
         public static Vec3 pos2 = new Vec3();
-        public static bool InGui = true;
+        public static bool NotInGui = true;
         public static OnixTextbox CommandTypyBox = new OnixTextbox(128, "", "World edit command here");
     }
     
@@ -39,8 +39,10 @@ namespace WorldEdit {
             Onix.Events.Common.WorldRender += OnWorldRender;
             Onix.Events.Common.HudRenderDirect2D += OnHudRenderDirect2D;
             Onix.Events.Input.Input += OnInput;
-            Onix.Events.LocalServer.PlayerChatEvent += MyChatHandler;
+            // Onix.Events.LocalServer.PlayerChatEvent += MyChatHandler;
+            Globals.NotInGui = true;
             
+
         }
         
         
@@ -62,7 +64,7 @@ namespace WorldEdit {
             Onix.Events.Common.WorldRender -= OnWorldRender;
             Onix.Events.Common.HudRenderDirect2D -= OnHudRenderDirect2D;
             Onix.Events.Input.Input -= OnInput;
-            Onix.Events.LocalServer.PlayerChatEvent -= MyChatHandler;
+            // Onix.Events.LocalServer.PlayerChatEvent -= MyChatHandler;
 
             
 
@@ -80,7 +82,7 @@ namespace WorldEdit {
                 Globals.CommandTypyBox.IsEmpty = true;
             }
 
-            Console.WriteLine(Onix.Gui.ScreenName);
+            // Console.WriteLine(Onix.Gui.ScreenName);
             // Console.WriteLine(Globals.InGui);
         }
 
@@ -125,7 +127,7 @@ namespace WorldEdit {
         }
 
         private void OnHudRenderDirect2D(RendererDirect2D gfx, float delta) {
-            if (!Globals.InGui)
+            if (!Globals.NotInGui)
             {
                 Rect myRect = new Rect(new Vec2(90,30), new Vec2(585,245));
                 // Onix.Render.Direct2D.DrawRoundedRectangle(myRect, ColorF.Gray, 10,10);
@@ -142,29 +144,28 @@ namespace WorldEdit {
                 
 
             } 
-            Globals.CommandTypyBox.IsFocused = !Globals.InGui;
+            Globals.CommandTypyBox.IsFocused = !Globals.NotInGui;
         }
         
         private bool OnInput(InputKey key, bool isDown) {
-            if (Onix.Gui.MouseGrabbed == false)
-            {
-                return false;
-            }
-            if (isDown)
+            
+            if (isDown && Onix.Gui.MouseGrabbed)
             {
                 RaycastResult result = Onix.LocalPlayer.Raycast;
-                if (Onix.LocalPlayer.MainHandItem.IsEmpty == false)
+                if (Onix.LocalPlayer.MainHandItem.Item != null)
                 {
                     if (Onix.LocalPlayer.MainHandItem.Item.Name == "wooden_axe")
                     {
                         if (key.Value == InputKey.Type.LMB)
                         {
                             Globals.pos1 = new Vec3(result.BlockPosition.X, result.BlockPosition.Y, result.BlockPosition.Z);
+                            // Onix.Client.Notify("HAHA BLOCKED INPUT1!!!");
                             return true;
                             
                         }  if (key.Value == InputKey.Type.RMB)
                         {
-                            Globals.pos2 = new Vec3(result.BlockPosition.X, result.BlockPosition.Y, result.BlockPosition.Z);    
+                            Globals.pos2 = new Vec3(result.BlockPosition.X, result.BlockPosition.Y, result.BlockPosition.Z); 
+                            // Onix.Client.Notify("HAHA BLOCKED INPUT2!!!");
                             return true;
                         }
 
@@ -180,19 +181,19 @@ namespace WorldEdit {
             
             if (Onix.Gui.ScreenName == "hud_screen")
             {
-                if (key.Value == InputKey.Type.Y && isDown && Globals.InGui)
+                if (key.Value == InputKey.Type.Y && isDown && Globals.NotInGui)
                 {
-                    Globals.InGui = !Globals.InGui;
+                    Globals.NotInGui = false;
                     Onix.Gui.MouseGrabbed = false;
                 }
 
                 if (key.Value == InputKey.Type.Escape && isDown)
                 {
                     // return true;
-                    Globals.InGui = true;
+                    Globals.NotInGui = true;
                     Onix.Gui.MouseGrabbed = true;
                 }
-                if (Globals.InGui == false)
+                if (Globals.NotInGui == false)
                 {
                     // return true;
                 }
@@ -204,31 +205,10 @@ namespace WorldEdit {
         }
         
         
-        bool MyChatHandler(ServerPlayer player, string message)
-        {
-            if (Onix.LocalPlayer != null)
-            {
-                // Console.WriteLine($"{player} said: {message}");
-                
-                if (message[0] == '$')
-                {
-                    String[] splitMessage = message.Split(' ', StringSplitOptions.RemoveEmptyEntries);
-                    
-                    switch (splitMessage[0])
-                    {
-                        
-                        case "$fill":
-                            
-                            Onix.Game.ExecuteCommand("fill "+Globals.pos1.X + " " + Globals.pos1.Y + " " + Globals.pos1.Z + " " + Globals.pos2.X + " " + Globals.pos2.Y + " " + Globals.pos2.Z +" " + splitMessage[1]);
-                            return true;
-                            break;
-                    }
-                    return true;    
-                }
-            } 
-            return false;
-            
-        }
+        // bool MyChatHandler(ServerPlayer player, string message)
+        // {
+        //     
+        // }
         
     } 
 }
