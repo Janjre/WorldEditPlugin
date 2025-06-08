@@ -1,3 +1,4 @@
+using System.Xml;
 using OnixRuntime.Api;
 using OnixRuntime.Api.Entities;
 using OnixRuntime.Api.Events;
@@ -9,12 +10,68 @@ using OnixRuntime.Api.World;
 
 namespace WorldEdit {
 
-    public static class Globals
+    public static class Globals // no i cannot do things without this
     {
         public static Vec3 pos1 = new Vec3();
         public static Vec3 pos2 = new Vec3();
         public static bool NotInGui = true;
         public static OnixTextbox CommandTypyBox = new OnixTextbox(128, "", "World edit command here");
+        public static List<MyBlock> HistoryAsBlocks = new List<MyBlock>(); // list of blocks associated with actions
+        public static List<long> History = new List<long>(); // list of action numbers
+
+        public static (Vec3, Vec3) FindExtremes (Vec3 a, Vec3 b)
+        {
+            Vec3 posMin = new Vec3(
+                Math.Min(a.X, b.X),
+                Math.Min(a.Y, b.Y),
+                Math.Min(a.Z, b.Z)
+            );
+
+            Vec3 posMax = new Vec3(
+                Math.Max(a.X, b.X),
+                Math.Max(a.Y, b.Y),
+                Math.Max(a.Z, b.Z)
+            );
+
+            return (posMin, posMax);
+        }
+        
+    }
+
+    public class MyBlock
+    {
+        public String Name;
+        public String Data;
+        public Vec3 Position;
+        public long Action;
+
+        public MyBlock(String name, String data, long action, Vec3 position)
+        {
+            Name = name;
+            Data = data;
+            Action = action;
+            Position = position;
+
+        }
+    }
+
+    public static class HistoryActions
+    {
+        public static void PlaceBlock(String blockName, String data, Vec3 position, long actionNumber)
+        {
+            Block block = Onix.LocalPlayer.Region.GetBlock((int)position.X, (int)position.Y, (int)position.Z);
+            MyBlock blockReplaced = new MyBlock(block.NameFull, block.States.ToString(), actionNumber, position);
+            Globals.HistoryAsBlocks.Add(blockReplaced);
+            Onix.Client.ExecuteCommand("setblock " + position.X + " " + position.Y + " " + position.Z + " " + blockName + " " + data, true);
+        }
+
+        public static void FinishAction(long actionNumber)
+        {
+            Globals.History.Add(actionNumber);
+        }
+        
+        
+            
     }
     
     public class WorldEdit : OnixPluginBase {
@@ -81,10 +138,28 @@ namespace WorldEdit {
                     
                 switch (splitMessage[0])
                 {
-                        
+
                     case "fill":
-                            
-                        Onix.Game.ExecuteCommand("fill "+Globals.pos1.X + " " + Globals.pos1.Y + " " + Globals.pos1.Z + " " + Globals.pos2.X + " " + Globals.pos2.Y + " " + Globals.pos2.Z +" " + splitMessage[1]);
+                        
+
+                        long actionId = new Random().NextInt64(1, 1_000_000_001);
+                        
+                        (Vec3 posMin, Vec3 posMax) = Globals.FindExtremes(Globals.pos1, Globals.pos2);
+                        // loop through area!!!! (this is incredibly unique, i don't think we will do this anywhere else in the plugin!!!!)
+                        
+                        for (int x = (int)posMin.X; x <= posMax.X; x++)
+                        {
+                            for (int y = (int)posMin.Y; y <= posMax.X; y++)
+                            {
+                                for (int z = (int)posMin.Z; z <= posMax.Z; z++)
+                                {
+                                    HistoryActions.PlaceBlock(splitMessage[1], "[]",new Vec3(x,y,z),actionId);
+                                    
+                                }
+                            }
+                        }
+                        HistoryActions.FinishAction(actionId);
+
                         break;
                 }
                 
@@ -95,18 +170,14 @@ namespace WorldEdit {
 
 
 
-        private void OnWorldRender(RendererWorld gfx, float delta) {
-            Vec3 posMin = new Vec3(
-                Math.Min(Globals.pos1.X, Globals.pos2.X),
-                Math.Min(Globals.pos1.Y, Globals.pos2.Y),
-                Math.Min(Globals.pos1.Z, Globals.pos2.Z)
-            );
+        private void OnWorldRender(RendererWorld gfx, float delta)
+        {
 
-            Vec3 posMax = new Vec3(
-                Math.Max(Globals.pos1.X, Globals.pos2.X) + 1,
-                Math.Max(Globals.pos1.Y, Globals.pos2.Y) + 1,
-                Math.Max(Globals.pos1.Z, Globals.pos2.Z) + 1
-            );
+            (Vec3 posMin, Vec3 posMax) = Globals.FindExtremes(Globals.pos1, Globals.pos2);
+            
+            posMin.X += 1;
+            posMin.Y += 1;
+            posMin.Z += 1;
             
             ColorF colour = ColorF.Black;
 
