@@ -40,8 +40,4 @@
         <AssemblySearchPaths>$(ServerPluginBuildRuntime);$(AssemblySearchPaths);</AssemblySearchPaths>
     </PropertyGroup>
 
-	<ItemGroup>
-	  <Folder Include="Assets\" />
-	</ItemGroup>
-
 </Project>

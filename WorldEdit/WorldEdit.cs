@@ -20,6 +20,10 @@ namespace WorldEdit {
         public static List<MyBlock> HistoryAsBlocks = new List<MyBlock>(); // list of blocks associated with actions
         public static List<(long Id, string Name)> History = new List<(long Id, string Name)>(); // list of action numbers and display text
 
+        public static List<Rect> RevertButtons = new List<Rect>();
+        public static TexturePath UndoIcon = TexturePath.Assets("undoIcon");
+        
+
 
         public static (Vec3, Vec3) FindExtremes (Vec3 a, Vec3 b)
         {
@@ -145,7 +149,6 @@ namespace WorldEdit {
                 {
 
                     case "fill":
-                        Console.WriteLine("Got this far");
 
                         long actionId = new Random().NextInt64(1, 1_000_000_001);
                         
@@ -209,6 +212,13 @@ namespace WorldEdit {
         }
 
         private void OnHudRenderDirect2D(RendererDirect2D gfx, float delta) {
+            // For example, before the loop:
+            while (Globals.RevertButtons.Count < Globals.History.Count)
+            {
+                Globals.RevertButtons.Add(new Rect()); // add dummy Rect to fill
+            }
+
+            
             if (!Globals.NotInGui)
             {
                 float screenWidth = Onix.Gui.ScreenSize.X;
@@ -234,7 +244,7 @@ namespace WorldEdit {
                 float characterHeight = 7;
                 float endPoint = screenHeight * 0.83f;
                 
-                for (int i = 0; i <= 1000; i++)
+                for (int i = 0; i <= Globals.History.Count; i++)
                 {
                     
                     Vec2 tlTextPos = new Vec2 (screenWidth*0.67f, startIterationsPosition + characterHeight * i);
@@ -247,6 +257,13 @@ namespace WorldEdit {
                     if (i >= 0 && i < Globals.History.Count)
                     {
                         Onix.Render.Direct2D.RenderText(tlTextPos,ColorF.White,Globals.History[i].Name,TextAlignment.Left,TextAlignment.Top,characterHeight/6);
+                        Rect button = new Rect(
+                            new Vec2(tlTextPos.X- 10, tlTextPos.Y+2),
+                            new Vec2(tlTextPos.X -2, tlTextPos.Y + 10));
+
+                        Globals.RevertButtons[i] = button;
+                        Onix.Render.Direct2D.RenderTexture(button,Globals.UndoIcon,1f);
+                        
                     }
                     
                 }
@@ -260,7 +277,7 @@ namespace WorldEdit {
         
         private bool OnInput(InputKey key, bool isDown) {
             
-            if (isDown && Onix.Gui.MouseGrabbed)
+            if (isDown && Onix.Gui.MouseGrabbed && Globals.NotInGui)
             {
                 RaycastResult result = Onix.LocalPlayer.Raycast;
                 if (Onix.LocalPlayer.MainHandItem.Item != null)
@@ -304,6 +321,22 @@ namespace WorldEdit {
                     Globals.NotInGui = true;
                     Onix.Gui.MouseGrabbed = true;
                     return true;
+                }
+                
+                
+                if (key.Value == InputKey.Type.LMB && Globals.NotInGui == false && isDown)
+                {
+                    Vec2 mousePos = Onix.Gui.MousePosition;
+                    
+                    foreach (Rect button in Globals.RevertButtons)
+                    {
+                        
+                        if (button.Contains(mousePos))
+                        {
+                            Console.WriteLine("You click on A button");
+                        }
+                        
+                    }
                 }
                 if (Globals.NotInGui == false)
                 {
