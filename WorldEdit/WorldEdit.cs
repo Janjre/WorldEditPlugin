@@ -62,7 +62,7 @@ namespace WorldEdit {
             Block block = Onix.LocalPlayer.Region.GetBlock((int)position.X, (int)position.Y, (int)position.Z);
             MyBlock blockReplaced = new MyBlock(block.NameFull, block.States.ToString(), actionNumber, position);
             Globals.HistoryAsBlocks.Add(blockReplaced);
-            Onix.Client.ExecuteCommand("setblock " + position.X + " " + position.Y + " " + position.Z + " " + blockName + " " + data, true);
+            Onix.Client.ExecuteCommand("execute setblock " + position.X + " " + position.Y + " " + position.Z + " " + blockName + " " + data, true);
         }
 
         public static void FinishAction(long actionNumber)
@@ -140,7 +140,7 @@ namespace WorldEdit {
                 {
 
                     case "fill":
-                        
+                        Console.WriteLine("Got this far");
 
                         long actionId = new Random().NextInt64(1, 1_000_000_001);
                         
@@ -149,10 +149,11 @@ namespace WorldEdit {
                         
                         for (int x = (int)posMin.X; x <= posMax.X; x++)
                         {
-                            for (int y = (int)posMin.Y; y <= posMax.X; y++)
+                            for (int y = (int)posMin.Y; y <= posMax.Y; y++)
                             {
                                 for (int z = (int)posMin.Z; z <= posMax.Z; z++)
                                 {
+                                    // Console.WriteLine("attempted to do something");
                                     HistoryActions.PlaceBlock(splitMessage[1], "[]",new Vec3(x,y,z),actionId);
                                     
                                 }
@@ -175,9 +176,9 @@ namespace WorldEdit {
 
             (Vec3 posMin, Vec3 posMax) = Globals.FindExtremes(Globals.pos1, Globals.pos2);
             
-            posMin.X += 1;
-            posMin.Y += 1;
-            posMin.Z += 1;
+            posMax.X += 1;
+            posMax.Y += 1;
+            posMax.Z += 1;
             
             ColorF colour = ColorF.Black;
 
@@ -265,13 +266,14 @@ namespace WorldEdit {
 
                 if (key.Value == InputKey.Type.Escape && isDown)
                 {
-                    // return true;
+                    
                     Globals.NotInGui = true;
                     Onix.Gui.MouseGrabbed = true;
+                    return true;
                 }
                 if (Globals.NotInGui == false)
                 {
-                    // return true;
+                    return true;
                 }
             }
             

@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("WorldEdit")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+6d20fdc2c2142194c60ef18435a07b8688ed66c2")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+411705cb3c4329f9e77764c49e00c4225f2da99b")]
 [assembly: System.Reflection.AssemblyProductAttribute("WorldEdit")]
 [assembly: System.Reflection.AssemblyTitleAttribute("WorldEdit")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
