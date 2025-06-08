@@ -13,6 +13,8 @@ namespace WorldEdit {
     {
         public static Vec3 pos1 = new Vec3();
         public static Vec3 pos2 = new Vec3();
+        public static bool InGui = true;
+        public static OnixTextbox CommandTypyBox = new OnixTextbox(128, "", "World edit command here");
     }
     
     public class WorldEdit : OnixPluginBase {
@@ -65,9 +67,21 @@ namespace WorldEdit {
             
 
         }
-
         private void OnTick() {
             
+             
+            if (Globals.CommandTypyBox.HasConfirmedText)
+            {
+                
+                Console.WriteLine(Globals.CommandTypyBox.Text);
+                
+                
+                
+                Globals.CommandTypyBox.IsEmpty = true;
+            }
+
+            Console.WriteLine(Onix.Gui.ScreenName);
+            // Console.WriteLine(Globals.InGui);
         }
 
         // private void OnHudRender(RendererGame gfx, float delta) {
@@ -111,7 +125,24 @@ namespace WorldEdit {
         }
 
         private void OnHudRenderDirect2D(RendererDirect2D gfx, float delta) {
-            
+            if (!Globals.InGui)
+            {
+                Rect myRect = new Rect(new Vec2(90,30), new Vec2(585,245));
+                // Onix.Render.Direct2D.DrawRoundedRectangle(myRect, ColorF.Gray, 10,10);
+                
+                ColorF darkGray = new ColorF(0.1f, 0.1f, 0.1f,0.95f);
+                Onix.Render.Direct2D.FillRoundedRectangle(myRect, darkGray , 10, 10);
+                Onix.Render.Direct2D.DrawRoundedRectangle(myRect, ColorF.White , 0.25f, 10);
+
+                ColorF lightGray = new ColorF(0.34f, 0.34f, 0.34f, 1f);
+                Rect commandLine = new Rect(new Vec2(100,215), new Vec2(575, 235));
+                Onix.Render.Direct2D.FillRoundedRectangle(commandLine, lightGray , 5f, 10);
+                Globals.CommandTypyBox.Render(commandLine);
+                
+                
+
+            } 
+            Globals.CommandTypyBox.IsFocused = !Globals.InGui;
         }
         
         private bool OnInput(InputKey key, bool isDown) {
@@ -136,11 +167,37 @@ namespace WorldEdit {
                             Globals.pos2 = new Vec3(result.BlockPosition.X, result.BlockPosition.Y, result.BlockPosition.Z);    
                             return true;
                         }
+
+                        if (key.Value == InputKey.Type.MMB)
+                        {
+                            
+                        }
                     }
                 }
                 
                 
             }
+            
+            if (Onix.Gui.ScreenName == "hud_screen")
+            {
+                if (key.Value == InputKey.Type.Y && isDown && Globals.InGui)
+                {
+                    Globals.InGui = !Globals.InGui;
+                    Onix.Gui.MouseGrabbed = false;
+                }
+
+                if (key.Value == InputKey.Type.Escape && isDown)
+                {
+                    // return true;
+                    Globals.InGui = true;
+                    Onix.Gui.MouseGrabbed = true;
+                }
+                if (Globals.InGui == false)
+                {
+                    // return true;
+                }
+            }
+            
             
             return false;  
             
@@ -170,6 +227,8 @@ namespace WorldEdit {
                 }
             } 
             return false;
+            
         }
+        
     } 
 }
