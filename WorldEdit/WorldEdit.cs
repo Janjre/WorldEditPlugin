@@ -20,9 +20,16 @@ namespace WorldEdit {
         public static OnixTextbox CommandTypyBox = new OnixTextbox(128, "", "World edit command here");
         public static List<MyBlock> UndoHistoryAsBlocks = new List<MyBlock>(); // list of blocks associated with actions
         public static List<(long Id, string Name)> UndoHistory = new List<(long Id, string Name)>(); // list of action numbers and display text
+        
+        public static List<MyBlock> RedoHistoryAsBlocks = new List<MyBlock>(); // list of blocks associated with actions
+        public static List<(long Id, string Name)> RedoHistory = new List<(long Id, string Name)>(); // list of action numbers and display text
 
         public static List<HistoryActions.HistoryItem> RevertButtons = new List<HistoryActions.HistoryItem>();
         public static TexturePath UndoIcon = TexturePath.Assets("undoIcon");
+
+        public static Random MyRandom = new Random();
+
+        public static int undoPoint = 0;
         
 
 
@@ -66,17 +73,25 @@ namespace WorldEdit {
 
     public static class HistoryActions
     {
-        public static void PlaceBlock(String blockName, String data, Vec3 position, long actionNumber)
+        public static void PlaceBlock(String blockName, String data, Vec3 position, long actionNumber, bool undo = true)
         {
+            
+            
             Block block = Onix.LocalPlayer.Region.GetBlock((int)position.X, (int)position.Y, (int)position.Z);
             MyBlock blockReplaced = new MyBlock(block.NameFull, block.States.ToString(), actionNumber, position);
             Globals.UndoHistoryAsBlocks.Add(blockReplaced);
+        
+            MyBlock blockPlaced = new MyBlock(blockName, data, actionNumber, position);
+            Globals.RedoHistoryAsBlocks.Add(blockPlaced);
+            
+            
             Onix.Client.ExecuteCommand("execute setblock " + position.X + " " + position.Y + " " + position.Z + " " + blockName + " " + data, true);
         }
 
         public static void FinishAction(long actionNumber,string displayText)
         {
-            Globals.UndoHistory.Add((actionNumber,displayText));
+            Globals.UndoHistory.Add((actionNumber,displayText));    
+            Globals.RedoHistory.Add((actionNumber,displayText));
         }
 
         public class HistoryItem
@@ -171,7 +186,7 @@ namespace WorldEdit {
 
                     case "fill":
 
-                        long actionId = new Random().NextInt64(1, 1_000_000_001);
+                        long actionId = Globals.MyRandom.NextInt64(1, 1_000_000_001);
                         
                         (Vec3 posMin, Vec3 posMax) = Globals.FindExtremes(Globals.pos1, Globals.pos2);
                         // loop through area!!!! (this is incredibly unique, i don't think we will do this anywhere else in the plugin!!!!)
