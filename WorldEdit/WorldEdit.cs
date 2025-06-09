@@ -18,8 +18,8 @@ namespace WorldEdit {
         public static Vec3 pos2 = new Vec3();
         public static bool NotInGui = true;
         public static OnixTextbox CommandTypyBox = new OnixTextbox(128, "", "World edit command here");
-        public static List<MyBlock> HistoryAsBlocks = new List<MyBlock>(); // list of blocks associated with actions
-        public static List<(long Id, string Name)> History = new List<(long Id, string Name)>(); // list of action numbers and display text
+        public static List<MyBlock> UndoHistoryAsBlocks = new List<MyBlock>(); // list of blocks associated with actions
+        public static List<(long Id, string Name)> UndoHistory = new List<(long Id, string Name)>(); // list of action numbers and display text
 
         public static List<HistoryActions.HistoryItem> RevertButtons = new List<HistoryActions.HistoryItem>();
         public static TexturePath UndoIcon = TexturePath.Assets("undoIcon");
@@ -70,13 +70,13 @@ namespace WorldEdit {
         {
             Block block = Onix.LocalPlayer.Region.GetBlock((int)position.X, (int)position.Y, (int)position.Z);
             MyBlock blockReplaced = new MyBlock(block.NameFull, block.States.ToString(), actionNumber, position);
-            Globals.HistoryAsBlocks.Add(blockReplaced);
+            Globals.UndoHistoryAsBlocks.Add(blockReplaced);
             Onix.Client.ExecuteCommand("execute setblock " + position.X + " " + position.Y + " " + position.Z + " " + blockName + " " + data, true);
         }
 
         public static void FinishAction(long actionNumber,string displayText)
         {
-            Globals.History.Add((actionNumber,displayText));
+            Globals.UndoHistory.Add((actionNumber,displayText));
         }
 
         public class HistoryItem
@@ -234,7 +234,7 @@ namespace WorldEdit {
 
         private void OnHudRenderDirect2D(RendererDirect2D gfx, float delta) {
             // For example, before the loop:
-            while (Globals.RevertButtons.Count < Globals.History.Count)
+            while (Globals.RevertButtons.Count < Globals.UndoHistory.Count)
             {
                 Globals.RevertButtons.Add(new HistoryActions.HistoryItem(-1,false,new Rect(), 1, false)); // add dummy Rect to fill
             }
@@ -265,7 +265,7 @@ namespace WorldEdit {
                 float characterHeight = 7;
                 float endPoint = screenHeight * 0.83f;
                 
-                for (int i = 0; i <= Globals.History.Count; i++)
+                for (int i = 0; i <= Globals.UndoHistory.Count; i++)
                 {
                     
                     Vec2 tlTextPos = new Vec2 (screenWidth*0.67f, startIterationsPosition + characterHeight * i);
@@ -275,14 +275,14 @@ namespace WorldEdit {
                     {
                         break;
                     }
-                    if (i >= 0 && i < Globals.History.Count)
+                    if (i >= 0 && i < Globals.UndoHistory.Count)
                     {
-                        Onix.Render.Direct2D.RenderText(tlTextPos,ColorF.White,Globals.History[i].Name,TextAlignment.Left,TextAlignment.Top,characterHeight/6);
+                        Onix.Render.Direct2D.RenderText(tlTextPos,ColorF.White,Globals.UndoHistory[i].Name,TextAlignment.Left,TextAlignment.Top,characterHeight/6);
                         Rect button = new Rect(
                             new Vec2(tlTextPos.X- 10, tlTextPos.Y+2),
                             new Vec2(tlTextPos.X -2, tlTextPos.Y + 10));
 
-                        Globals.RevertButtons[i] = new HistoryActions.HistoryItem(i,false,button,Globals.History[i].Id);
+                        Globals.RevertButtons[i] = new HistoryActions.HistoryItem(i,false,button,Globals.UndoHistory[i].Id);
                         Onix.Render.Direct2D.RenderTexture(button,Globals.UndoIcon,1f);
                         
                     }
@@ -357,7 +357,7 @@ namespace WorldEdit {
                             if (mousePos.Y <= item.Button.BottomLeft.Y && mousePos.Y >= item.Button.TopLeft.Y)
                             {
                                 
-                                foreach (MyBlock block in Globals.HistoryAsBlocks)
+                                foreach (MyBlock block in Globals.UndoHistoryAsBlocks)
                                 {
                                     if (block.Action == item.UUID)
                                     {
