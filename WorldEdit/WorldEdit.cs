@@ -351,12 +351,24 @@ namespace WorldEdit {
                     
                     foreach (HistoryActions.HistoryItem item in Globals.RevertButtons)
                     {
-                        
-                        if (item.Button.Contains(mousePos))
+                        if (mousePos.X >= item.Button.TopLeft.X && mousePos.X <= item.Button.TopRight.X)
                         {
-                            int buttonNumber = item.Index;
-
-                        }
+                            
+                            if (mousePos.Y <= item.Button.BottomLeft.Y && mousePos.Y >= item.Button.TopLeft.Y)
+                            {
+                                
+                                foreach (MyBlock block in Globals.HistoryAsBlocks)
+                                {
+                                    if (block.Action == item.UUID)
+                                    {
+                                        Onix.Client.ExecuteCommand("execute setblock " + block.Position.X + " " + block.Position.Y + " "+ block.Position.Z + " "+ block.Name);
+                                    }    
+                                }
+                                
+                            }
+                        } 
+                        
+                        
                         
                     }
                 }
