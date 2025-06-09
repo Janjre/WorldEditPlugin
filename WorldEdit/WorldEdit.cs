@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using System.Runtime.InteropServices.JavaScript;
 using System.Xml;
 using OnixRuntime.Api;
@@ -20,7 +21,7 @@ namespace WorldEdit {
         public static List<MyBlock> HistoryAsBlocks = new List<MyBlock>(); // list of blocks associated with actions
         public static List<(long Id, string Name)> History = new List<(long Id, string Name)>(); // list of action numbers and display text
 
-        public static List<Rect> RevertButtons = new List<Rect>();
+        public static List<HistoryActions.HistoryItem> RevertButtons = new List<HistoryActions.HistoryItem>();
         public static TexturePath UndoIcon = TexturePath.Assets("undoIcon");
         
 
@@ -76,6 +77,26 @@ namespace WorldEdit {
         public static void FinishAction(long actionNumber,string displayText)
         {
             Globals.History.Add((actionNumber,displayText));
+        }
+
+        public class HistoryItem
+        {
+            public int Index;
+            public bool Selected;
+            public Rect Button;
+            public long UUID;
+            public bool Active;
+
+
+            public HistoryItem(int index, bool selected, Rect button, long uuid, bool active = true )
+            {
+                Index = index;
+                Selected = selected;
+                Button = button;
+                UUID = uuid;
+                Active = active;
+
+            }
         }
         
         
@@ -215,7 +236,7 @@ namespace WorldEdit {
             // For example, before the loop:
             while (Globals.RevertButtons.Count < Globals.History.Count)
             {
-                Globals.RevertButtons.Add(new Rect()); // add dummy Rect to fill
+                Globals.RevertButtons.Add(new HistoryActions.HistoryItem(-1,false,new Rect(), 1, false)); // add dummy Rect to fill
             }
 
             
@@ -261,7 +282,7 @@ namespace WorldEdit {
                             new Vec2(tlTextPos.X- 10, tlTextPos.Y+2),
                             new Vec2(tlTextPos.X -2, tlTextPos.Y + 10));
 
-                        Globals.RevertButtons[i] = button;
+                        Globals.RevertButtons[i] = new HistoryActions.HistoryItem(i,false,button,Globals.History[i].Id);
                         Onix.Render.Direct2D.RenderTexture(button,Globals.UndoIcon,1f);
                         
                     }
@@ -328,12 +349,13 @@ namespace WorldEdit {
                 {
                     Vec2 mousePos = Onix.Gui.MousePosition;
                     
-                    foreach (Rect button in Globals.RevertButtons)
+                    foreach (HistoryActions.HistoryItem item in Globals.RevertButtons)
                     {
                         
-                        if (button.Contains(mousePos))
+                        if (item.Button.Contains(mousePos))
                         {
-                            Console.WriteLine("You click on A button");
+                            int buttonNumber = item.Index;
+
                         }
                         
                     }
