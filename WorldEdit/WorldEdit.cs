@@ -24,8 +24,9 @@ namespace WorldEdit {
         public static List<MyBlock> RedoHistoryAsBlocks = new List<MyBlock>(); // list of blocks associated with actions
         public static List<(long Id, string Name)> RedoHistory = new List<(long Id, string Name)>(); // list of action numbers and display text
 
-        public static List<HistoryActions.HistoryItem> RevertButtons = new List<HistoryActions.HistoryItem>();
+        
         public static TexturePath UndoIcon = TexturePath.Assets("undoIcon");
+        public static TexturePath RedoIcon = TexturePath.Assets("redoIcon");
 
         public static Random MyRandom = new Random();
 
@@ -90,29 +91,20 @@ namespace WorldEdit {
 
         public static void FinishAction(long actionNumber,string displayText)
         {
+            if (Globals.undoPoint != Globals.UndoHistory.Count)
+            {
+                
+            }
+            
             Globals.UndoHistory.Add((actionNumber,displayText));    
             Globals.RedoHistory.Add((actionNumber,displayText));
+            
+            
         }
+        
+        public 
 
-        public class HistoryItem
-        {
-            public int Index;
-            public bool Selected;
-            public Rect Button;
-            public long UUID;
-            public bool Active;
-
-
-            public HistoryItem(int index, bool selected, Rect button, long uuid, bool active = true )
-            {
-                Index = index;
-                Selected = selected;
-                Button = button;
-                UUID = uuid;
-                Active = active;
-
-            }
-        }
+        
         
         
             
@@ -249,10 +241,7 @@ namespace WorldEdit {
 
         private void OnHudRenderDirect2D(RendererDirect2D gfx, float delta) {
             // For example, before the loop:
-            while (Globals.RevertButtons.Count < Globals.UndoHistory.Count)
-            {
-                Globals.RevertButtons.Add(new HistoryActions.HistoryItem(-1,false,new Rect(), 1, false)); // add dummy Rect to fill
-            }
+            
 
             
             if (!Globals.NotInGui)
@@ -292,17 +281,31 @@ namespace WorldEdit {
                     }
                     if (i >= 0 && i < Globals.UndoHistory.Count)
                     {
+                        
+                        // if (Globals.UndoHistory[i].Id)
                         Onix.Render.Direct2D.RenderText(tlTextPos,ColorF.White,Globals.UndoHistory[i].Name,TextAlignment.Left,TextAlignment.Top,characterHeight/6);
-                        Rect button = new Rect(
-                            new Vec2(tlTextPos.X- 10, tlTextPos.Y+2),
-                            new Vec2(tlTextPos.X -2, tlTextPos.Y + 10));
-
-                        Globals.RevertButtons[i] = new HistoryActions.HistoryItem(i,false,button,Globals.UndoHistory[i].Id);
-                        Onix.Render.Direct2D.RenderTexture(button,Globals.UndoIcon,1f);
+                        // Rect button = new Rect(
+                        //     new Vec2(tlTextPos.X- 10, tlTextPos.Y+2),
+                        //     new Vec2(tlTextPos.X -2, tlTextPos.Y + 10));
+                        //
+                        // Globals.RevertButtons[i] = new HistoryActions.HistoryItem(i,false,button,Globals.UndoHistory[i].Id);
+                        // Onix.Render.Direct2D.RenderTexture(button,Globals.UndoIcon,1f);
                         
                     }
+
+                    Rect undo = new Rect(new Vec2(screenWidth * 0.80f, screenHeight * 0.12f),
+                        new Vec2((screenWidth * 0.80f)+15, (screenHeight * 0.12f)+15));
                     
+                    Onix.Render.Direct2D.RenderTexture(undo,Globals.UndoIcon,1f);
+                    
+                    Rect redo = new Rect(new Vec2(screenWidth * 0.82f, screenHeight * 0.12f),
+                        new Vec2((screenWidth * 0.82f)+15, (screenHeight * 0.12f)+15));
+                    
+                    Onix.Render.Direct2D.RenderTexture(redo,Globals.RedoIcon,1f);
+
                 }
+                
+                
                 
 
 
@@ -364,28 +367,8 @@ namespace WorldEdit {
                 {
                     Vec2 mousePos = Onix.Gui.MousePosition;
                     
-                    foreach (HistoryActions.HistoryItem item in Globals.RevertButtons)
-                    {
-                        if (mousePos.X >= item.Button.TopLeft.X && mousePos.X <= item.Button.TopRight.X)
-                        {
-                            
-                            if (mousePos.Y <= item.Button.BottomLeft.Y && mousePos.Y >= item.Button.TopLeft.Y)
-                            {
-                                
-                                foreach (MyBlock block in Globals.UndoHistoryAsBlocks)
-                                {
-                                    if (block.Action == item.UUID)
-                                    {
-                                        Onix.Client.ExecuteCommand("execute setblock " + block.Position.X + " " + block.Position.Y + " "+ block.Position.Z + " "+ block.Name);
-                                    }    
-                                }
-                                
-                            }
-                        } 
-                        
-                        
-                        
-                    }
+                    
+                    
                 }
                 if (Globals.NotInGui == false)
                 {
