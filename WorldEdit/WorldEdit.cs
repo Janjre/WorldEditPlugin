@@ -160,19 +160,36 @@ namespace WorldEdit {
 
     public static class Autocomplete
     {
-        
+
+        public static List<commandObject> commands = new List<commandObject>();
+
+        public static void registerCommand(commandObject command)
+        {
+            commands.Add(command);
+        }
         
         
         
 
         public class commandObject
         {
+            public string Name;
+            public string Description;
+            public List<String> Arguments;
+            public List<List<string>> CompleteOptions;
+            public Func<string> OnRan;
+            
+            
             
             
             public commandObject(string name, string description, List<String> argumentHelp,
-                List<List<string>> options)
+                List<List<string>> options, Func<string> onRan)
             {
-            
+                Name = name;
+                Description = description;
+                Arguments = argumentHelp;
+                CompleteOptions = options;
+                OnRan = onRan;
             }
         }
         
@@ -270,6 +287,14 @@ namespace WorldEdit {
                         HistoryActions.FinishAction(actionId, "Filled area with "+splitMessage[1]);
 
                         break;
+                }
+
+                foreach (Autocomplete.commandObject command in Autocomplete.commands)
+                {
+                    if (command.Name == splitMessage[0])
+                    {
+                        command.OnRan(message);
+                    }
                 }
                 
                 Globals.CommandTypyBox.IsEmpty = true;
