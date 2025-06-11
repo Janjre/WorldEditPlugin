@@ -12,25 +12,37 @@ using OnixRuntime.Api.World;
 
 namespace WorldEdit {
 
-    public static class Globals // no i cannot do things without this
+    public static class Globals // no i cannot do things without this and yes i am just learning c#
     {
         public static Vec3 pos1 = new Vec3();
         public static Vec3 pos2 = new Vec3();
         public static bool NotInGui = true;
         public static OnixTextbox CommandTypyBox = new OnixTextbox(128, "", "World edit command here");
         public static List<MyBlock> UndoHistoryAsBlocks = new List<MyBlock>(); // list of blocks associated with actions
-        public static List<(long Id, string Name)> UndoHistory = new List<(long Id, string Name)>(); // list of action numbers and display text
+        public static List<HistoryActions.HistoryItem> UndoHistory = new List<HistoryActions.HistoryItem>(); // list of action numbers and display text
         
         public static List<MyBlock> RedoHistoryAsBlocks = new List<MyBlock>(); // list of blocks associated with actions
-        public static List<(long Id, string Name)> RedoHistory = new List<(long Id, string Name)>(); // list of action numbers and display text
+        public static List<HistoryActions.HistoryItem> RedoHistory = new List<HistoryActions.HistoryItem>(); // list of action numbers and display text
 
         
         public static TexturePath UndoIcon = TexturePath.Assets("undoIcon");
         public static TexturePath RedoIcon = TexturePath.Assets("redoIcon");
+        public static TexturePath ClearIcon = TexturePath.Assets("clear");
 
         public static Random MyRandom = new Random();
 
-        public static int undoPoint = 0;
+        public static int undoPoint = 0; 
+
+        public static bool myContains(Rect rect, Vec2 point)
+        {
+            if (point.Y > rect.TopLeft.Y && point.Y < rect.BottomLeft.Y && point.X > rect.BottomLeft.X &&
+                point.X < rect.BottomRight.X)
+            {
+                return true;
+            }
+
+            return false;
+        }
         
 
 
@@ -88,26 +100,83 @@ namespace WorldEdit {
             
             Onix.Client.ExecuteCommand("execute setblock " + position.X + " " + position.Y + " " + position.Z + " " + blockName + " " + data, true);
         }
+        
+        
 
-        public static void FinishAction(long actionNumber,string displayText)
+        public static void FinishAction(long actionNumber,string displayText) // logic around removing redo options after an action are here
         {
+            
+            
+            
             if (Globals.undoPoint != Globals.UndoHistory.Count)
             {
-                
+                Console.WriteLine("Doing thjings");
+                for (int i = Globals.UndoHistory.Count-1; i >  Globals.undoPoint; i--)
+                {
+                    Globals.UndoHistory.RemoveAt(i);
+                }
             }
+
+            Globals.undoPoint += 1;
             
-            Globals.UndoHistory.Add((actionNumber,displayText));    
-            Globals.RedoHistory.Add((actionNumber,displayText));
             
-            
+            Globals.UndoHistory.Add(new HistoryItem(actionNumber,displayText,true));
+            Globals.RedoHistory.Add(new HistoryItem(actionNumber, displayText, true));
+
+
         }
-        
-        public 
+
+        public class HistoryItem
+        {
+            public long UUID;
+            public string Text;
+            public bool Selected;
+
+            public HistoryItem(long uuid, string text, bool selected)
+            {
+                if (selected)
+                {
+                    foreach (HistoryActions.HistoryItem item in Globals.UndoHistory)
+                    {
+                        item.Selected = false;
+                    }
+                    foreach (HistoryActions.HistoryItem item in Globals.RedoHistory)
+                    {
+                        item.Selected = false;
+                    }
+                }
+                UUID = uuid;
+                Text = text;
+                Selected = selected;
+
+            }
+        }
 
         
         
         
             
+    }
+
+    public static class Autocomplete
+    {
+        
+        
+        
+        
+
+        public class commandObject
+        {
+            
+            
+            public commandObject(string name, string description, List<String> argumentHelp,
+                List<List<string>> options)
+            {
+            
+            }
+        }
+        
+        
     }
     
     public class WorldEdit : OnixPluginBase {
@@ -134,7 +203,10 @@ namespace WorldEdit {
             Onix.Events.Input.Input += OnInput;
             // Onix.Events.LocalServer.PlayerChatEvent += MyChatHandler;
             Globals.NotInGui = true;
-            
+
+            Globals.UndoHistory.Add( new HistoryActions.HistoryItem(0, "Start", false));
+            Globals.RedoHistory.Add (new HistoryActions.HistoryItem(0, "Start", false));
+
 
         }
         
@@ -246,6 +318,7 @@ namespace WorldEdit {
             
             if (!Globals.NotInGui)
             {
+                Onix.Render.Direct2D.RenderText(new Vec2(0,0),ColorF.White,Globals.undoPoint.ToString(),1f );
                 float screenWidth = Onix.Gui.ScreenSize.X;
                 float screenHeight = Onix.Gui.ScreenSize.Y;
                 
@@ -283,7 +356,13 @@ namespace WorldEdit {
                     {
                         
                         // if (Globals.UndoHistory[i].Id)
-                        Onix.Render.Direct2D.RenderText(tlTextPos,ColorF.White,Globals.UndoHistory[i].Name,TextAlignment.Left,TextAlignment.Top,characterHeight/6);
+                        ColorF colour = ColorF.White;
+                        if (i == Globals.undoPoint)
+                        {
+                            
+                            colour = ColorF.Red;
+                        }
+                        Onix.Render.Direct2D.RenderText(tlTextPos,colour,Globals.UndoHistory[i].Text,TextAlignment.Left,TextAlignment.Top,characterHeight/6);
                         // Rect button = new Rect(
                         //     new Vec2(tlTextPos.X- 10, tlTextPos.Y+2),
                         //     new Vec2(tlTextPos.X -2, tlTextPos.Y + 10));
@@ -294,15 +373,19 @@ namespace WorldEdit {
                     }
 
                     Rect undo = new Rect(new Vec2(screenWidth * 0.80f, screenHeight * 0.12f),
-                        new Vec2((screenWidth * 0.80f)+15, (screenHeight * 0.12f)+15));
+                        new Vec2((screenWidth * 0.80f)+10, (screenHeight * 0.12f)+10));
                     
                     Onix.Render.Direct2D.RenderTexture(undo,Globals.UndoIcon,1f);
                     
-                    Rect redo = new Rect(new Vec2(screenWidth * 0.82f, screenHeight * 0.12f),
-                        new Vec2((screenWidth * 0.82f)+15, (screenHeight * 0.12f)+15));
+                    Rect redo = new Rect(new Vec2(screenWidth * 0.815f, screenHeight * 0.12f),
+                        new Vec2((screenWidth * 0.815f)+10, (screenHeight * 0.12f)+10));
                     
                     Onix.Render.Direct2D.RenderTexture(redo,Globals.RedoIcon,1f);
-
+                   
+                    Rect clear = new Rect(new Vec2(screenWidth * 0.785f, screenHeight * 0.12f),
+                        new Vec2((screenWidth * 0.785f)+9, (screenHeight * 0.12f)+9));
+                    
+                    Onix.Render.Direct2D.RenderTexture(clear,Globals.ClearIcon,1f);
                 }
                 
                 
@@ -362,18 +445,91 @@ namespace WorldEdit {
                     return true;
                 }
                 
-                
-                if (key.Value == InputKey.Type.LMB && Globals.NotInGui == false && isDown)
+                if (Globals.NotInGui == false && key.Value == InputKey.Type.LMB && isDown)
                 {
-                    Vec2 mousePos = Onix.Gui.MousePosition;
+                    Vec2 mouseCursor = Onix.Gui.MousePosition;
+                    float screenWidth = Onix.Gui.ScreenSize.X;
+                    float screenHeight = Onix.Gui.ScreenSize.Y;
+                    
+                    Rect undo = new Rect(new Vec2(screenWidth * 0.80f, screenHeight * 0.12f),
+                        new Vec2((screenWidth * 0.80f)+15, (screenHeight * 0.12f)+15));
                     
                     
                     
-                }
+                    Rect redo = new Rect(new Vec2(screenWidth * 0.82f, screenHeight * 0.12f),
+                        new Vec2((screenWidth * 0.82f)+15, (screenHeight * 0.12f)+15));
+                    
+                    Rect clear = new Rect(new Vec2(screenWidth * 0.785f, screenHeight * 0.12f),
+                        new Vec2((screenWidth * 0.785f)+9, (screenHeight * 0.12f)+9));
+
+                    Console.WriteLine(Globals.undoPoint);
+                    
+                    
+                    if (Globals.myContains(undo,mouseCursor))
+                    {
+                        long targetUUID = Globals.UndoHistory[Globals.undoPoint].UUID;
+                        
+                        foreach (MyBlock block in Globals.UndoHistoryAsBlocks)
+                        {
+                            if (block.Action == targetUUID)
+                            {
+                                Onix.Client.ExecuteCommand("execute setblock "+ block.Position.X + " " + block.Position.Y + " " + block.Position.Z + " " + block.Name);
+                            }
+                        }
+                        Globals.undoPoint -= 1;
+                        if (Globals.undoPoint < 0)
+                        {
+                            Globals.undoPoint = 0;
+                        }
+                    
+                        if (Globals.undoPoint > Globals.UndoHistory.Count)
+                        {
+                            Globals.undoPoint = Globals.UndoHistory.Count;
+                        }
+                    }
+                    
+                    if (Globals.myContains(redo, mouseCursor))
+                    {
+                        
+                        Globals.undoPoint += 1;
+                        
+                        long targetUUID = Globals.UndoHistory[Globals.undoPoint].UUID;
+                        foreach (MyBlock block in Globals.RedoHistoryAsBlocks)
+                        {
+                             if (block.Action == targetUUID)
+                             {
+                                 Onix.Client.ExecuteCommand("execute setblock "+ block.Position.X + " " + block.Position.Y + " " + block.Position.Z + " " + block.Name);
+                             }
+                        }
+                        if (Globals.undoPoint < 0)
+                        {
+                            Globals.undoPoint = 0;
+                        }
+                    
+                        if (Globals.undoPoint > Globals.UndoHistory.Count)
+                        {
+                            Globals.undoPoint = Globals.UndoHistory.Count;
+                        }
+                        
+                    }
+
+                    if (Globals.myContains(clear, mouseCursor))
+                    {
+                        Globals.undoPoint = 0;
+                        for (int i = Globals.UndoHistory.Count-1; i >= 1;i--)
+                        {
+                            Globals.UndoHistory.RemoveAt(i);
+                        }
+                    }
+                    
+                    return true;
+                } 
+                
                 if (Globals.NotInGui == false)
                 {
                     return true;
                 }
+                
             }
             
             
