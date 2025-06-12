@@ -17,7 +17,7 @@ namespace WorldEdit {
         public static Vec3 pos1 = new Vec3();
         public static Vec3 pos2 = new Vec3();
         public static bool NotInGui = true;
-        public static OnixTextbox CommandTypyBox = new OnixTextbox(128, "", "World edit command here");
+        public static OnixTextbox CommandBox = new OnixTextbox(128, "", "World edit command here");
         public static List<MyBlock> UndoHistoryAsBlocks = new List<MyBlock>(); // list of blocks associated with actions
         public static List<HistoryActions.HistoryItem> UndoHistory = new List<HistoryActions.HistoryItem>(); // list of action numbers and display text
         
@@ -163,7 +163,7 @@ namespace WorldEdit {
 
         public static List<commandObject> commands = new List<commandObject>();
 
-        public static void registerCommand(commandObject command)
+        public static void RegisterCommand(commandObject command)
         {
             commands.Add(command);
         }
@@ -177,13 +177,13 @@ namespace WorldEdit {
             public string Description;
             public List<String> Arguments;
             public List<List<string>> CompleteOptions;
-            public Func<string> OnRan;
+            public Func<string,bool> OnRan; // I want to make this a function that i can call like Autocompelte.commandObject.OnRan(arguments)
             
             
             
             
             public commandObject(string name, string description, List<String> argumentHelp,
-                List<List<string>> options, Func<string> onRan)
+                List<List<string>> options, Func<string,bool> onRan)
             {
                 Name = name;
                 Description = description;
@@ -224,6 +224,16 @@ namespace WorldEdit {
             Globals.UndoHistory.Add( new HistoryActions.HistoryItem(0, "Start", false));
             Globals.RedoHistory.Add (new HistoryActions.HistoryItem(0, "Start", false));
 
+            List<String> autocomplete = new List<string>();
+            autocomplete.Add("<block>");
+            List<List<String>> options = new List<List<string>>();
+            List<String> argument1 = new List<string>();
+            options.Add(argument1);
+                
+            Autocomplete.RegisterCommand(new Autocomplete.commandObject("fill","test",autocomplete,options,Commands.Fill));
+            
+            
+
 
         }
         
@@ -255,39 +265,13 @@ namespace WorldEdit {
             
             
              
-            if (Globals.CommandTypyBox.HasConfirmedText)
+            if (Globals.CommandBox.HasConfirmedText)
             {
-
-                String message = Globals.CommandTypyBox.Text;
+                String message = Globals.CommandBox.Text;
                 
                 String[] splitMessage = message.Split(' ', StringSplitOptions.RemoveEmptyEntries);
                     
-                switch (splitMessage[0])
-                {
-
-                    case "fill":
-
-                        long actionId = Globals.MyRandom.NextInt64(1, 1_000_000_001);
-                        
-                        (Vec3 posMin, Vec3 posMax) = Globals.FindExtremes(Globals.pos1, Globals.pos2);
-                        // loop through area!!!! (this is incredibly unique, i don't think we will do this anywhere else in the plugin!!!!)
-                        
-                        for (int x = (int)posMin.X; x <= posMax.X; x++)
-                        {
-                            for (int y = (int)posMin.Y; y <= posMax.Y; y++)
-                            {
-                                for (int z = (int)posMin.Z; z <= posMax.Z; z++)
-                                {
-                                    // Console.WriteLine("attempted to do something");
-                                    HistoryActions.PlaceBlock(splitMessage[1], "[]",new Vec3(x,y,z),actionId);
-                                    
-                                }
-                            }
-                        }
-                        HistoryActions.FinishAction(actionId, "Filled area with "+splitMessage[1]);
-
-                        break;
-                }
+                
 
                 foreach (Autocomplete.commandObject command in Autocomplete.commands)
                 {
@@ -297,7 +281,7 @@ namespace WorldEdit {
                     }
                 }
                 
-                Globals.CommandTypyBox.IsEmpty = true;
+                Globals.CommandBox.IsEmpty = true;
             }
 
         }
@@ -357,8 +341,53 @@ namespace WorldEdit {
                 ColorF lightGray = new ColorF(0.34f, 0.34f, 0.34f, 1f);
                 Rect commandLine = new Rect(new Vec2(screenWidth * 0.15f, screenHeight * 0.75f), new Vec2(screenWidth * 0.58f, screenHeight * 0.82f));
                 Onix.Render.Direct2D.FillRoundedRectangle(commandLine, lightGray , 5f, 10);
-                Globals.CommandTypyBox.Render(commandLine);
+                Globals.CommandBox.Render(commandLine);
 
+                //console area
+
+                String[] splitMessage = Globals.CommandBox.Text.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                
+                string text = "";
+                bool foundOne = false;
+                
+                foreach (Autocomplete.commandObject command in Autocomplete.commands)
+                {
+                    if (Globals.CommandBox.Text.StartsWith(command.Name))
+                    {
+                        text = command.Name;
+                        foreach (string arg in command.Arguments)
+                        {
+                            text += " " + arg;
+                            foundOne = true;
+                        }
+
+                        break;
+                    }
+                }
+
+                if (foundOne == false)
+                {
+                    //display all of the commands with splitMessage[0].Contains
+                    foreach (Autocomplete.commandObject command in Autocomplete.commands)
+                    {
+                        if (splitMessage.Contains(command.Name))
+                        {
+                            
+                        }
+                    }
+                }
+                
+                Rect autoCompleteLine = new Rect(new Vec2(screenWidth * 0.15f, screenHeight * 0.71f), new Vec2(screenWidth * 0.58f, screenHeight * 0.78f));
+                Onix.Render.Direct2D.RenderText(autoCompleteLine,ColorF.White, text,TextAlignment.Left,TextAlignment.Top,1f);
+                
+                //create lots of 
+                
+                
+                
+                
+                
+                
+                
                 Rect sidebarArea = new Rect(new Vec2(screenWidth * 0.65f, screenHeight * 0.10f), new Vec2(screenWidth * 0.85f, screenHeight * 0.85f));
                 Onix.Render.Direct2D.FillRoundedRectangle(sidebarArea,darkGray,10,10);
                 Onix.Render.Direct2D.DrawRoundedRectangle(sidebarArea, ColorF.White , 0.25f, 10);
@@ -413,13 +442,8 @@ namespace WorldEdit {
                     Onix.Render.Direct2D.RenderTexture(clear,Globals.ClearIcon,1f);
                 }
                 
-                
-                
-
-
-
             } 
-            Globals.CommandTypyBox.IsFocused = !Globals.NotInGui;
+            Globals.CommandBox.IsFocused = !Globals.NotInGui;
         }
         
         private bool OnInput(InputKey key, bool isDown) {
