@@ -59,18 +59,18 @@ public static class Commands
         List<List<String>> options = new List<List<string>>();
         
 
-        // string json = File.ReadAllText(Path.Combine(Globals.assetsPath,"blockList.json"));
+        string json = File.ReadAllText(Path.Combine(Globals.assetsPath,"blockList.json"));
+        
+        List<string> argument1 = JsonSerializer.Deserialize<List<string>>(json);
+ // List<string>();
         //
-        // List<string> argument1 = JsonSerializer.Deserialize<List<string>>(json);
-
-        List<String> argument1 = new List<string>();
+        // argument1.Add("air");
+        // argument1.Add("dirt");
+        // argument1.Add("stone");
+        // argument1.Add("gold_block");
+        // argument1.Add("diamond_block");
         
-        argument1.Add("air");
-        argument1.Add("dirt");
-        argument1.Add("stone");
-        argument1.Add("gold_block");
-        argument1.Add("diamond_block");
-        
+        // List<String> argument1 = new//
         options.Add(argument1);
                     
         return new Autocomplete.commandObject("fill","test",autocomplete,options,Commands.Fill);

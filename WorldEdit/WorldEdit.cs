@@ -156,7 +156,7 @@ namespace WorldEdit {
             
             if (Globals.undoPoint != Globals.UndoHistory.Count)
             {
-                Console.WriteLine("Doing thjings");
+                
                 for (int i = Globals.UndoHistory.Count-1; i >  Globals.undoPoint; i--)
                 {
                     Globals.UndoHistory.RemoveAt(i);
@@ -472,25 +472,30 @@ namespace WorldEdit {
                 //create lots of textboxes for autocomplete/previous commands to go
 
                 Vec2 tlTextArea = new Vec2(screenWidth * 0.15f, screenHeight * 0.12f);
-                Vec2 brTextArea = new Vec2(screenWidth*0.58f, screenHeight*0.69f);
+                Vec2 brTextArea = new Vec2(screenWidth * 0.58f, screenHeight * 0.69f);
                 Rect textArea = new Rect(tlTextArea, brTextArea);
 
                 
-                Console.WriteLine(completionOptions.Count);
-                foreach (string option in completionOptions)
-                {
-                    int heightIndex = completionOptions.IndexOf(option);
 
-                    Rect textBox  =new Rect(new Vec2(screenWidth * 0.15f, (screenHeight * 0.69f) - screenHeight * heightIndex * 2),
-                        new Vec2(screenWidth * 0.15f, (screenHeight * 0.71f) - screenHeight * heightIndex * 2));
-                    
-                    Onix.Render.Direct2D.RenderText(textBox,ColorF.White, option,TextAlignment.Left,TextAlignment.Top,1f);
-                    if (textBox.BottomLeft.Y > textArea.Y)
+                float lineHeight = 7f; 
+                float startY = screenHeight * 0.68f;
+
+                for (int i = 0; i < completionOptions.Count; i++)
+                {
+                    string option = completionOptions[i];
+    
+                    Vec2 topLeft = new Vec2(screenWidth * 0.15f, startY - i * lineHeight);
+                    Vec2 bottomRight = new Vec2(screenWidth * 0.58f, topLeft.Y + lineHeight);
+                    Rect textBox = new Rect(topLeft, bottomRight);
+
+                    if (textBox.TopLeft.Y < textArea.TopLeft.Y)
                     {
                         break;
                     }
+
+                    Onix.Render.Direct2D.RenderText(textBox, ColorF.White, option, TextAlignment.Left, TextAlignment.Top, 1f);
                 }
-                
+
 
 
 
@@ -623,7 +628,7 @@ namespace WorldEdit {
                     Rect clear = new Rect(new Vec2(screenWidth * 0.785f, screenHeight * 0.12f),
                         new Vec2((screenWidth * 0.785f)+9, (screenHeight * 0.12f)+9));
 
-                    Console.WriteLine(Globals.undoPoint);
+                    
                     
                     
                     if (Globals.myContains(undo,mouseCursor))
