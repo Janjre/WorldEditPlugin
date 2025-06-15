@@ -8,6 +8,7 @@ using OnixRuntime.Api.Inputs;
 using OnixRuntime.Api.Maths;
 using OnixRuntime.Plugin;
 using OnixRuntime.Api.Rendering;
+using OnixRuntime.Api.UI;
 using OnixRuntime.Api.World;
 
 namespace WorldEdit {
@@ -31,7 +32,9 @@ namespace WorldEdit {
 
         public static Random MyRandom = new Random();
 
-        public static int undoPoint = 0; 
+        public static int undoPoint = 0;
+
+        public static string assetsPath;
 
         public static bool myContains(Rect rect, Vec2 point)
         {
@@ -62,6 +65,49 @@ namespace WorldEdit {
 
             return (posMin, posMax);
         }
+        
+        public static (List<string> args, int argCount) SimpleSplit(string input)
+        {
+            List<string> args = new();
+            if (string.IsNullOrWhiteSpace(input))
+                return (args, 0);
+
+            int length = input.Length;
+            int i = 0;
+            int count = 0;
+
+            while (i < length)
+            {
+               
+                while (i < length && char.IsWhiteSpace(input[i]))
+                    i++;
+
+                if (i >= length)
+                    break;
+
+                
+                int start = i;
+                while (i < length && !char.IsWhiteSpace(input[i]))
+                    i++;
+
+                args.Add(input.Substring(start, i - start));
+                count++;  
+            }
+            
+            args.Add("");
+            args.Add("");
+            args.Add(""); // No more IndexOutOfBounds errors!!1!!!!!
+
+            return (args, count);
+        }
+        
+        public static bool IndexExists<T>(List<T> list, int index)
+        {
+            return index >= 0 && index < list.Count;
+        }
+
+
+
         
     }
 
@@ -199,13 +245,16 @@ namespace WorldEdit {
     public class WorldEdit : OnixPluginBase {
         public static WorldEdit Instance { get; private set; } = null!;
         public static WorldEditConfig Config { get; private set; } = null!;
+        
+        
 
         public WorldEdit(OnixPluginInitInfo initInfo) : base(initInfo) {
             Instance = this;
             // If you can clean up what the plugin leaves behind manually, please do not unload the plugin when disabling.
             base.DisablingShouldUnloadPlugin = false;
+            Globals.assetsPath = Instance.PluginAssetsPath;
 #if DEBUG
-           // base.WaitForDebuggerToBeAttached();
+            // base.WaitForDebuggerToBeAttached();
 #endif
         }
 
@@ -224,13 +273,7 @@ namespace WorldEdit {
             Globals.UndoHistory.Add( new HistoryActions.HistoryItem(0, "Start", false));
             Globals.RedoHistory.Add (new HistoryActions.HistoryItem(0, "Start", false));
 
-            List<String> autocomplete = new List<string>();
-            autocomplete.Add("<block>");
-            List<List<String>> options = new List<List<string>>();
-            List<String> argument1 = new List<string>();
-            options.Add(argument1);
-                
-            Autocomplete.RegisterCommand(new Autocomplete.commandObject("fill","test",autocomplete,options,Commands.Fill));
+            Autocomplete.RegisterCommand(Commands.FillInit());
             
             
 
@@ -345,8 +388,11 @@ namespace WorldEdit {
 
                 //console area
 
-                String[] splitMessage = Globals.CommandBox.Text.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                string[] splitMessage = Globals.CommandBox.Text.Split(' ');
+
                 
+                
+                List<String> completionOptions = new List<string>();
                 string text = "";
                 bool foundOne = false;
                 
@@ -354,40 +400,106 @@ namespace WorldEdit {
                 {
                     if (Globals.CommandBox.Text.StartsWith(command.Name))
                     {
+                        foundOne = true;
                         text = command.Name;
                         foreach (string arg in command.Arguments)
                         {
                             text += " " + arg;
-                            foundOne = true;
+
                         }
 
-                        break;
+                        // come up with all potential options
+                        var (args,argCount) = Globals.SimpleSplit(Globals.CommandBox.Text); // argCount is not 0-based !!
+
+                        if (Globals.IndexExists(command.CompleteOptions, argCount - 1-1))
+                        {
+                            foreach (string option in command.CompleteOptions[argCount - 1-1])
+                            {
+                                if (Globals.IndexExists(args, argCount - 1))
+                                {
+                                    if (option.Contains(args[argCount - 1]))
+                                    {
+                                        completionOptions.Add(option);
+                                    }    
+                                }
+                                
+                            }
+                        }
+                        else
+                        {
+                            if (Globals.CommandBox.Text.EndsWith(" "))
+                            {
+                                if (Globals.IndexExists(command.CompleteOptions, argCount - 1))
+                                {
+                                    completionOptions = command.CompleteOptions[argCount - 1];
+                                }
+                            }
+                        }
+                        
+                        
+
+
+
                     }
                 }
+                
+                
 
                 if (foundOne == false)
                 {
+                    
                     //display all of the commands with splitMessage[0].Contains
                     foreach (Autocomplete.commandObject command in Autocomplete.commands)
                     {
-                        if (splitMessage.Contains(command.Name))
+                        
+                        if (splitMessage.Length > 0)
                         {
+                            if (command.Name.Contains(splitMessage[0]))
+                            {
+                                completionOptions.Add(command.Name);
+                            }
                             
                         }
                     }
                 }
                 
-                Rect autoCompleteLine = new Rect(new Vec2(screenWidth * 0.15f, screenHeight * 0.71f), new Vec2(screenWidth * 0.58f, screenHeight * 0.78f));
-                Onix.Render.Direct2D.RenderText(autoCompleteLine,ColorF.White, text,TextAlignment.Left,TextAlignment.Top,1f);
-                
-                //create lots of 
-                
-                
+                Rect syntaxLine = new Rect(new Vec2(screenWidth * 0.15f, screenHeight * 0.71f), new Vec2(screenWidth * 0.58f, screenHeight * 0.78f));
+                Onix.Render.Direct2D.RenderText(syntaxLine,ColorF.White, text,TextAlignment.Left,TextAlignment.Top,1f);
+
+
                 
                 
+                //create lots of textboxes for autocomplete/previous commands to go
+
+                Vec2 tlTextArea = new Vec2(screenWidth * 0.15f, screenHeight * 0.12f);
+                Vec2 brTextArea = new Vec2(screenWidth*0.58f, screenHeight*0.69f);
+                Rect textArea = new Rect(tlTextArea, brTextArea);
+
                 
+                Console.WriteLine(completionOptions.Count);
+                foreach (string option in completionOptions)
+                {
+                    int heightIndex = completionOptions.IndexOf(option);
+
+                    Rect textBox  =new Rect(new Vec2(screenWidth * 0.15f, (screenHeight * 0.69f) - screenHeight * heightIndex * 2),
+                        new Vec2(screenWidth * 0.15f, (screenHeight * 0.71f) - screenHeight * heightIndex * 2));
+                    
+                    Onix.Render.Direct2D.RenderText(textBox,ColorF.White, option,TextAlignment.Left,TextAlignment.Top,1f);
+                    if (textBox.BottomLeft.Y > textArea.Y)
+                    {
+                        break;
+                    }
+                }
                 
-                
+
+
+
+
+
+
+
+
+
                 Rect sidebarArea = new Rect(new Vec2(screenWidth * 0.65f, screenHeight * 0.10f), new Vec2(screenWidth * 0.85f, screenHeight * 0.85f));
                 Onix.Render.Direct2D.FillRoundedRectangle(sidebarArea,darkGray,10,10);
                 Onix.Render.Direct2D.DrawRoundedRectangle(sidebarArea, ColorF.White , 0.25f, 10);

@@ -1,4 +1,7 @@
-﻿namespace WorldEdit;
+﻿using System.Text.Json;
+using System.Text.Json.Nodes;
+
+namespace WorldEdit;
 
 using System.ComponentModel;
 using System.Runtime.InteropServices.JavaScript;
@@ -46,5 +49,30 @@ public static class Commands
                 
         
         return true;
-    } 
+    }
+
+    public static Autocomplete.commandObject FillInit()
+    {
+        List<String> autocomplete = new List<string>();
+        autocomplete.Add("<block>");
+        
+        List<List<String>> options = new List<List<string>>();
+        
+
+        // string json = File.ReadAllText(Path.Combine(Globals.assetsPath,"blockList.json"));
+        //
+        // List<string> argument1 = JsonSerializer.Deserialize<List<string>>(json);
+
+        List<String> argument1 = new List<string>();
+        
+        argument1.Add("air");
+        argument1.Add("dirt");
+        argument1.Add("stone");
+        argument1.Add("gold_block");
+        argument1.Add("diamond_block");
+        
+        options.Add(argument1);
+                    
+        return new Autocomplete.commandObject("fill","test",autocomplete,options,Commands.Fill);
+    }
 }
