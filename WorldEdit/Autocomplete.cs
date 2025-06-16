@@ -3,8 +3,10 @@
 public static class Autocomplete
 {
 
-    public static string AutoCompleteSelection;
+    public static List<String> currentOptions = new List<string>();
+    public static string Selected;
     public static List<commandObject> commands = new List<commandObject>();
+    public static int typedChar;
 
     public static void RegisterCommand(commandObject command)
     {

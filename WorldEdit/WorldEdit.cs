@@ -326,7 +326,14 @@ namespace WorldEdit {
                                 if (Globals.IndexExists(command.CompleteOptions, argCount - 1))
                                 {
                                     completionOptions = command.CompleteOptions[argCount - 1];
-                                    Autocomplete.AutoCompleteSelection = completionOptions[0];
+                                    Console.WriteLine("Set completion option as new argument");
+                                    if (completionOptions.Count > 0 && Autocomplete.currentOptions.IndexOf(Autocomplete.Selected) == -1)
+                                    {
+                                        Console.WriteLine($"completionOptions.Count ({completionOptions.Count}) > 0");
+                                        Autocomplete.Selected = completionOptions[0];
+                                        Console.WriteLine($"Autocomplete.Selected = {completionOptions[0]}");
+                                    }
+
                                 }
                             }
                         }
@@ -388,8 +395,18 @@ namespace WorldEdit {
                         break;
                     }
 
-                    Onix.Render.Direct2D.RenderText(textBox, ColorF.White, option, TextAlignment.Left, TextAlignment.Top, 1f);
+                    ColorF textColour = ColorF.Gray;
+
+                    if (Autocomplete.Selected == option)
+                    {
+                        textColour = ColorF.White;
+                    }
+
+                    Onix.Render.Direct2D.RenderText(textBox, textColour , option, TextAlignment.Left, TextAlignment.Top, 1f);
                 }
+
+                Autocomplete.currentOptions = completionOptions;
+                Console.WriteLine("Set completion options");
 
 
 
@@ -428,6 +445,7 @@ namespace WorldEdit {
                             
                             colour = ColorF.Red;
                         }
+                        
                         Onix.Render.Direct2D.RenderText(tlTextPos,colour,Globals.UndoHistory[i].Text,TextAlignment.Left,TextAlignment.Top,characterHeight/6);
                         // Rect button = new Rect(
                         //     new Vec2(tlTextPos.X- 10, tlTextPos.Y+2),
@@ -588,11 +606,65 @@ namespace WorldEdit {
                     
                 }
 
+                
+                
                 if (Onix.Gui.ScreenName == "hud_screen" && key.Value == InputKey.Type.Tab && isDown &&
                     Globals.NotInGui == false)
                 {
+
+                    Console.WriteLine("Getting here");
+                    
                     var (args,argCount) = Globals.SimpleSplit(Globals.CommandBox.Text); // argCount is not 0-based !!
                     
+                    if (Autocomplete.currentOptions.Count == 0)
+                    {
+                        Console.WriteLine("stopping here 616");
+                        return true;
+                    }
+
+                    int pointInList = Autocomplete.currentOptions.IndexOf(Autocomplete.Selected) + 1;
+                    Console.WriteLine($"pointInList = {pointInList}");
+                    if (pointInList == 0)
+                    {
+                        Console.WriteLine("COUlnd't find iut");
+                    }
+                    
+                    if (!Globals.IndexExists(Autocomplete.currentOptions, pointInList))
+                    {
+                        Console.WriteLine("Reset point in list to 0");
+                        pointInList = 0;
+                    }
+
+                    Console.WriteLine($"Autocomplete.Selected was {Autocomplete.Selected}");
+                    Autocomplete.Selected = Autocomplete.currentOptions[pointInList];
+                    Console.WriteLine($"Autocomplete.Selected is now {Autocomplete.Selected}");
+
+                    
+                    
+                    if (Globals.IndexExists(args, argCount-1))
+                    {
+                        if (Globals.CommandBox.Text.EndsWith(' '))
+                        {
+                            args[argCount] = Autocomplete.Selected;
+                        }
+                        
+                    }
+                    
+                    
+                    
+                    
+                    string reconstruction = "";
+                    
+                    foreach (string arg in args)
+                    {
+                        if (arg != "")
+                        {
+                            reconstruction += arg;
+                            reconstruction += " ";
+                        }
+                    }
+
+                    Globals.CommandBox.Text = reconstruction;
                 }
                 
                 if (Globals.NotInGui == false)
