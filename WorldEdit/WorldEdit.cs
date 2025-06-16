@@ -34,6 +34,8 @@ namespace WorldEdit {
 
         public static int undoPoint = 0;
 
+        
+
         public static string assetsPath;
 
         public static bool myContains(Rect rect, Vec2 point)
@@ -130,117 +132,9 @@ namespace WorldEdit {
     
     
 
-    public static class HistoryActions
-    {
-        public static void PlaceBlock(String blockName, String data, Vec3 position, long actionNumber, bool undo = true)
-        {
-            
-            
-            Block block = Onix.LocalPlayer.Region.GetBlock((int)position.X, (int)position.Y, (int)position.Z);
-            MyBlock blockReplaced = new MyBlock(block.NameFull, block.States.ToString(), actionNumber, position);
-            Globals.UndoHistoryAsBlocks.Add(blockReplaced);
-        
-            MyBlock blockPlaced = new MyBlock(blockName, data, actionNumber, position);
-            Globals.RedoHistoryAsBlocks.Add(blockPlaced);
-            
-            
-            Onix.Client.ExecuteCommand("execute setblock " + position.X + " " + position.Y + " " + position.Z + " " + blockName + " " + data, true);
-        }
-        
-        
+    
 
-        public static void FinishAction(long actionNumber,string displayText) // logic around removing redo options after an action are here
-        {
-            
-            
-            
-            if (Globals.undoPoint != Globals.UndoHistory.Count)
-            {
-                
-                for (int i = Globals.UndoHistory.Count-1; i >  Globals.undoPoint; i--)
-                {
-                    Globals.UndoHistory.RemoveAt(i);
-                }
-            }
-
-            Globals.undoPoint += 1;
-            
-            
-            Globals.UndoHistory.Add(new HistoryItem(actionNumber,displayText,true));
-            Globals.RedoHistory.Add(new HistoryItem(actionNumber, displayText, true));
-
-
-        }
-
-        public class HistoryItem
-        {
-            public long UUID;
-            public string Text;
-            public bool Selected;
-
-            public HistoryItem(long uuid, string text, bool selected)
-            {
-                if (selected)
-                {
-                    foreach (HistoryActions.HistoryItem item in Globals.UndoHistory)
-                    {
-                        item.Selected = false;
-                    }
-                    foreach (HistoryActions.HistoryItem item in Globals.RedoHistory)
-                    {
-                        item.Selected = false;
-                    }
-                }
-                UUID = uuid;
-                Text = text;
-                Selected = selected;
-
-            }
-        }
-
-        
-        
-        
-            
-    }
-
-    public static class Autocomplete
-    {
-
-        public static List<commandObject> commands = new List<commandObject>();
-
-        public static void RegisterCommand(commandObject command)
-        {
-            commands.Add(command);
-        }
-        
-        
-        
-
-        public class commandObject
-        {
-            public string Name;
-            public string Description;
-            public List<String> Arguments;
-            public List<List<string>> CompleteOptions;
-            public Func<string,bool> OnRan; // I want to make this a function that i can call like Autocompelte.commandObject.OnRan(arguments)
-            
-            
-            
-            
-            public commandObject(string name, string description, List<String> argumentHelp,
-                List<List<string>> options, Func<string,bool> onRan)
-            {
-                Name = name;
-                Description = description;
-                Arguments = argumentHelp;
-                CompleteOptions = options;
-                OnRan = onRan;
-            }
-        }
-        
-        
-    }
+    
     
     public class WorldEdit : OnixPluginBase {
         public static WorldEdit Instance { get; private set; } = null!;
@@ -432,6 +326,7 @@ namespace WorldEdit {
                                 if (Globals.IndexExists(command.CompleteOptions, argCount - 1))
                                 {
                                     completionOptions = command.CompleteOptions[argCount - 1];
+                                    Autocomplete.AutoCompleteSelection = completionOptions[0];
                                 }
                             }
                         }
@@ -689,7 +584,16 @@ namespace WorldEdit {
                     }
                     
                     return true;
-                } 
+                    
+                    
+                }
+
+                if (Onix.Gui.ScreenName == "hud_screen" && key.Value == InputKey.Type.Tab && isDown &&
+                    Globals.NotInGui == false)
+                {
+                    var (args,argCount) = Globals.SimpleSplit(Globals.CommandBox.Text); // argCount is not 0-based !!
+                    
+                }
                 
                 if (Globals.NotInGui == false)
                 {
