@@ -34,6 +34,8 @@ namespace WorldEdit {
 
         public static int undoPoint = 0;
 
+        public static bool Shifting;
+
         
 
         public static string assetsPath;
@@ -103,7 +105,7 @@ namespace WorldEdit {
             return (args, count);
         }
 
-        public static List<int> isDown = new List<int>(); 
+        
         
         public static bool IndexExists<T>(List<T> list, int index)
         {
