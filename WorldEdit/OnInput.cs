@@ -149,68 +149,95 @@ public static class InputHandler
                     Globals.NotInGui == false)
                 {
 
-                    Console.WriteLine("Getting here");
+                    // Console.WriteLine("Getting here");
                     
                     var (args,argCount) = Globals.SimpleSplit(Globals.CommandBox.Text); // argCount is not 0-based !!
                     
                     if (Autocomplete.currentOptions.Count == 0)
                     {
-                        Console.WriteLine("stopping here 616");
+                        // Console.WriteLine("stopping here 616");
                         return true;
                     }
 
                     int pointInList = Autocomplete.currentOptions.IndexOf(Autocomplete.Selected) + 1;
-                    Console.WriteLine($"pointInList = {pointInList}");
+                    // Console.WriteLine($"pointInList = {pointInList}");
                     if (pointInList == 0)
                     {
-                        Console.WriteLine("COUlnd't find iut");
+                        // Console.WriteLine("COUlnd't find iut");
                     }
                     
                     if (!Globals.IndexExists(Autocomplete.currentOptions, pointInList))
                     {
-                        Console.WriteLine("Reset point in list to 0");
+                        // Console.WriteLine("Reset point in list to 0");
                         pointInList = 0;
                     }
 
-                    Console.WriteLine($"Autocomplete.Selected was {Autocomplete.Selected}");
+                    // Console.WriteLine($"Autocomplete.Selected was {Autocomplete.Selected}");
                     Autocomplete.Selected = Autocomplete.currentOptions[pointInList];
-                    Console.WriteLine($"Autocomplete.Selected is now {Autocomplete.Selected}");
+                    // Console.WriteLine($"Autocomplete.Selected is now {Autocomplete.Selected}");
 
                     
                     
-                    if (Globals.IndexExists(args, argCount-1))
+                    
+                    
+                    
+                    
+                    
+                    
+                }
+
+                if (Globals.NotInGui == false && isDown && key.Value == InputKey.Type.Space)  // ACtually filling in the thing
+                {
+                    
+                    var (args,argCount) = Globals.SimpleSplit(Globals.CommandBox.Text); // argCount is not 0-based
+                    
+                    if (Globals.IndexExists(args, argCount))
                     {
-                        if (Globals.CommandBox.Text.EndsWith(' '))
+                        if (Globals.CommandBox.Text.EndsWith("  "))
                         {
+                            Console.WriteLine($"[{Globals.CommandBox.Text}]");
+                            Console.WriteLine("HERE");
                             args[argCount] = Autocomplete.Selected;
+                        }
+                        else
+                        {
+                            Console.WriteLine("Not ends in two spaces!!");
+                            if (Globals.IndexExists(args, argCount-1))
+                            {
+                                args[argCount-1] = Autocomplete.Selected;
+                            }
                         }
                         
                     }
+
+                    if (Autocomplete.currentOptions.Contains(Autocomplete.Selected))
+                    {
+                        if (args.Count == 0)
+                        {
+                            args.Add(Autocomplete.Selected);
+                        }
                     
                     
+                        string reconstruction = "";
                     
+                        foreach (string arg in args)
+                        {
+                            if (arg != "")
+                            {
+                                reconstruction += arg;
+                                reconstruction += " ";
+                            }
+                        }
                     
-                    // string reconstruction = "";
-                    //
-                    // foreach (string arg in args)
-                    // {
-                    //     if (arg != "")
-                    //     {
-                    //         reconstruction += arg;
-                    //         reconstruction += " ";
-                    //     }
-                    // }
-                    //
-                    // Globals.CommandBox.Text = reconstruction;
+                        Globals.CommandBox.Text = reconstruction;
+                    }
                 }
+                
                 
                 if (Globals.NotInGui == false)
                 {
                     return true;
                 }
-                
-                
-                
             }
             
             
