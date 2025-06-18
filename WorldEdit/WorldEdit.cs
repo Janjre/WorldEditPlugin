@@ -171,7 +171,7 @@ namespace WorldEdit {
             Globals.UndoHistory.Add( new HistoryActions.HistoryItem(0, "Start", false));
             Globals.RedoHistory.Add (new HistoryActions.HistoryItem(0, "Start", false));
 
-            Autocomplete.RegisterCommand(Commands.FillInit());
+            Autocomplete.RegisterCommand(Commands.Fill.FillInit());
             
             
 

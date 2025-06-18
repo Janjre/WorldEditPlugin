@@ -1,7 +1,9 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Nodes;
+using WorldEdit;
 
-namespace WorldEdit;
+
+namespace Commands;
 
 using System.ComponentModel;
 using System.Runtime.InteropServices.JavaScript;
@@ -17,9 +19,9 @@ using OnixRuntime.Api.World;
 
 
 
-public static class Commands
+public static class Fill
 {
-    public static bool Fill(String arguments)
+    public static bool RunFill(String arguments)
     {
         
                 
@@ -27,9 +29,9 @@ public static class Commands
                     
         
 
-        long actionId = Globals.MyRandom.NextInt64(1, 1_000_000_001);
+        long actionId = WorldEdit.Globals.MyRandom.NextInt64(1, 1_000_000_001);
                 
-        (Vec3 posMin, Vec3 posMax) = Globals.FindExtremes(Globals.pos1, Globals.pos2);
+        (Vec3 posMin, Vec3 posMax) = WorldEdit.Globals.FindExtremes(WorldEdit.Globals.pos1, WorldEdit.Globals.pos2);
         // loop through area!!!! (this is incredibly unique, i don't think we will do this anywhere else in the plugin!!!!)
                 
         for (int x = (int)posMin.X; x <= posMax.X; x++)
@@ -39,19 +41,19 @@ public static class Commands
                 for (int z = (int)posMin.Z; z <= posMax.Z; z++)
                 {
                     // Console.WriteLine("attempted to do something");
-                    HistoryActions.PlaceBlock(splitMessage[1], "[]",new Vec3(x,y,z),actionId);
+                    WorldEdit.HistoryActions.PlaceBlock(splitMessage[1], "[]",new Vec3(x,y,z),actionId);
                             
                 }
             }
         }
-        HistoryActions.FinishAction(actionId, "Filled area with "+splitMessage[1]);
+        WorldEdit.HistoryActions.FinishAction(actionId, "Filled area with "+splitMessage[1]);
 
                 
         
         return true;
     }
 
-    public static Autocomplete.commandObject FillInit()
+    public static WorldEdit.Autocomplete.commandObject FillInit()
     {
         List<String> autocomplete = new List<string>();
         autocomplete.Add("<block>");
@@ -59,7 +61,7 @@ public static class Commands
         List<List<String>> options = new List<List<string>>();
         
 
-        string json = File.ReadAllText(Path.Combine(Globals.assetsPath,"blockList.json"));
+        string json = File.ReadAllText(Path.Combine(WorldEdit.Globals.assetsPath,"blockList.json"));
         
         List<string> argument1 = JsonSerializer.Deserialize<List<string>>(json);
  // List<string>();
@@ -73,6 +75,6 @@ public static class Commands
         // List<String> argument1 = new//
         options.Add(argument1);
                     
-        return new Autocomplete.commandObject("fill","test",autocomplete,options,Commands.Fill);
+        return new WorldEdit.Autocomplete.commandObject("fill","test",autocomplete,options,RunFill);
     }
 }
