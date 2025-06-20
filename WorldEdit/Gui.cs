@@ -39,6 +39,14 @@ public class Gui
                 Globals.CommandBox.Render(commandLine);
 
                 //console area
+                
+                if (Globals.CommandBox.Text != Autocomplete.lastCommandBoxText)
+                {
+                    Autocomplete.isPreviewing = false;
+                }
+                Autocomplete.lastCommandBoxText = Globals.CommandBox.Text;
+
+                
 
                 string[] splitMessage = Globals.CommandBox.Text.Split(' ');
 
@@ -47,6 +55,8 @@ public class Gui
                 List<String> completionOptions = new List<string>();
                 string text = "";
                 bool foundOne = false;
+                
+                var (args,argCount) = Globals.SimpleSplit(Globals.CommandBox.Text); // argCount is not 0-based !!
                 
                 foreach (Autocomplete.commandObject command in Autocomplete.commands)
                 {
@@ -61,7 +71,7 @@ public class Gui
                         }
 
                         // come up with all potential options
-                        var (args,argCount) = Globals.SimpleSplit(Globals.CommandBox.Text); // argCount is not 0-based !!
+                        
 
                         if (Globals.IndexExists(command.CompleteOptions, argCount - 1-1))
                         {
@@ -84,10 +94,6 @@ public class Gui
                                 if (Globals.IndexExists(command.CompleteOptions, argCount - 1))
                                 {
                                     completionOptions = command.CompleteOptions[argCount - 1];
-                                    if (completionOptions.Count > 0 && Autocomplete.currentOptions.IndexOf(Autocomplete.Selected) == -1)
-                                    {
-                                        Autocomplete.Selected = completionOptions[0];
-                                    }
 
                                 }
                             }
@@ -119,7 +125,11 @@ public class Gui
 
                         if (completionOptions.Count > 0 && !completionOptions.Contains(Autocomplete.Selected))
                         {
-                            Autocomplete.Selected = completionOptions[0];
+                            if (!Autocomplete.isPreviewing)
+                            {
+                                Autocomplete.Selected = completionOptions[0];
+                            }
+                            
                         }
                     }
                     
@@ -129,16 +139,42 @@ public class Gui
                 
                 if (completionOptions.Count > 0 && !completionOptions.Contains(Autocomplete.Selected))
                 {
-                    Autocomplete.Selected = completionOptions[0];
+                    if (!Autocomplete.isPreviewing)
+                    {
+                        Autocomplete.Selected = completionOptions[0];
+                    }
+                    
                 }
+                
+                
 
                 
                 Rect syntaxLine = new Rect(new Vec2(screenWidth * 0.15f, screenHeight * 0.71f), new Vec2(screenWidth * 0.58f, screenHeight * 0.78f));
                 Onix.Render.Direct2D.RenderText(syntaxLine,ColorF.White, text,TextAlignment.Left,TextAlignment.Top,1f);
 
+                if (Globals.IndexExists(args, argCount - 1))
+                {
+                    completionOptions = Autocomplete.SortCompletionOptions(completionOptions, args[argCount - 1]);
+                }
+                
+                Autocomplete.currentOptions = completionOptions;
 
-                
-                
+                if (completionOptions.Count > 0)
+                {
+                    if (!Autocomplete.isPreviewing)
+                    {
+                        Autocomplete.Selected = completionOptions[0];
+                    }
+                }
+                else
+                {
+                    if (!Autocomplete.isPreviewing)
+                    {
+                        Autocomplete.Selected = null; 
+                    }
+                    
+                }
+
                 //create lots of textboxes for autocomplete/previous commands to go
 
                 Vec2 tlTextArea = new Vec2(screenWidth * 0.15f, screenHeight * 0.12f);
@@ -180,7 +216,7 @@ public class Gui
 
 
 
-
+            
 
 
 

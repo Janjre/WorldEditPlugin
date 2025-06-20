@@ -190,13 +190,9 @@ public static class InputHandler
                 Autocomplete.Selected = Autocomplete.currentOptions[pointInList];
                 // Console.WriteLine($"Autocomplete.Selected is now {Autocomplete.Selected}");
 
+                Autocomplete.isPreviewing = true;
 
-
-
-
-
-
-
+                
 
             }
 
@@ -216,6 +212,10 @@ public static class InputHandler
                     {
                         if (Globals.IndexExists(args, argCount - 1))
                         {
+                            if (Autocomplete.currentOptions.Contains(args[argCount - 1]))
+                            {
+                                return true;
+                            }
                             args[argCount - 1] = Autocomplete.Selected;
                         }
                     }

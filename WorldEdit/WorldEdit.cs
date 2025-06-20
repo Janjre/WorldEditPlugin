@@ -165,13 +165,15 @@ namespace WorldEdit {
             Onix.Events.Common.WorldRender += OnWorldRender;
             Onix.Events.Common.HudRenderDirect2D += Gui.OnHudRenderDirect2D;
             Onix.Events.Input.Input += InputHandler.OnInput;
-            // Onix.Events.LocalServer.PlayerChatEvent += MyChatHandler;
+            Onix.Events.LocalServer.PlayerChatEvent += MyChatHandler;
             Globals.NotInGui = true;
 
             Globals.UndoHistory.Add( new HistoryActions.HistoryItem(0, "Start", false));
             Globals.RedoHistory.Add (new HistoryActions.HistoryItem(0, "Start", false));
 
             Autocomplete.RegisterCommand(Commands.Fill.FillInit());
+            Autocomplete.RegisterCommand(Commands.Replace.ReplaceInit());
+            Autocomplete.RegisterCommand(Commands.Perlin.PerlinInit());
             
             
 
@@ -266,10 +268,17 @@ namespace WorldEdit {
         
         
         
-        // bool MyChatHandler(ServerPlayer player, string message)
-        // {
-        //     
-        // }
+        bool MyChatHandler(ServerPlayer player, string message)
+        {
+            if (message.Contains("Error"))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
         
     } 
 }
