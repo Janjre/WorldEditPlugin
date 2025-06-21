@@ -108,8 +108,21 @@ public class Noise
     {
         List<(float, string)> tablifiedFill = new List<(float probability, string name)>();
         float totalCount = 0f;
+
+        float picker = 0f;
+        var firstSplit = fill.Split('$');
+        if (firstSplit[0] == "perlin")
+        {
+            picker = perlinNoise(x, y, z, action);
+        } else if (firstSplit[0] == "symPerlin")
+        {
+            
+        }else if (firstSplit[0] == "white")
+        {
+            
+        }
         
-        var args = fill.Split(',');
+        var args = firstSplit[1].Split(',');
         foreach (string arg in args)
         {
             var parts = arg.Split("%");
@@ -127,7 +140,7 @@ public class Noise
             Console.WriteLine("Not good, your arguments are bad :(");
         }
 
-        float perlinPicker = perlinNoise(x, y, z, action);
+        
 
         tablifiedFill.Sort((a, b) => a.Item1.CompareTo(b.Item1));
 
@@ -135,7 +148,7 @@ public class Noise
 
         foreach ((float b, string label) in tablifiedFill)
         {
-            if (perlinPicker >= b)
+            if (picker >= b)
             {
                 output = label;
             }
