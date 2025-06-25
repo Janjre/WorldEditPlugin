@@ -36,6 +36,8 @@ namespace WorldEdit {
 
         public static bool Shifting;
 
+        public static List<string> commandHistory = new List<string>();
+        public static int commandHistoryPoint;
         
 
         public static string assetsPath;
@@ -221,6 +223,12 @@ namespace WorldEdit {
                     if (command.Name == splitMessage[0])
                     {
                         command.OnRan(message);
+                        Globals.commandHistory.Add(message);
+                        Globals.commandHistoryPoint = Globals.commandHistory.Count - 1;
+                        if (Globals.commandHistoryPoint == -1)
+                        {
+                            Globals.commandHistoryPoint = 0;
+                        }
                     }
                 }
                 

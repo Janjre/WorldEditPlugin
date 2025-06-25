@@ -57,11 +57,12 @@ public static class Perlin
         
         
         List<List<String>> options = new List<List<string>>();
-        
 
-        string json = File.ReadAllText(Path.Combine(WorldEdit.Globals.assetsPath,"blockList.json"));
-        
-        List<string> argument1 = JsonSerializer.Deserialize<List<string>>(json);
+
+
+
+        List<string> argument1 = new List<string>();
+        argument1.Add("pattern");
         
 
         options.Add(argument1);

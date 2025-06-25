@@ -48,12 +48,16 @@ public class Noise
         return a + t * (b - a);
     }
 
-    
+    public static float FlattenPerlin(float v)
+    {
+        return (float)(0.5 + 0.5 * Math.Sin((v - 0.5) * Math.PI));
+    }
 
-    public static float perlinNoise (int x, int y,int z, long action)
+
+    public static float perlinNoise (int x, int y,int z, float noiseScale, long action)
     {
         
-        float noiseScale = 0.1f;
+        
 
         Vec3 point = new Vec3(x, y, z);
         point *= noiseScale;
@@ -101,7 +105,34 @@ public class Noise
 
         float normalised = (final + 1f) / 2f;
 
-        return normalised;
+        // string path = Path.Combine(Globals.assetsPath, "logged.txt");
+        //
+        // string textToAppend = $"{normalised},";
+        //
+        // using (StreamWriter writer = new StreamWriter(path, append: true))
+        // {
+        //     writer.WriteLine(textToAppend);
+        // }
+        //
+        
+        return FlattenPerlin(normalised);
+    }
+
+    public static float layerPerlin(int x, int y, int z, long actionNumber, float scale, int octanes = 4)
+    {
+        float value = 0f;
+        float frequency = 1.0f;
+        float amplitude = 1.0f;
+        float max_amplitude = 0f;
+        for (int n = 0; n <= octanes; n++)
+        {
+            value += perlinNoise((int)(x * frequency), (int)(y * frequency), (int)(z*frequency), scale, actionNumber) * amplitude;
+            max_amplitude += amplitude;
+            frequency *= 2;
+            amplitude *= 0.5f;
+        }
+
+        return value / max_amplitude;
     }
     
     public static string BlockFigure(int x, int y, int z, string fill, long action)
@@ -111,18 +142,21 @@ public class Noise
 
         float picker = 0f;
         var firstSplit = fill.Split('$');
+        // Console.WriteLine($"FirstSplit[0] = {firstSplit[0]} FirstSplit[1] = {firstSplit[1]} FirstSplit[2] = {firstSplit[2]}");
+        
         if (firstSplit[0] == "perlin")
         {
-            picker = perlinNoise(x, y, z, action);
-        } else if (firstSplit[0] == "symPerlin")
+            picker = perlinNoise(x, y, z, float.Parse(firstSplit[1]), action);
+        } else if (firstSplit[0] == "roughPerlin")
         {
-            
+            picker = layerPerlin(x, y, z, action, float.Parse(firstSplit[1]));
+
         }else if (firstSplit[0] == "white")
         {
-            
+            picker = (float)Globals.MyRandom.NextDouble();
         }
         
-        var args = firstSplit[1].Split(',');
+        var args = firstSplit[2].Split(',');
         foreach (string arg in args)
         {
             var parts = arg.Split("%");
@@ -130,12 +164,7 @@ public class Noise
             totalCount += (float)int.Parse(parts[0])/100;
         }
 
-        foreach ((float a, string b) in tablifiedFill)
-        {
-            Console.WriteLine($"A: {a} B: {b}");
-        }
-
-        if (Math.Abs(totalCount - 1f) > 0.0001f)
+        if (Math.Abs(totalCount - 1f) > 0.0000001f)
         {
             Console.WriteLine("Not good, your arguments are bad :(");
         }

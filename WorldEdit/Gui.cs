@@ -62,6 +62,7 @@ public class Gui
                 {
                     if (Globals.CommandBox.Text.StartsWith(command.Name))
                     {
+                        
                         foundOne = true;
                         text = command.Name;
                         foreach (string arg in command.Arguments)

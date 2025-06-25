@@ -1,4 +1,6 @@
-﻿namespace WorldEdit;
+﻿using System.Globalization;
+
+namespace WorldEdit;
 using System.Runtime.InteropServices.JavaScript;
 using System.Xml;
 using OnixRuntime.Api;
@@ -245,6 +247,45 @@ public static class InputHandler
                 }
             }
 
+            if (Globals.NotInGui == false && isDown)
+            {
+                switch (key.Value)
+                {
+                    case InputKey.Type.Up:
+                        Globals.commandHistoryPoint -= 1;
+
+                        if (Globals.commandHistoryPoint > Globals.commandHistory.Count - 1)
+                        {
+                            Globals.commandHistoryPoint = Globals.commandHistory.Count - 1;
+                        }
+                        if (Globals.commandHistoryPoint < 0)
+                        {
+                            Globals.commandHistoryPoint = 0;
+                        }
+                        
+                        Globals.CommandBox.Text = Globals.commandHistory[Globals.commandHistoryPoint];
+                        break;
+                    
+                    case InputKey.Type.Down:
+
+                        Globals.commandHistoryPoint += 1;
+                        
+                        if (Globals.commandHistoryPoint > Globals.commandHistory.Count - 1)
+                        {
+                            Globals.commandHistoryPoint = Globals.commandHistory.Count - 1;
+                        }
+                        if (Globals.commandHistoryPoint < 0)
+                        {
+                            Globals.commandHistoryPoint = 0;
+                        }
+                        
+                        Globals.CommandBox.Text = Globals.commandHistory[Globals.commandHistoryPoint];
+                        break;
+                    
+                }
+                
+            }
+            
             if (Globals.NotInGui == false && key.Value == InputKey.Type.Shift)
             {
                 Globals.Shifting = isDown;
