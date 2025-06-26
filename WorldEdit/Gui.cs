@@ -88,12 +88,12 @@ public class Gui
                             
                             if (command.CompleteOptions[argCount - 1 - 1][0] == "pattern") // this is a block pattern. We need to have special logic for picking what to show. Example block pattern "perlin$0.1%50%dirt,50%air"
                             {
-                                Console.WriteLine("HERE");
+                                // Console.WriteLine("HERE");
                                 var firstSplit = Globals.CommandBox.Text.Split('$');
 
                                 if (firstSplit.Contains("$") == false) // hasn't specified type of noise
                                 {
-                                    Console.WriteLine("herec ");
+                                    // Console.WriteLine("herec ");
                                     List<string> potentialNoises = new List<string>();
                                     potentialNoises.Add("white");
                                     potentialNoises.Add("perlin");
@@ -107,14 +107,14 @@ public class Gui
                                         }
                                         else
                                         {
-                                            Console.WriteLine(argumentSoFar);
+                                            // Console.WriteLine(argumentSoFar);
                                         }
                                     }
                                     
                                     
                                 } else if (firstSplit.Length == 1) // is specifying zoom, let them pick a float
                                 {
-                                    Console.WriteLine("failed at 93");
+                                    // Console.WriteLine("failed at 93");
                                 }
                                 else if (firstSplit.Length == 2) // is specifying pattern (eg. 50%dirt,50%stone
                                 {
@@ -165,8 +165,16 @@ public class Gui
                             {
                                 if (Globals.IndexExists(command.CompleteOptions, argCount - 1))
                                 {
-                                    completionOptions = command.CompleteOptions[argCount - 1];
-
+                                    if (command.CompleteOptions[argCount-1][0] == "pattern")
+                                    {
+                                        completionOptions.Add("white");
+                                        completionOptions.Add("perlin");
+                                        completionOptions.Add("roughPerlin");
+                                    }
+                                    else
+                                    {
+                                        completionOptions = command.CompleteOptions[argCount - 1];
+                                    }
                                 }
                             }
                         }

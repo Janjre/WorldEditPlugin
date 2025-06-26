@@ -204,11 +204,21 @@ public static class InputHandler
 
                 var (args, argCount) = Globals.SimpleSplit(Globals.CommandBox.Text); // argCount is not 0-based
 
+                List<string> noiseOptions = new List<string>();
+                noiseOptions.Add("white");
+                noiseOptions.Add("perlin");
+                noiseOptions.Add("roughPerlin");
+                bool removeAtEnd = false;
+                
                 if (Globals.IndexExists(args, argCount))
                 {
                     if (Globals.CommandBox.Text.EndsWith("  "))
                     {
                         args[argCount] = Autocomplete.Selected;
+                        if (noiseOptions.Contains(Autocomplete.Selected))
+                        {
+                            removeAtEnd = true;
+                        }
                     }
                     else
                     {
@@ -218,6 +228,12 @@ public static class InputHandler
                             {
                                 return true;
                             }
+                            
+                            if (noiseOptions.Contains(Autocomplete.Selected))
+                            {
+                                removeAtEnd = true;
+                            }
+                            
                             args[argCount - 1] = Autocomplete.Selected;
                         }
                     }
@@ -244,6 +260,16 @@ public static class InputHandler
                     }
 
                     Globals.CommandBox.Text = reconstruction;
+                    
+                    if (removeAtEnd)
+                    {
+                        Console.WriteLine("DOING IT");
+                        Globals.CommandBox.Text.Remove(Globals.CommandBox.Text.Length - 1);
+                        return true;
+                    }
+                    
+                    
+                    
                 }
             }
 
