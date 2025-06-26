@@ -1,4 +1,6 @@
-﻿namespace WorldEdit;
+﻿using System.Text.Json;
+
+namespace WorldEdit;
 
 using System.ComponentModel;
 using System.Runtime.InteropServices.JavaScript;
@@ -72,20 +74,89 @@ public class Gui
                         }
 
                         // come up with all potential options
-                        
-
                         if (Globals.IndexExists(command.CompleteOptions, argCount - 1-1))
                         {
-                            foreach (string option in command.CompleteOptions[argCount - 1-1])
+                            
+                            string argumentSoFar = "";
+                            if (!Globals.CommandBox.Text.EndsWith(' '))
                             {
                                 if (Globals.IndexExists(args, argCount - 1))
                                 {
-                                    if (option.Contains(args[argCount - 1]))
-                                    {
-                                        completionOptions.Add(option);
-                                    }    
+                                    argumentSoFar = args[argCount - 1];    
                                 }
-                                
+                            }
+                            
+                            if (command.CompleteOptions[argCount - 1 - 1][0] == "pattern") // this is a block pattern. We need to have special logic for picking what to show. Example block pattern "perlin$0.1%50%dirt,50%air"
+                            {
+                                Console.WriteLine("HERE");
+                                var firstSplit = Globals.CommandBox.Text.Split('$');
+
+                                if (firstSplit.Contains("$") == false) // hasn't specified type of noise
+                                {
+                                    Console.WriteLine("herec ");
+                                    List<string> potentialNoises = new List<string>();
+                                    potentialNoises.Add("white");
+                                    potentialNoises.Add("perlin");
+                                    potentialNoises.Add("roughPerlin");
+
+                                    foreach (string noise in potentialNoises)
+                                    {
+                                        if (noise.Contains(argumentSoFar) || argumentSoFar == "")
+                                        {
+                                            completionOptions.Add(noise);
+                                        }
+                                        else
+                                        {
+                                            Console.WriteLine(argumentSoFar);
+                                        }
+                                    }
+                                    
+                                    
+                                } else if (firstSplit.Length == 1) // is specifying zoom, let them pick a float
+                                {
+                                    Console.WriteLine("failed at 93");
+                                }
+                                else if (firstSplit.Length == 2) // is specifying pattern (eg. 50%dirt,50%stone
+                                {
+                                    if (Globals.IndexExists(firstSplit.ToList(), 2))
+                                    {
+                                        var secondSplit = firstSplit[2].Split(',');
+                                        if (Globals.IndexExists(secondSplit.ToList(), secondSplit.Length - 1))
+                                        {
+                                            string arg = secondSplit[secondSplit.Length - 1];
+                                            var thirdSplit = arg.Split('%');
+                                            if (thirdSplit.Length == 2)
+                                            {
+                                                string json = File.ReadAllText(Path.Combine(Globals.assetsPath,"blockList.json"));
+                                                List<string> blocks = JsonSerializer.Deserialize<List<string>>(json);
+
+                                                foreach (string block in blocks)
+                                                {
+                                                    if (thirdSplit[1].Contains(block))
+                                                    {
+                                                        completionOptions.Add(block);
+                                                    }
+                                                } 
+                                            }
+                                        }
+                                        
+                                    }
+                                }
+
+                            }
+                            else
+                            {
+                                foreach (string option in command.CompleteOptions[argCount - 1 - 1])
+                                {
+                                    if (Globals.IndexExists(args, argCount - 1))
+                                    {
+                                        if (option.Contains(args[argCount - 1]))
+                                        {
+                                            completionOptions.Add(option);
+                                        }
+                                    }
+
+                                }
                             }
                         }
                         else
@@ -99,11 +170,6 @@ public class Gui
                                 }
                             }
                         }
-                        
-                        
-
-
-
                     }
                 }
                 
