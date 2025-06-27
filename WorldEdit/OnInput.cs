@@ -255,21 +255,37 @@ public static class InputHandler
                         if (arg != "")
                         {
                             reconstruction += arg;
-                            reconstruction += " ";
+
+                            if (removeAtEnd)
+                            {
+                                Console.WriteLine("GOT THIS FAR");
+                                if  (args.IndexOf(arg)+1 == args.Count - 2)
+                                {
+                                    Console.WriteLine("SDOING IT");
+                                    reconstruction += "$";
+                                }
+                                else
+                                {
+                                    Console.WriteLine($"Failed 269 {args.IndexOf(arg)} != {args.Count-4}");
+                                    reconstruction += " ";
+                                }
+                            }
+                            else 
+                            {
+                                reconstruction += " ";
+                            }
+                            
+                            
                         }
                     }
 
                     Globals.CommandBox.Text = reconstruction;
-                    
-                    if (removeAtEnd)
-                    {
-                        Console.WriteLine("DOING IT");
-                        Globals.CommandBox.Text.Remove(Globals.CommandBox.Text.Length - 1);
-                        return true;
-                    }
-                    
-                    
-                    
+
+                    // if (removeAtEnd)
+                    // {
+                    //     Globals.removeSpace = (float)DateTime.Now.TimeOfDay.TotalSeconds;
+                    //
+                    // }
                 }
             }
 

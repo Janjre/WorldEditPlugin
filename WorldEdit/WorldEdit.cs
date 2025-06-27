@@ -38,6 +38,8 @@ namespace WorldEdit {
 
         public static List<string> commandHistory = new List<string>();
         public static int commandHistoryPoint;
+
+        public static float removeSpace;
         
 
         public static string assetsPath;
@@ -234,6 +236,14 @@ namespace WorldEdit {
                 
                 Globals.CommandBox.IsEmpty = true;
             }
+
+            // if ((float)DateTime.Now.TimeOfDay.TotalSeconds - Globals.removeSpace+0.1 > )
+            // {
+            //     Console.WriteLine("removed space");
+            //     Globals.CommandBox.Text = Globals.CommandBox.Text.Substring
+            //         (0, Globals.CommandBox.Text.Length -1 - 1);
+            //     Globals.removeSpace = false;
+            // }
 
         }
 
