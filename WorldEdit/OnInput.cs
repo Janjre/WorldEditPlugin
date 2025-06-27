@@ -250,6 +250,7 @@ public static class InputHandler
 
                     string reconstruction = "";
 
+                    int count = 0;
                     foreach (string arg in args)
                     {
                         if (arg != "")
@@ -259,14 +260,14 @@ public static class InputHandler
                             if (removeAtEnd)
                             {
                                 Console.WriteLine("GOT THIS FAR");
-                                if  (args.IndexOf(arg)+1 == args.Count - 2)
+                                if  (count == args.Count - 3)
                                 {
                                     Console.WriteLine("SDOING IT");
                                     reconstruction += "$";
                                 }
                                 else
                                 {
-                                    Console.WriteLine($"Failed 269 {args.IndexOf(arg)} != {args.Count-4}");
+                                    Console.WriteLine($"Failed 269 {count} != {args.Count-3}");
                                     reconstruction += " ";
                                 }
                             }
@@ -277,6 +278,8 @@ public static class InputHandler
                             
                             
                         }
+
+                        count++;
                     }
 
                     Globals.CommandBox.Text = reconstruction;
