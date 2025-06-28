@@ -199,50 +199,20 @@ public static class InputHandler
                 var (args, argCount) = Globals.SimpleSplit(Globals.CommandBox.Text); // argCount is not 0-based
 
                 List<string> noiseOptions = new List<string>();
-                noiseOptions.Add("white");
-                noiseOptions.Add("perlin");
-                noiseOptions.Add("roughPerlin");
-                bool removeAtEnd = false;
+                noiseOptions.Add("$white");
+                noiseOptions.Add("$perlin");
+                noiseOptions.Add("$roughPerlin");
+                int removeAtEnd = 0;
                 
                 if (Globals.IndexExists(args, argCount))
                 {
-                    if (Globals.CommandBox.Text.EndsWith("  ")) 
+                    if (Globals.CommandBox.Text.EndsWith("  "))
                     {
-                        if (args[argCount].Contains('$') && args[argCount].Contains('%'))  // doing noisy things, shouldn't just remove everything previous
+                        args[argCount] = Autocomplete.Selected;
+                        if (noiseOptions.Contains(Autocomplete.Selected))
                         {
-                            string thisArgument = args[argCount];
-                            var first = thisArgument.Split('$');
-                            if (Globals.IndexExists(first.ToList(), 2))
-                            {
-                                string next = first[2];
-                                var second = next.Split(",");
-                                if (Globals.IndexExists(second.ToList(), second.Length - 1))
-                                {
-                                    string next2 = second[second.Length - 1];
-                                    var thirdS = next2.Split("%");
-                                    var third = thirdS.ToList();
-                                    if (Globals.IndexExists(third, 1))
-                                    {
-                                        third[1] = Autocomplete.Selected;
-                                    }
-                                    else if (thisArgument.EndsWith("%"))
-                                    {
-                                        third.Add(Autocomplete.Selected);
-                                    }
-                                }
-                                
-                            }
-                        }
-                        else
-                        {
-                            args[argCount] = Autocomplete.Selected;
-                            if (noiseOptions.Contains(Autocomplete.Selected))
-                            {
-                                removeAtEnd = true;
-                            }    
-                        }
-
-                        
+                            removeAtEnd = 1;
+                        }    
                     }
                     else
                     {
@@ -255,13 +225,39 @@ public static class InputHandler
                             
                             if (noiseOptions.Contains(Autocomplete.Selected)) //are you doing noisy things?
                             {
-                                removeAtEnd = true; // put a $ not a " " at the end
+                                removeAtEnd = 1; // put a $ not a " " at the end
                             }
                             
-                            args[argCount - 1] = Autocomplete.Selected;
+                            string argument = args[argCount - 1];
+                            /*
+                             * Special logic for noise patterns
+                             * If it starts with a $
+                             * text = the current arguments string up to the last percentage (including the last percentage)
+                             * text += Autocomplete.Selected
+                             * args[argCount] = text
+                             * make it so it doesn't put a space at the end
+                             */
+                            if (argument.StartsWith('$'))
+                            {
+                                string text = "";
+                                int lastPercent = argument.LastIndexOf('%');
+                                if (lastPercent != -1)
+                                {
+                                    text = argument.Substring(0, lastPercent + 1); // get up to the last percentage
+                                    text += Autocomplete.Selected; // add the completed bit
+                                }
+
+                                
+                                removeAtEnd = 2;
+                                Console.WriteLine("yes yes just set removeAtEnd");
+                                args[argCount-1] = text;
+                            }
+                            else
+                            {
+                                args[argCount - 1] = Autocomplete.Selected;
+                            }
                         }
                     }
-
                 }
 
                 if (Autocomplete.currentOptions.Contains(Autocomplete.Selected))
@@ -282,17 +278,34 @@ public static class InputHandler
                         {
                             reconstruction += arg;
 
-                            if (removeAtEnd)
+                            if (removeAtEnd == 1)
                             {
-                                Console.WriteLine("GOT THIS FAR");
+                                Console.WriteLine("Doing this one???");
                                 if  (count == args.Count - 3)
                                 {
-                                    Console.WriteLine("SDOING IT");
                                     reconstruction += "$";
                                 }
+                                else
+                                {
+                                    reconstruction += " "; 
+                                }
                             }
-                            else 
+                            else if (removeAtEnd == 2)
                             {
+                                if (count+1 == args.Count - 3)
+                                {
+                                    
+                                    Console.WriteLine("Got ot this point");
+                                    reconstruction += "";
+                                }
+                                else
+                                {
+                                    Console.WriteLine($"this is thie right place{count+1} != {args.Count - 3}");
+                                    reconstruction += " ";
+                                }
+                            } else
+                            {
+                                Console.WriteLine($"removeAtEnd = {removeAtEnd}");
                                 reconstruction += " ";
                             }
                         } 

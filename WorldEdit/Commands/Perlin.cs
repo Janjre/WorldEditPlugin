@@ -24,30 +24,34 @@ public static class Perlin
 {
     public static bool RunPerlin(String arguments)
     {
-        
-                
-        String[] splitMessage = arguments.Split(' ', StringSplitOptions.RemoveEmptyEntries);
-        long actionId = WorldEdit.Globals.MyRandom.NextInt64(1, 1_000_000_001);
-                
-        (Vec3 posMin, Vec3 posMax) = WorldEdit.Globals.FindExtremes(WorldEdit.Globals.pos1, WorldEdit.Globals.pos2);
-        
-        // loop through area!!!! (this is incredibly unique, i don't think we will do this anywhere else in the plugin!!!!)
-        for (int x = (int)posMin.X; x <= posMax.X; x++)
+        if (arguments.StartsWith('$'))
         {
-            for (int y = (int)posMin.Y; y <= posMax.Y; y++)
+            arguments = arguments.Substring(1);
+            String[] splitMessage = arguments.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+            long actionId = WorldEdit.Globals.MyRandom.NextInt64(1, 1_000_000_001);
+                
+            (Vec3 posMin, Vec3 posMax) = WorldEdit.Globals.FindExtremes(WorldEdit.Globals.pos1, WorldEdit.Globals.pos2);
+        
+            
+            for (int x = (int)posMin.X; x <= posMax.X; x++)
             {
-                for (int z = (int)posMin.Z; z <= posMax.Z; z++)
+                for (int y = (int)posMin.Y; y <= posMax.Y; y++)
                 {
-                    string block = Noise.BlockFigure(x, y, z, splitMessage[1], actionId);
-                    Onix.Client.ExecuteCommand($"execute setblock {x} {y} {z} {block}");
+                    for (int z = (int)posMin.Z; z <= posMax.Z; z++)
+                    {
+                        string block = Noise.BlockFigure(x, y, z, splitMessage[1], actionId);
+                        WorldEdit.HistoryActions.PlaceBlock(block,"[]",new Vec3(x,y,z),actionId);
+                    }
                 }
             }
+            WorldEdit.HistoryActions.FinishAction(actionId, $"Perlined area"); 
+            return true;
         }
-        WorldEdit.HistoryActions.FinishAction(actionId, $"Perlined area");
-
-                
-        
-        return true;
+        else
+        {
+            return false;
+        }
+     
     }
 
     public static WorldEdit.Autocomplete.commandObject PerlinInit()

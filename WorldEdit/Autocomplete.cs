@@ -9,6 +9,7 @@ public static class Autocomplete
     public static List<commandObject> commands = new List<commandObject>();
     public static int lastTabbed;
     public static bool isPreviewing;
+    public static bool isCurrentlyANoisePattern;
 
     public static void RegisterCommand(commandObject command)
     {
@@ -72,6 +73,7 @@ public static class Autocomplete
         public List<String> Arguments;
         public List<List<string>> CompleteOptions;
         public Func<string,bool> OnRan; 
+        
             
             
             

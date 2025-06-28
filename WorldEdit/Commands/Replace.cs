@@ -33,7 +33,6 @@ public static class Replace
         long actionId = WorldEdit.Globals.MyRandom.NextInt64(1, 1_000_000_001);
                 
         (Vec3 posMin, Vec3 posMax) = WorldEdit.Globals.FindExtremes(WorldEdit.Globals.pos1, WorldEdit.Globals.pos2);
-        // loop through area!!!! (this is incredibly unique, i don't think we will do this anywhere else in the plugin!!!!)
                 
         for (int x = (int)posMin.X; x <= posMax.X; x++)
         {

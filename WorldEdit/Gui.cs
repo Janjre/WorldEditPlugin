@@ -60,7 +60,7 @@ public class Gui
                 bool foundOne = false;
                 
                 var (args,argCount) = Globals.SimpleSplit(Globals.CommandBox.Text); // argCount is not 0-based !!
-                
+                Autocomplete.isCurrentlyANoisePattern = false;
                 foreach (Autocomplete.commandObject command in Autocomplete.commands)
                 {
                     if (Globals.CommandBox.Text.StartsWith(command.Name))
@@ -89,20 +89,20 @@ public class Gui
                                 }
                             }
                             
-                            if (command.CompleteOptions[argCount - 1 - 1][0] == "pattern") // this is a block pattern. We need to have special logic for picking what to show. Example block pattern "perlin$0.1%50%dirt,50%air"
+                            if (command.CompleteOptions[argCount - 1 - 1][0] == "pattern" && argumentSoFar.StartsWith('$')) // this is a block pattern. We need to have special logic for picking what to show. Example block pattern "perlin$0.1%50%dirt,50%air"
                             {
+                                argumentSoFar = argumentSoFar.Substring(1); // remove the $ at tghe sart
+                                
                                 var firstSplit =argumentSoFar.Split('$');
 
 
                                 if (Globals.IndexExists(firstSplit.ToList(), 1))
                                 {
-                                    Console.WriteLine("Getting here 5");
 
 
                                     if (firstSplit.Length == 1) // hasn't specified type of noise
                                     {
 
-                                        Console.WriteLine("Getting her 6");
                                         List<string> potentialNoises = new List<string>();
                                         potentialNoises.Add("white");
                                         potentialNoises.Add("perlin");
@@ -121,80 +121,76 @@ public class Gui
 
 
                                     }
-                                    else if (firstSplit.Length == 2) // is specifying zoom, let them pick a float
+                                    else if (firstSplit.Length == 2) // is specifying zoom, let them pick a float TODO: recommend a value that finished the pattern (100-sum(all other specpified))
                                     {
-                                        Console.WriteLine("Getting here 4");
                                     }
                                     else if (firstSplit.Length == 3) // is specifying pattern (eg. 50%dirt,50%stone
                                     {
-                                        Console.WriteLine("Getting here 3");
                                         if (Globals.IndexExists(firstSplit.ToList(), 2))
                                         {
-                                            Console.WriteLine("Getting here 2");
-                                            var secondSplit = firstSplit[2].Split(',');
+                                            var secondSplit = firstSplit[2].Split(','); // each secondSplit[] would be 50%dirt
                                             if (Globals.IndexExists(secondSplit.ToList(), secondSplit.Length - 1))
                                             {
-                                                Console.WriteLine("Getting here");
-                                                string arg = secondSplit[secondSplit.Length - 1];
-                                                var thirdSplit = arg.Split('%');
-                                                if (thirdSplit.Length == 2)
+                                                string arg = secondSplit[secondSplit.Length - 1]; // gets the last one
+                                                var thirdSplit = arg.Split('%'); // [50,dirt]
+                                                if (thirdSplit.Length == 2) // if the dirt bit exists
                                                 {
-                                                    Console.WriteLine("Know itrs the right argument");
                                                     string json = File.ReadAllText(Path.Combine(Globals.assetsPath,
-                                                        "blockList.json"));
-                                                    List<string> blocks =
-                                                        JsonSerializer.Deserialize<List<string>>(json);
+                                                        "blockList.json")); // get blocks
+                                                    List<string> blocks = 
+                                                        JsonSerializer.Deserialize<List<string>>(json); // put them in a list
 
+                                                    Autocomplete.isCurrentlyANoisePattern = true; // set the autocompelte thing
+                                                    
                                                     foreach (string block in blocks)
                                                     {
-                                                        if (block.Contains(thirdSplit[1]))
+                                                        if (block.Contains(thirdSplit[1])) //if the block fits
                                                         {
-                                                            completionOptions.Add(block);
-                                                        }
-                                                        else
-                                                        {
-                                                            Console.WriteLine("Failed 150");
+                                                            completionOptions.Add(block); // add it
                                                         }
                                                     }
                                                 }
-                                                else
-                                                {
-                                                    Console.WriteLine($"Failed 140 {thirdSplit.Length -1 } != 2");
-                                                }
                                             }
-                                            else
-                                            {
-                                                Console.WriteLine("Failed 162");
-                                            }
-
                                         }
-                                        else
-                                        {
-                                            Console.WriteLine(
-                                                $"Globals.IndexExists({firstSplit.ToList()}, 2) == false");
-
-                                        }
-                                    }
-                                    else
-                                    {
-                                        Console.WriteLine($"{firstSplit.Length} != 3");
                                     }
                                 }
-
                             }
                             else 
                             {
-                                Console.WriteLine("Not a pattern argfumwnr");
-                                foreach (string option in command.CompleteOptions[argCount - 1 - 1])
+                                if (Globals.IndexExists(args, argCount - 1)) // check we can index it
                                 {
-                                    if (Globals.IndexExists(args, argCount - 1))
+                                    if (command.CompleteOptions[argCount - 1][0] == "pattern" &&
+                                        args[argCount - 1].Count(c => c == '$') <
+                                        2) // if it's a pattern argument and there is less than two '$'s (so they are still specifying the first arg)
                                     {
-                                        if (option.Contains(args[argCount - 1]))
+                                        List<string> potentialOptions = new List<string>();
+                                        potentialOptions.Add("$white");
+                                        potentialOptions.Add("$perlin");
+                                        potentialOptions.Add("$roughPerlin");
+                                        foreach (string option in potentialOptions)
                                         {
-                                            completionOptions.Add(option);
+                                            if (option.Contains(args[argCount - 1]))
+                                            {
+                                                completionOptions.Add(option); // rather similar to some code below
+                                            }
                                         }
                                     }
+                                }
+                                else
+                                {
+                                    foreach (string option in command.CompleteOptions[argCount - 1 - 1]) // for each option
+                                    {
+                                    
+                                        if (Globals.IndexExists(args, argCount - 1)) // check we can index it
+                                        {
+                                        
+                                            if (option.Contains(args[argCount - 1])) // if it is in the argument
+                                            {
+                                                completionOptions.Add(option); // add it
+                                            }
+                                        }
 
+                                    }    
                                 }
                             }
                         }
@@ -208,9 +204,9 @@ public class Gui
                                 {
                                     if (command.CompleteOptions[argCount-1][0] == "pattern")
                                     {
-                                        completionOptions.Add("white");
-                                        completionOptions.Add("perlin");
-                                        completionOptions.Add("roughPerlin");
+                                        completionOptions.Add("$white");
+                                        completionOptions.Add("$perlin");
+                                        completionOptions.Add("$roughPerlin");
                                     }
                                     else
                                     {
@@ -225,11 +221,9 @@ public class Gui
                 
                 
 
-                if (foundOne == false)
+                if (foundOne == false) // no command found
                 {
-                    
-                    
-                    if (splitMessage.Length > 0)
+                    if (splitMessage.Length > 0) // checks it exists
                     {
                         string partial = splitMessage[0];
                         foreach (var command in Autocomplete.commands)
@@ -329,7 +323,7 @@ public class Gui
                 }
 
                 Autocomplete.currentOptions = completionOptions;
-                // Console.WriteLine("Set completion options");
+                
 
 
 
