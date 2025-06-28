@@ -153,17 +153,15 @@ public static class InputHandler
 
 
 
-            if (Onix.Gui.ScreenName == "hud_screen" && key.Value == InputKey.Type.Tab && isDown &&
+            if (Onix.Gui.ScreenName == "hud_screen" && key.Value == InputKey.Type.Tab && isDown && // increment thgrough options
                 Globals.NotInGui == false)
             {
 
-                // Console.WriteLine("Getting here");
 
                 var (args, argCount) = Globals.SimpleSplit(Globals.CommandBox.Text); // argCount is not 0-based !!
 
                 if (Autocomplete.currentOptions.Count == 0)
                 {
-                    // Console.WriteLine("stopping here 616");
                     return true;
                 }
 
@@ -176,21 +174,17 @@ public static class InputHandler
                 
                 
                 int pointInList = Autocomplete.currentOptions.IndexOf(Autocomplete.Selected) + increment;
-                // Console.WriteLine($"pointInList = {pointInList}");
+                
                 if (pointInList == 0)
                 {
-                    // Console.WriteLine("COUlnd't find iut");
+                    Console.WriteLine("ERROR: FAILED 182");
                 }
 
                 if (!Globals.IndexExists(Autocomplete.currentOptions, pointInList))
                 {
-                    // Console.WriteLine("Reset point in list to 0");
                     pointInList = 0;
                 }
-
-                // Console.WriteLine($"Autocomplete.Selected was {Autocomplete.Selected}");
                 Autocomplete.Selected = Autocomplete.currentOptions[pointInList];
-                // Console.WriteLine($"Autocomplete.Selected is now {Autocomplete.Selected}");
 
                 Autocomplete.isPreviewing = true;
 
@@ -212,13 +206,43 @@ public static class InputHandler
                 
                 if (Globals.IndexExists(args, argCount))
                 {
-                    if (Globals.CommandBox.Text.EndsWith("  "))
+                    if (Globals.CommandBox.Text.EndsWith("  ")) 
                     {
-                        args[argCount] = Autocomplete.Selected;
-                        if (noiseOptions.Contains(Autocomplete.Selected))
+                        if (args[argCount].Contains('$') && args[argCount].Contains('%'))  // doing noisy things, shouldn't just remove everything previous
                         {
-                            removeAtEnd = true;
+                            string thisArgument = args[argCount];
+                            var first = thisArgument.Split('$');
+                            if (Globals.IndexExists(first.ToList(), 2))
+                            {
+                                string next = first[2];
+                                var second = next.Split(",");
+                                if (Globals.IndexExists(second.ToList(), second.Length - 1))
+                                {
+                                    string next2 = second[second.Length - 1];
+                                    var thirdS = next2.Split("%");
+                                    var third = thirdS.ToList();
+                                    if (Globals.IndexExists(third, 1))
+                                    {
+                                        third[1] = Autocomplete.Selected;
+                                    }
+                                    else if (thisArgument.EndsWith("%"))
+                                    {
+                                        third.Add(Autocomplete.Selected);
+                                    }
+                                }
+                                
+                            }
                         }
+                        else
+                        {
+                            args[argCount] = Autocomplete.Selected;
+                            if (noiseOptions.Contains(Autocomplete.Selected))
+                            {
+                                removeAtEnd = true;
+                            }    
+                        }
+
+                        
                     }
                     else
                     {
@@ -229,9 +253,9 @@ public static class InputHandler
                                 return true;
                             }
                             
-                            if (noiseOptions.Contains(Autocomplete.Selected))
+                            if (noiseOptions.Contains(Autocomplete.Selected)) //are you doing noisy things?
                             {
-                                removeAtEnd = true;
+                                removeAtEnd = true; // put a $ not a " " at the end
                             }
                             
                             args[argCount - 1] = Autocomplete.Selected;
@@ -253,6 +277,7 @@ public static class InputHandler
                     int count = 0;
                     foreach (string arg in args)
                     {
+                        
                         if (arg != "")
                         {
                             reconstruction += arg;
@@ -265,30 +290,16 @@ public static class InputHandler
                                     Console.WriteLine("SDOING IT");
                                     reconstruction += "$";
                                 }
-                                else
-                                {
-                                    Console.WriteLine($"Failed 269 {count} != {args.Count-3}");
-                                    reconstruction += " ";
-                                }
                             }
                             else 
                             {
                                 reconstruction += " ";
                             }
-                            
-                            
-                        }
-
+                        } 
                         count++;
                     }
 
                     Globals.CommandBox.Text = reconstruction;
-
-                    // if (removeAtEnd)
-                    // {
-                    //     Globals.removeSpace = (float)DateTime.Now.TimeOfDay.TotalSeconds;
-                    //
-                    // }
                 }
             }
 

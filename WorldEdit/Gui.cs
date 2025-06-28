@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using System.Net.Http.Headers;
+using System.Text.Json;
 
 namespace WorldEdit;
 
@@ -65,6 +66,7 @@ public class Gui
                     if (Globals.CommandBox.Text.StartsWith(command.Name))
                     {
                         
+                        
                         foundOne = true;
                         text = command.Name;
                         foreach (string arg in command.Arguments)
@@ -76,6 +78,7 @@ public class Gui
                         // come up with all potential options
                         if (Globals.IndexExists(command.CompleteOptions, argCount - 1-1))
                         {
+                           
                             
                             string argumentSoFar = "";
                             if (!Globals.CommandBox.Text.EndsWith(' '))
@@ -88,64 +91,100 @@ public class Gui
                             
                             if (command.CompleteOptions[argCount - 1 - 1][0] == "pattern") // this is a block pattern. We need to have special logic for picking what to show. Example block pattern "perlin$0.1%50%dirt,50%air"
                             {
-                                // Console.WriteLine("HERE");
-                                var firstSplit = Globals.CommandBox.Text.Split('$');
+                                var firstSplit =argumentSoFar.Split('$');
 
-                                if (firstSplit.Contains("$") == false) // hasn't specified type of noise
+
+                                if (Globals.IndexExists(firstSplit.ToList(), 1))
                                 {
-                                    // Console.WriteLine("herec ");
-                                    List<string> potentialNoises = new List<string>();
-                                    potentialNoises.Add("white");
-                                    potentialNoises.Add("perlin");
-                                    potentialNoises.Add("roughPerlin");
+                                    Console.WriteLine("Getting here 5");
 
-                                    foreach (string noise in potentialNoises)
+
+                                    if (firstSplit.Length == 1) // hasn't specified type of noise
                                     {
-                                        if (noise.Contains(argumentSoFar) || argumentSoFar == "")
+
+                                        Console.WriteLine("Getting her 6");
+                                        List<string> potentialNoises = new List<string>();
+                                        potentialNoises.Add("white");
+                                        potentialNoises.Add("perlin");
+                                        potentialNoises.Add("roughPerlin");
+
+                                        foreach (string noise in potentialNoises)
                                         {
-                                            completionOptions.Add(noise);
+                                            if (noise.Contains(argumentSoFar) || argumentSoFar == "")
+                                            {
+                                                completionOptions.Add(noise);
+                                            }
+                                            else
+                                            {
+                                            }
+                                        }
+
+
+                                    }
+                                    else if (firstSplit.Length == 2) // is specifying zoom, let them pick a float
+                                    {
+                                        Console.WriteLine("Getting here 4");
+                                    }
+                                    else if (firstSplit.Length == 3) // is specifying pattern (eg. 50%dirt,50%stone
+                                    {
+                                        Console.WriteLine("Getting here 3");
+                                        if (Globals.IndexExists(firstSplit.ToList(), 2))
+                                        {
+                                            Console.WriteLine("Getting here 2");
+                                            var secondSplit = firstSplit[2].Split(',');
+                                            if (Globals.IndexExists(secondSplit.ToList(), secondSplit.Length - 1))
+                                            {
+                                                Console.WriteLine("Getting here");
+                                                string arg = secondSplit[secondSplit.Length - 1];
+                                                var thirdSplit = arg.Split('%');
+                                                if (thirdSplit.Length == 2)
+                                                {
+                                                    Console.WriteLine("Know itrs the right argument");
+                                                    string json = File.ReadAllText(Path.Combine(Globals.assetsPath,
+                                                        "blockList.json"));
+                                                    List<string> blocks =
+                                                        JsonSerializer.Deserialize<List<string>>(json);
+
+                                                    foreach (string block in blocks)
+                                                    {
+                                                        if (block.Contains(thirdSplit[1]))
+                                                        {
+                                                            completionOptions.Add(block);
+                                                        }
+                                                        else
+                                                        {
+                                                            Console.WriteLine("Failed 150");
+                                                        }
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    Console.WriteLine($"Failed 140 {thirdSplit.Length -1 } != 2");
+                                                }
+                                            }
+                                            else
+                                            {
+                                                Console.WriteLine("Failed 162");
+                                            }
+
                                         }
                                         else
                                         {
-                                            // Console.WriteLine(argumentSoFar);
+                                            Console.WriteLine(
+                                                $"Globals.IndexExists({firstSplit.ToList()}, 2) == false");
+
                                         }
                                     }
-                                    
-                                    
-                                } else if (firstSplit.Length == 1) // is specifying zoom, let them pick a float
-                                {
-                                    // Console.WriteLine("failed at 93");
-                                }
-                                else if (firstSplit.Length == 2) // is specifying pattern (eg. 50%dirt,50%stone
-                                {
-                                    if (Globals.IndexExists(firstSplit.ToList(), 2))
+                                    else
                                     {
-                                        var secondSplit = firstSplit[2].Split(',');
-                                        if (Globals.IndexExists(secondSplit.ToList(), secondSplit.Length - 1))
-                                        {
-                                            string arg = secondSplit[secondSplit.Length - 1];
-                                            var thirdSplit = arg.Split('%');
-                                            if (thirdSplit.Length == 2)
-                                            {
-                                                string json = File.ReadAllText(Path.Combine(Globals.assetsPath,"blockList.json"));
-                                                List<string> blocks = JsonSerializer.Deserialize<List<string>>(json);
-
-                                                foreach (string block in blocks)
-                                                {
-                                                    if (thirdSplit[1].Contains(block))
-                                                    {
-                                                        completionOptions.Add(block);
-                                                    }
-                                                } 
-                                            }
-                                        }
-                                        
+                                        Console.WriteLine($"{firstSplit.Length} != 3");
                                     }
                                 }
 
                             }
-                            else
+                            else 
                             {
+                                Console.WriteLine("Not a pattern argfumwnr");
                                 foreach (string option in command.CompleteOptions[argCount - 1 - 1])
                                 {
                                     if (Globals.IndexExists(args, argCount - 1))
@@ -159,7 +198,9 @@ public class Gui
                                 }
                             }
                         }
-                        else
+
+                        
+                        else 
                         {
                             if (Globals.CommandBox.Text.EndsWith(" "))
                             {
@@ -178,6 +219,7 @@ public class Gui
                                 }
                             }
                         }
+                        break;
                     }
                 }
                 
@@ -211,19 +253,20 @@ public class Gui
 
                     
                 }
-                
+
                 if (completionOptions.Count > 0 && !completionOptions.Contains(Autocomplete.Selected))
                 {
                     if (!Autocomplete.isPreviewing)
                     {
                         Autocomplete.Selected = completionOptions[0];
                     }
-                    
-                }
-                
-                
 
-                
+                }
+
+
+
+
+
                 Rect syntaxLine = new Rect(new Vec2(screenWidth * 0.15f, screenHeight * 0.71f), new Vec2(screenWidth * 0.58f, screenHeight * 0.78f));
                 Onix.Render.Direct2D.RenderText(syntaxLine,ColorF.White, text,TextAlignment.Left,TextAlignment.Top,1f);
 
@@ -249,6 +292,7 @@ public class Gui
                     }
                     
                 }
+
 
                 //create lots of textboxes for autocomplete/previous commands to go
 
@@ -335,6 +379,7 @@ public class Gui
                         
                     }
 
+
                     Rect undo = new Rect(new Vec2(screenWidth * 0.80f, screenHeight * 0.12f),
                         new Vec2((screenWidth * 0.80f)+10, (screenHeight * 0.12f)+10));
                     
@@ -350,7 +395,6 @@ public class Gui
                     
                     Onix.Render.Direct2D.RenderTexture(clear,Globals.ClearIcon,1f);
                 }
-                
             } 
             Globals.CommandBox.IsFocused = !Globals.NotInGui;
         }
