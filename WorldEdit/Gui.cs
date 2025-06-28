@@ -159,22 +159,28 @@ public class Gui
                             {
                                 if (Globals.IndexExists(args, argCount - 1)) // check we can index it
                                 {
-                                    if (command.CompleteOptions[argCount - 1][0] == "pattern" &&
-                                        args[argCount - 1].Count(c => c == '$') <
-                                        2) // if it's a pattern argument and there is less than two '$'s (so they are still specifying the first arg)
+                                    if (Globals.IndexExists(command.CompleteOptions, argCount - 2))
                                     {
-                                        List<string> potentialOptions = new List<string>();
-                                        potentialOptions.Add("$white");
-                                        potentialOptions.Add("$perlin");
-                                        potentialOptions.Add("$roughPerlin");
-                                        foreach (string option in potentialOptions)
-                                        {
-                                            if (option.Contains(args[argCount - 1]))
+                                        if (Globals.IndexExists(command.CompleteOptions[argCount - 2], 0)){
+                                            // if it's a pattern argument and there is less than two '$'s (so they are still specifying the first arg)
+                                            if (command.CompleteOptions[argCount - 2][0] == "pattern" && args[argCount - 1].Count(c => c == '$') < 2) 
+                                                
                                             {
-                                                completionOptions.Add(option); // rather similar to some code below
+                                                List<string> potentialOptions = new List<string>();
+                                                potentialOptions.Add("$white");
+                                                potentialOptions.Add("$perlin");
+                                                potentialOptions.Add("$roughPerlin");
+                                                foreach (string option in potentialOptions)
+                                                {
+                                                    if (option.Contains(args[argCount - 1])) // already checked if safe above
+                                                    {
+                                                        completionOptions.Add(option); // rather similar to some code below
+                                                    }
+                                                }
                                             }
                                         }
                                     }
+                                    
                                 }
                                 else
                                 {
