@@ -15,7 +15,7 @@ using OnixRuntime.Api.World;
 
 public static class InputHandler
 {
-    public static bool OnInput(InputKey key, bool isDown)
+    public static bool OnInput(InputKey key, bool isDown) // split up into relevant parts in different files and functions
     {
         if (isDown && Onix.Gui.MouseGrabbed && Globals.NotInGui)
         {
@@ -208,11 +208,7 @@ public static class InputHandler
                 {
                     if (Globals.CommandBox.Text.EndsWith("  "))
                     {
-                        args[argCount] = Autocomplete.Selected;
-                        if (noiseOptions.Contains(Autocomplete.Selected))
-                        {
-                            removeAtEnd = 1;
-                        }    
+                           
                     }
                     else
                     {
@@ -222,10 +218,10 @@ public static class InputHandler
                             {
                                 return true;
                             }
-                            
+
                             if (noiseOptions.Contains(Autocomplete.Selected)) //are you doing noisy things?
                             {
-                                removeAtEnd = 1; // put a $ not a " " at the end
+                                removeAtEnd = 4; // put a $ not a " " at the end
                             }
                             
                             string argument = args[argCount - 1];
@@ -237,25 +233,34 @@ public static class InputHandler
                              * args[argCount] = text
                              * make it so it doesn't put a space at the end
                              */
-                            if (argument.StartsWith('$'))
+                            string text = "";
+                            int lastPercent = argument.LastIndexOf('%');
+                            if (argument.StartsWith('$') && lastPercent != -1)
                             {
-                                string text = "";
-                                int lastPercent = argument.LastIndexOf('%');
-                                if (lastPercent != -1)
-                                {
-                                    text = argument.Substring(0, lastPercent + 1); // get up to the last percentage
-                                    text += Autocomplete.Selected; // add the completed bit
-                                }
+                                
+                                
+                                text = argument.Substring(0, lastPercent + 1); // get up to the last percentage
+                                text += Autocomplete.Selected; // add the completed bit
+                                 
 
                                 
-                                removeAtEnd = 2;
+                                removeAtEnd = 2; // don't add space
                                 Console.WriteLine("yes yes just set removeAtEnd");
                                 args[argCount-1] = text;
                             }
                             else
                             {
                                 args[argCount - 1] = Autocomplete.Selected;
+                                if (args[argCount - 1].StartsWith('$'))
+                                {
+                                    removeAtEnd = 4;
+                                    Console.WriteLine("set remove at end");
+                                }
                             }
+                        }
+                        else
+                        {
+                            Console.WriteLine("Index does not in fact exist");
                         }
                     }
                 }
@@ -280,7 +285,7 @@ public static class InputHandler
 
                             if (removeAtEnd == 1)
                             {
-                                Console.WriteLine("Doing this one???");
+                                Console.WriteLine("Doing this one");
                                 if  (count == args.Count - 3)
                                 {
                                     reconstruction += "$";
@@ -294,7 +299,6 @@ public static class InputHandler
                             {
                                 if (count+1 == args.Count - 3)
                                 {
-                                    
                                     Console.WriteLine("Got ot this point");
                                     reconstruction += "";
                                 }
@@ -303,7 +307,19 @@ public static class InputHandler
                                     Console.WriteLine($"this is thie right place{count+1} != {args.Count - 3}");
                                     reconstruction += " ";
                                 }
-                            } else
+                            }else if (removeAtEnd == 4) // replace with $ but for pre-started completrions #
+                            {
+                                Console.WriteLine("Got here");
+                                if  (count+1 == args.Count - 3)
+                                {
+                                    reconstruction += "$";
+                                }
+                                else
+                                {
+                                    reconstruction += " "; 
+                                }
+                            } 
+                            else
                             {
                                 Console.WriteLine($"removeAtEnd = {removeAtEnd}");
                                 reconstruction += " ";
@@ -316,41 +332,49 @@ public static class InputHandler
                 }
             }
 
-            if (Globals.NotInGui == false && isDown)
+            if (Globals.NotInGui == false && isDown) 
             {
                 switch (key.Value)
                 {
                     case InputKey.Type.Up:
-                        Globals.commandHistoryPoint -= 1;
-
-                        if (Globals.commandHistoryPoint > Globals.commandHistory.Count - 1)
-                        {
-                            Globals.commandHistoryPoint = Globals.commandHistory.Count - 1;
-                        }
-                        if (Globals.commandHistoryPoint < 0)
-                        {
-                            Globals.commandHistoryPoint = 0;
-                        }
                         
-                        Globals.CommandBox.Text = Globals.commandHistory[Globals.commandHistoryPoint];
+                        if (Globals.commandHistory.Count != 0){ 
+                            Globals.commandHistoryPoint -= 1;
+
+                            if (Globals.commandHistoryPoint > Globals.commandHistory.Count - 1)
+                            {
+                                Globals.commandHistoryPoint = Globals.commandHistory.Count - 1;
+                            }
+                            if (Globals.commandHistoryPoint < 0)
+                            {
+                                Globals.commandHistoryPoint = 0;
+                            }
+                            
+                            Globals.CommandBox.Text = Globals.commandHistory[Globals.commandHistoryPoint];
+                        }
                         break;
                     
                     case InputKey.Type.Down:
 
-                        Globals.commandHistoryPoint += 1;
-                        
-                        if (Globals.commandHistoryPoint > Globals.commandHistory.Count - 1)
+                        if (Globals.commandHistory.Count != 0)
                         {
-                            Globals.commandHistoryPoint = Globals.commandHistory.Count - 1;
+                            Globals.commandHistoryPoint += 1;
+                                                    
+                            if (Globals.commandHistoryPoint > Globals.commandHistory.Count - 1)
+                            {
+                                Globals.commandHistoryPoint = Globals.commandHistory.Count - 1;
+                            }
+                            if (Globals.commandHistoryPoint < 0)
+                            {
+                                Globals.commandHistoryPoint = 0;
+                            }
+    
+                            Console.WriteLine("GETTING HERE");
+                            Globals.CommandBox.Text = Globals.commandHistory[Globals.commandHistoryPoint];
+                            Console.WriteLine("getting here");
+                            
                         }
-                        if (Globals.commandHistoryPoint < 0)
-                        {
-                            Globals.commandHistoryPoint = 0;
-                        }
-                        
-                        Globals.CommandBox.Text = Globals.commandHistory[Globals.commandHistoryPoint];
                         break;
-                    
                 }
                 
             }

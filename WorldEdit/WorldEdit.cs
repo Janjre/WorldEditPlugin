@@ -210,41 +210,36 @@ namespace WorldEdit {
         }
         private void OnTick() {
             
-            
-             
             if (Globals.CommandBox.HasConfirmedText)
             {
+                
                 String message = Globals.CommandBox.Text;
-                
-                String[] splitMessage = message.Split(' ', StringSplitOptions.RemoveEmptyEntries);
-                    
-                
 
-                foreach (Autocomplete.commandObject command in Autocomplete.commands)
+                if (message != "")
                 {
-                    if (command.Name == splitMessage[0])
+
+
+                    String[] splitMessage = message.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+
+
+
+                    foreach (Autocomplete.commandObject command in Autocomplete.commands)
                     {
-                        command.OnRan(message);
-                        Globals.commandHistory.Add(message);
-                        Globals.commandHistoryPoint = Globals.commandHistory.Count - 1;
-                        if (Globals.commandHistoryPoint == -1)
+                        if (command.Name == splitMessage[0])
                         {
-                            Globals.commandHistoryPoint = 0;
+                            command.OnRan(message);
+                            Globals.commandHistory.Add(message);
+                            Globals.commandHistoryPoint = Globals.commandHistory.Count - 1;
+                            if (Globals.commandHistoryPoint == -1)
+                            {
+                                Globals.commandHistoryPoint = 0;
+                            }
                         }
                     }
                 }
-                
+
                 Globals.CommandBox.IsEmpty = true;
             }
-
-            // if ((float)DateTime.Now.TimeOfDay.TotalSeconds - Globals.removeSpace+0.1 > )
-            // {
-            //     Console.WriteLine("removed space");
-            //     Globals.CommandBox.Text = Globals.CommandBox.Text.Substring
-            //         (0, Globals.CommandBox.Text.Length -1 - 1);
-            //     Globals.removeSpace = false;
-            // }
-
         }
 
 
