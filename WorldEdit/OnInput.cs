@@ -203,12 +203,15 @@ public static class InputHandler
                 noiseOptions.Add("$perlin");
                 noiseOptions.Add("$roughPerlin");
                 int removeAtEnd = 0;
-                
-                if (Globals.IndexExists(args, argCount))
+
+                Console.WriteLine("ici");
+
+                if (!string.IsNullOrEmpty(Autocomplete.Selected))
                 {
+                    Console.WriteLine(Autocomplete.Selected);
                     if (Globals.CommandBox.Text.EndsWith("  "))
                     {
-                           
+
                     }
                     else
                     {
@@ -223,7 +226,7 @@ public static class InputHandler
                             {
                                 removeAtEnd = 4; // put a $ not a " " at the end
                             }
-                            
+
                             string argument = args[argCount - 1];
                             /*
                              * Special logic for noise patterns
@@ -237,16 +240,16 @@ public static class InputHandler
                             int lastPercent = argument.LastIndexOf('%');
                             if (argument.StartsWith('$') && lastPercent != -1)
                             {
-                                
-                                
+
+
                                 text = argument.Substring(0, lastPercent + 1); // get up to the last percentage
                                 text += Autocomplete.Selected; // add the completed bit
-                                 
 
-                                
+
+
                                 removeAtEnd = 2; // don't add space
                                 Console.WriteLine("yes yes just set removeAtEnd");
-                                args[argCount-1] = text;
+                                args[argCount - 1] = text;
                             }
                             else
                             {
@@ -263,81 +266,88 @@ public static class InputHandler
                             Console.WriteLine("Index does not in fact exist");
                         }
                     }
-                }
 
-                if (Autocomplete.currentOptions.Contains(Autocomplete.Selected))
-                {
-                    if (args.Count == 0)
+
+                    Console.WriteLine("hier");
+
+                    if (Autocomplete.currentOptions.Contains(Autocomplete.Selected))
                     {
-                        args.Add(Autocomplete.Selected);
-                    }
-
-
-                    string reconstruction = "";
-
-                    int count = 0;
-                    foreach (string arg in args)
-                    {
-                        
-                        if (arg != "")
+                        if (args.Count == 0)
                         {
-                            reconstruction += arg;
+                            args.Add(Autocomplete.Selected);
+                        }
 
-                            if (removeAtEnd == 1)
+
+                        string reconstruction = "";
+
+                        int count = 0;
+                        foreach (string arg in args)
+                        {
+
+                            if (arg != "")
                             {
-                                Console.WriteLine("Doing this one");
-                                if  (count == args.Count - 3)
+                                reconstruction += arg;
+
+                                if (removeAtEnd == 1)
                                 {
-                                    reconstruction += "$";
+                                    Console.WriteLine("Doing this one");
+                                    if (count == args.Count - 3)
+                                    {
+                                        reconstruction += "$";
+                                    }
+                                    else
+                                    {
+                                        reconstruction += " ";
+                                    }
+                                }
+                                else if (removeAtEnd == 2)
+                                {
+                                    if (count + 1 == args.Count - 3)
+                                    {
+                                        Console.WriteLine("Got ot this point");
+                                        reconstruction += "";
+                                    }
+                                    else
+                                    {
+                                        Console.WriteLine($"this is thie right place{count + 1} != {args.Count - 3}");
+                                        reconstruction += " ";
+                                    }
+                                }
+                                else if (removeAtEnd == 4) // replace with $ but for pre-started completrions #
+                                {
+                                    Console.WriteLine("Got here");
+                                    if (count + 1 == args.Count - 3)
+                                    {
+                                        reconstruction += "$";
+                                    }
+                                    else
+                                    {
+                                        reconstruction += " ";
+                                    }
                                 }
                                 else
                                 {
-                                    reconstruction += " "; 
-                                }
-                            }
-                            else if (removeAtEnd == 2)
-                            {
-                                if (count+1 == args.Count - 3)
-                                {
-                                    Console.WriteLine("Got ot this point");
-                                    reconstruction += "";
-                                }
-                                else
-                                {
-                                    Console.WriteLine($"this is thie right place{count+1} != {args.Count - 3}");
+                                    Console.WriteLine($"removeAtEnd = {removeAtEnd}");
                                     reconstruction += " ";
                                 }
-                            }else if (removeAtEnd == 4) // replace with $ but for pre-started completrions #
-                            {
-                                Console.WriteLine("Got here");
-                                if  (count+1 == args.Count - 3)
-                                {
-                                    reconstruction += "$";
-                                }
-                                else
-                                {
-                                    reconstruction += " "; 
-                                }
-                            } 
-                            else
-                            {
-                                Console.WriteLine($"removeAtEnd = {removeAtEnd}");
-                                reconstruction += " ";
                             }
-                        } 
-                        count++;
+
+                            count++;
+                        }
+
+                        Globals.CommandBox.Text = reconstruction;
                     }
 
-                    Globals.CommandBox.Text = reconstruction;
+                    Console.WriteLine("here");
                 }
             }
+            
 
             if (Globals.NotInGui == false && isDown) 
             {
                 switch (key.Value)
                 {
                     case InputKey.Type.Up:
-                        
                         if (Globals.commandHistory.Count != 0){ 
                             Globals.commandHistoryPoint -= 1;
 
