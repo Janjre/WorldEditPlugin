@@ -177,7 +177,6 @@ public static class InputHandler
                 
                 if (pointInList == 0)
                 {
-                    Console.WriteLine("ERROR: FAILED 182");
                 }
 
                 if (!Globals.IndexExists(Autocomplete.currentOptions, pointInList))
@@ -192,154 +191,9 @@ public static class InputHandler
 
             }
 
-            if (Globals.NotInGui == false && isDown &&
-                key.Value == InputKey.Type.Space) // ACtually filling in the thing
+            if (Globals.NotInGui == false && isDown && key.Value == InputKey.Type.Space) // ACtually filling in the thing
             {
-
-                var (args, argCount) = Globals.SimpleSplit(Globals.CommandBox.Text); // argCount is not 0-based
-
-                List<string> noiseOptions = new List<string>();
-                noiseOptions.Add("$white");
-                noiseOptions.Add("$perlin");
-                noiseOptions.Add("$roughPerlin");
-                int removeAtEnd = 0;
-
-                Console.WriteLine("ici");
-
-                if (!string.IsNullOrEmpty(Autocomplete.Selected))
-                {
-                    Console.WriteLine(Autocomplete.Selected);
-                    if (Globals.CommandBox.Text.EndsWith("  "))
-                    {
-
-                    }
-                    else
-                    {
-                        if (Globals.IndexExists(args, argCount - 1))
-                        {
-                            if (Autocomplete.currentOptions.Contains(args[argCount - 1]))
-                            {
-                                return true;
-                            }
-
-                            if (noiseOptions.Contains(Autocomplete.Selected)) //are you doing noisy things?
-                            {
-                                removeAtEnd = 4; // put a $ not a " " at the end
-                            }
-
-                            string argument = args[argCount - 1];
-                            /*
-                             * Special logic for noise patterns
-                             * If it starts with a $
-                             * text = the current arguments string up to the last percentage (including the last percentage)
-                             * text += Autocomplete.Selected
-                             * args[argCount] = text
-                             * make it so it doesn't put a space at the end
-                             */
-                            string text = "";
-                            int lastPercent = argument.LastIndexOf('%');
-                            if (argument.StartsWith('$') && lastPercent != -1)
-                            {
-
-
-                                text = argument.Substring(0, lastPercent + 1); // get up to the last percentage
-                                text += Autocomplete.Selected; // add the completed bit
-
-
-
-                                removeAtEnd = 2; // don't add space
-                                Console.WriteLine("yes yes just set removeAtEnd");
-                                args[argCount - 1] = text;
-                            }
-                            else
-                            {
-                                args[argCount - 1] = Autocomplete.Selected;
-                                if (args[argCount - 1].StartsWith('$'))
-                                {
-                                    removeAtEnd = 4;
-                                    Console.WriteLine("set remove at end");
-                                }
-                            }
-                        }
-                        else
-                        {
-                            Console.WriteLine("Index does not in fact exist");
-                        }
-                    }
-
-
-                    Console.WriteLine("hier");
-
-                    if (Autocomplete.currentOptions.Contains(Autocomplete.Selected))
-                    {
-                        if (args.Count == 0)
-                        {
-                            args.Add(Autocomplete.Selected);
-                        }
-
-
-                        string reconstruction = "";
-
-                        int count = 0;
-                        foreach (string arg in args)
-                        {
-
-                            if (arg != "")
-                            {
-                                reconstruction += arg;
-
-                                if (removeAtEnd == 1)
-                                {
-                                    Console.WriteLine("Doing this one");
-                                    if (count == args.Count - 3)
-                                    {
-                                        reconstruction += "$";
-                                    }
-                                    else
-                                    {
-                                        reconstruction += " ";
-                                    }
-                                }
-                                else if (removeAtEnd == 2)
-                                {
-                                    if (count + 1 == args.Count - 3)
-                                    {
-                                        Console.WriteLine("Got ot this point");
-                                        reconstruction += "";
-                                    }
-                                    else
-                                    {
-                                        Console.WriteLine($"this is thie right place{count + 1} != {args.Count - 3}");
-                                        reconstruction += " ";
-                                    }
-                                }
-                                else if (removeAtEnd == 4) // replace with $ but for pre-started completrions #
-                                {
-                                    Console.WriteLine("Got here");
-                                    if (count + 1 == args.Count - 3)
-                                    {
-                                        reconstruction += "$";
-                                    }
-                                    else
-                                    {
-                                        reconstruction += " ";
-                                    }
-                                }
-                                else
-                                {
-                                    Console.WriteLine($"removeAtEnd = {removeAtEnd}");
-                                    reconstruction += " ";
-                                }
-                            }
-
-                            count++;
-                        }
-
-                        Globals.CommandBox.Text = reconstruction;
-                    }
-
-                    Console.WriteLine("here");
-                }
+                Autocomplete.Complete();
             }
             
 
@@ -379,9 +233,7 @@ public static class InputHandler
                                 Globals.commandHistoryPoint = 0;
                             }
     
-                            Console.WriteLine("GETTING HERE");
                             Globals.CommandBox.Text = Globals.commandHistory[Globals.commandHistoryPoint];
-                            Console.WriteLine("getting here");
                             
                         }
                         break;

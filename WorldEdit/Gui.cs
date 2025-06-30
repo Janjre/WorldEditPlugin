@@ -60,202 +60,16 @@ public class Gui
                 bool foundOne = false;
                 
                 var (args,argCount) = Globals.SimpleSplit(Globals.CommandBox.Text); // argCount is not 0-based !!
-                Autocomplete.isCurrentlyANoisePattern = false;
-                foreach (Autocomplete.commandObject command in Autocomplete.commands)
-                {
-                    if (Globals.CommandBox.Text.StartsWith(command.Name))
-                    {
-                        
-                        
-                        foundOne = true;
-                        text = command.Name;
-                        foreach (string arg in command.Arguments)
-                        {
-                            text += " " + arg;
 
-                        }
+                completionOptions = Autocomplete.generateOptions();
 
-                        // come up with all potential options
-                        if (Globals.IndexExists(command.CompleteOptions, argCount - 1-1))
-                        {
-                           
-                            
-                            string argumentSoFar = "";
-                            if (!Globals.CommandBox.Text.EndsWith(' '))
-                            {
-                                if (Globals.IndexExists(args, argCount - 1))
-                                {
-                                    argumentSoFar = args[argCount - 1];    
-                                }
-                            }
-                            
-                            if (command.CompleteOptions[argCount - 1 - 1][0] == "pattern") // this is a block pattern. We need to have special logic for picking what to show. Example block pattern "perlin$0.1%50%dirt,50%air"
-                            {
-                                if (argumentSoFar.StartsWith('$'))
-                                {
-                                    var argSoFarWithStart = argumentSoFar;
-                                    argumentSoFar = argumentSoFar.Substring(1); // remove the $ at tghe sart
-                                    var firstSplit = argumentSoFar.Split('$');
-                                    
 
-                                    if (firstSplit.Length == 1) // hasn't specified type of noise
-                                    {
-                                        List<string> potentialNoises = new List<string>();
-                                        potentialNoises.Add("$white");
-                                        potentialNoises.Add("$perlin");
-                                        potentialNoises.Add("$roughPerlin");
+                //create lots of textboxes for autocomplete/previous commands to go
 
-                                        foreach (string noise in potentialNoises)
-                                        {
-                                            if (noise.Contains(argSoFarWithStart) || argSoFarWithStart == "")
-                                            {
-                                                completionOptions.Add(noise);
-                                            }
-                                        }
-                                    }
-                                    else if (firstSplit.Length == 2) // is specifying zoom, let them pick a float
-                                    {
-                                    }
-                                    else if (firstSplit.Length == 3) // is specifying pattern (eg. 50%dirt,50%stone
-                                    {
-                                        if (Globals.IndexExists(firstSplit.ToList(), 2))
-                                        {
-                                            var secondSplit =
-                                                firstSplit[2].Split(','); // each secondSplit[] would be 50%dirt
-                                            if (Globals.IndexExists(secondSplit.ToList(), secondSplit.Length - 1))
-                                            {
-                                                string arg =
-                                                    secondSplit[secondSplit.Length - 1]; // gets the last one
-                                                var thirdSplit = arg.Split('%'); // [50,dirt]
-                                                if (thirdSplit.Length == 2) // if the dirt bit exists
-                                                {
-                                                    string json = File.ReadAllText(Path.Combine(Globals.assetsPath,
-                                                        "blockList.json")); // get blocks
-                                                    List<string> blocks =
-                                                        JsonSerializer.Deserialize<List<string>>(json); // put them in a list
+                Vec2 tlTextArea = new Vec2(screenWidth * 0.15f, screenHeight * 0.12f);
+                Vec2 brTextArea = new Vec2(screenWidth * 0.58f, screenHeight * 0.69f);
+                Rect textArea = new Rect(tlTextArea, brTextArea);
 
-                                                    Autocomplete.isCurrentlyANoisePattern =
-                                                        true; // set the autocompelte thing
-
-                                                    foreach (string block in blocks)
-                                                    {
-                                                        if (block.Contains(thirdSplit[1])) //if the block fits
-                                                        {
-                                                            completionOptions.Add(block); // add it
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                    
-                                }
-                            } //end of all the pattern stuff
-                            else // not in a pattern, are starting with a known commands and command.CompleteOptions[argCount-2] is safe
-                            {
-                                if (Globals.IndexExists(args, argCount - 1)) // check we can index it
-                                {
-                                    // if (Globals.IndexExists(command.CompleteOptions, argCount - 2)) // check it again for no apparent reason PATTERN STUFF
-                                    // {
-                                    //     if (Globals.IndexExists(command.CompleteOptions[argCount - 2], 0)){
-                                    //         
-                                    //         // if it's a pattern argument and there is less than two '$'s (so they are still specifying the first arg)
-                                    //         if (command.CompleteOptions[argCount - 2][0] == "pattern" && args[argCount - 1].Count(c => c == '$') < 2)  
-                                    //         {
-                                    //             List<string> potentialOptions = new List<string>();
-                                    //             potentialOptions.Add("$white");
-                                    //             potentialOptions.Add("$perlin");
-                                    //             potentialOptions.Add("$roughPerlin");
-                                    //             foreach (string option in potentialOptions)
-                                    //             {
-                                    //                 if (option.Contains(args[argCount - 1])) // already checked if safe above
-                                    //                 {
-                                    //                     completionOptions.Add(option); // rather similar to some code below
-                                    //                 }
-                                    //             }
-                                    //         }
-                                    //         else
-                                    //         {
-                                    //         }
-                                    //     }
-                                    // }
-                                    
-                                    
-                                
-                                    foreach (string option in command.CompleteOptions[argCount - 1 - 1]) // for each option
-                                    {
-                                    
-                                        
-                                        if (option.Contains(args[argCount - 1])) // if it is in the argument
-                                        {
-                                            completionOptions.Add(option); // add it
-                                        }
-                                        
-
-                                    }    
-                                }
-                            }
-                        }
-
-                        
-                        else 
-                        {
-                            if (Globals.CommandBox.Text.EndsWith(" ")) // hasn't started typing command yet, show them alll of the optpiopmns
-                            {
-                                if (Globals.IndexExists(command.CompleteOptions, argCount - 1))
-                                {
-                                    // if (command.CompleteOptions[argCount-1][0] == "pattern" && )
-                                    // {
-                                    //     completionOptions.Add("$white");
-                                    //     completionOptions.Add("$perlin");
-                                    //     completionOptions.Add("$roughPerlin");
-                                    // }
-                                    // else
-                                    {
-                                        completionOptions = command.CompleteOptions[argCount - 1];
-                                    }
-                                }
-                            }
-                        }
-                        break;
-                    }
-                }
-                
-                
-
-                if (foundOne == false) // no command found
-                {
-                    if (splitMessage.Length > 0) // checks it exists
-                    {
-                        string partial = splitMessage[0];
-                        foreach (var command in Autocomplete.commands)
-                        {
-                            if (command.Name.Contains(partial))
-                            {
-                                completionOptions.Add(command.Name);
-                            }
-                        }
-
-                        if (completionOptions.Count > 0 && !completionOptions.Contains(Autocomplete.Selected))
-                        {
-                            if (!Autocomplete.isPreviewing)
-                            {
-                                Autocomplete.Selected = completionOptions[0];
-                            }
-                            
-                        }
-                    }
-                }
-
-                if (completionOptions.Count > 0 && !completionOptions.Contains(Autocomplete.Selected))
-                {
-                    if (!Autocomplete.isPreviewing)
-                    {
-                        Autocomplete.Selected = completionOptions[0];
-                    }
-
-                }
-                
                 Rect syntaxLine = new Rect(new Vec2(screenWidth * 0.15f, screenHeight * 0.71f), new Vec2(screenWidth * 0.58f, screenHeight * 0.78f));
                 Onix.Render.Direct2D.RenderText(syntaxLine,ColorF.White, text,TextAlignment.Left,TextAlignment.Top,1f);
 
@@ -281,15 +95,6 @@ public class Gui
                     }
                     
                 }
-
-
-                //create lots of textboxes for autocomplete/previous commands to go
-
-                Vec2 tlTextArea = new Vec2(screenWidth * 0.15f, screenHeight * 0.12f);
-                Vec2 brTextArea = new Vec2(screenWidth * 0.58f, screenHeight * 0.69f);
-                Rect textArea = new Rect(tlTextArea, brTextArea);
-
-                
 
                 float lineHeight = 7f; 
                 float startY = screenHeight * 0.68f;
