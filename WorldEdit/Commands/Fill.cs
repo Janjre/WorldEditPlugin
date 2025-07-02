@@ -29,9 +29,9 @@ public static class Fill
                     
         
 
-        long actionId = WorldEdit.Globals.MyRandom.NextInt64(1, 1_000_000_001);
+        long actionId = Globals.MyRandom.NextInt64(1, 1_000_000_001);
                 
-        (Vec3 posMin, Vec3 posMax) = WorldEdit.Globals.FindExtremes(WorldEdit.Globals.pos1, WorldEdit.Globals.pos2);
+        (Vec3 posMin, Vec3 posMax) = Globals.FindExtremes(WorldEdit.Selection.pos1, WorldEdit.Selection.pos2);
         // loop through area!!!! (this is incredibly unique, i don't think we will do this anywhere else in the plugin!!!!)
                 
         for (int x = (int)posMin.X; x <= posMax.X; x++)
@@ -41,19 +41,18 @@ public static class Fill
                 for (int z = (int)posMin.Z; z <= posMax.Z; z++)
                 {
                     // Console.WriteLine("attempted to do something");
-                    WorldEdit.HistoryActions.PlaceBlock(splitMessage[1], "[]",new Vec3(x,y,z),actionId);
-                            
+                    HistoryActions.PlaceBlock(splitMessage[1], "[]",new Vec3(x,y,z),actionId);
                 }
             }
         }
-        WorldEdit.HistoryActions.FinishAction(actionId, "Filled area with "+splitMessage[1]);
+        HistoryActions.FinishAction(actionId, "Filled area with "+splitMessage[1]);
 
                 
         
         return true;
     }
 
-    public static WorldEdit.Autocomplete.commandObject FillInit()
+    public static Autocomplete.commandObject FillInit()
     {
         List<String> autocomplete = new List<string>();
         autocomplete.Add("<block>");
@@ -61,7 +60,7 @@ public static class Fill
         List<List<String>> options = new List<List<string>>();
         
 
-        string json = File.ReadAllText(Path.Combine(WorldEdit.Globals.assetsPath,"blockList.json"));
+        string json = File.ReadAllText(Path.Combine(Gui.assetsPath,"blockList.json"));
         
         List<string> argument1 = JsonSerializer.Deserialize<List<string>>(json);
  // List<string>();
@@ -75,6 +74,6 @@ public static class Fill
         // List<String> argument1 = new//
         options.Add(argument1);
                     
-        return new WorldEdit.Autocomplete.commandObject("fill","test",autocomplete,options,RunFill);
+        return new Autocomplete.commandObject("fill","test",autocomplete,options,RunFill);
     }
 }

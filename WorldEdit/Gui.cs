@@ -18,14 +18,18 @@ using OnixRuntime.Api.World;
 
 public class Gui
 {
+    public static bool NotInGui = true;
+    public static OnixTextbox CommandBox = new OnixTextbox(128, "", "World edit command here");
+    public static string assetsPath;
+    
     public static void OnHudRenderDirect2D(RendererDirect2D gfx, float delta) {
             // For example, before the loop:
             
 
             
-            if (!Globals.NotInGui)
+            if (!Gui.NotInGui)
             {
-                Onix.Render.Direct2D.RenderText(new Vec2(0,0),ColorF.White,Globals.undoPoint.ToString(),1f );
+                Onix.Render.Direct2D.RenderText(new Vec2(0,0),ColorF.White,HistoryActions.undoPoint.ToString(),1f );
                 float screenWidth = Onix.Gui.ScreenSize.X;
                 float screenHeight = Onix.Gui.ScreenSize.Y;
                 
@@ -39,19 +43,19 @@ public class Gui
                 ColorF lightGray = new ColorF(0.34f, 0.34f, 0.34f, 1f);
                 Rect commandLine = new Rect(new Vec2(screenWidth * 0.15f, screenHeight * 0.75f), new Vec2(screenWidth * 0.58f, screenHeight * 0.82f));
                 Onix.Render.Direct2D.FillRoundedRectangle(commandLine, lightGray , 5f, 10);
-                Globals.CommandBox.Render(commandLine);
+                Gui.CommandBox.Render(commandLine);
 
                 //console area
                 
-                if (Globals.CommandBox.Text != Autocomplete.lastCommandBoxText)
+                if (Gui.CommandBox.Text != Autocomplete.lastCommandBoxText)
                 {
                     Autocomplete.isPreviewing = false;
                 }
-                Autocomplete.lastCommandBoxText = Globals.CommandBox.Text;
+                Autocomplete.lastCommandBoxText = CommandBox.Text;
 
                 
 
-                string[] splitMessage = Globals.CommandBox.Text.Split(' ');
+                string[] splitMessage = CommandBox.Text.Split(' ');
 
                 
                 
@@ -59,7 +63,7 @@ public class Gui
                 string text = "";
                 bool foundOne = false;
                 
-                var (args,argCount) = Globals.SimpleSplit(Globals.CommandBox.Text); // argCount is not 0-based !!
+                var (args,argCount) = Globals.SimpleSplit(CommandBox.Text); // argCount is not 0-based !!
 
                 completionOptions = Autocomplete.generateOptions();
 
@@ -138,7 +142,7 @@ public class Gui
                 float characterHeight = 7;
                 float endPoint = screenHeight * 0.83f;
                 
-                for (int i = 0; i <= Globals.UndoHistory.Count; i++)
+                for (int i = 0; i <= HistoryActions.UndoHistory.Count; i++)
                 {
                     
                     Vec2 tlTextPos = new Vec2 (screenWidth*0.67f, startIterationsPosition + characterHeight * i);
@@ -148,18 +152,18 @@ public class Gui
                     {
                         break;
                     }
-                    if (i >= 0 && i < Globals.UndoHistory.Count)
+                    if (i >= 0 && i < HistoryActions.UndoHistory.Count)
                     {
                         
                         // if (Globals.UndoHistory[i].Id)
                         ColorF colour = ColorF.White;
-                        if (i == Globals.undoPoint)
+                        if (i == HistoryActions.undoPoint)
                         {
                             
                             colour = ColorF.Red;
                         }
                         
-                        Onix.Render.Direct2D.RenderText(tlTextPos,colour,Globals.UndoHistory[i].Text,TextAlignment.Left,TextAlignment.Top,characterHeight/6);
+                        Onix.Render.Direct2D.RenderText(tlTextPos,colour,HistoryActions.UndoHistory[i].Text,TextAlignment.Left,TextAlignment.Top,characterHeight/6);
                         // Rect button = new Rect(
                         //     new Vec2(tlTextPos.X- 10, tlTextPos.Y+2),
                         //     new Vec2(tlTextPos.X -2, tlTextPos.Y + 10));
@@ -173,19 +177,19 @@ public class Gui
                     Rect undo = new Rect(new Vec2(screenWidth * 0.80f, screenHeight * 0.12f),
                         new Vec2((screenWidth * 0.80f)+10, (screenHeight * 0.12f)+10));
                     
-                    Onix.Render.Direct2D.RenderTexture(undo,Globals.UndoIcon,1f);
+                    Onix.Render.Direct2D.RenderTexture(undo,HistoryActions.UndoIcon,1f);
                     
                     Rect redo = new Rect(new Vec2(screenWidth * 0.815f, screenHeight * 0.12f),
                         new Vec2((screenWidth * 0.815f)+10, (screenHeight * 0.12f)+10));
                     
-                    Onix.Render.Direct2D.RenderTexture(redo,Globals.RedoIcon,1f);
+                    Onix.Render.Direct2D.RenderTexture(redo,HistoryActions.RedoIcon,1f);
                    
                     Rect clear = new Rect(new Vec2(screenWidth * 0.785f, screenHeight * 0.12f),
                         new Vec2((screenWidth * 0.785f)+9, (screenHeight * 0.12f)+9));
                     
-                    Onix.Render.Direct2D.RenderTexture(clear,Globals.ClearIcon,1f);
+                    Onix.Render.Direct2D.RenderTexture(clear,HistoryActions.ClearIcon,1f);
                 }
             } 
-            Globals.CommandBox.IsFocused = !Globals.NotInGui;
+            CommandBox.IsFocused = !NotInGui;
         }
 }

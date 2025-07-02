@@ -15,9 +15,10 @@ using OnixRuntime.Api.World;
 
 public static class InputHandler
 {
+    public static bool Shifting;
     public static bool OnInput(InputKey key, bool isDown) // split up into relevant parts in different files and functions
     {
-        if (isDown && Onix.Gui.MouseGrabbed && Globals.NotInGui)
+        if (isDown && Onix.Gui.MouseGrabbed && Gui.NotInGui)
         {
             RaycastResult result = Onix.LocalPlayer.Raycast;
             if (Onix.LocalPlayer.MainHandItem.Item != null)
@@ -26,7 +27,7 @@ public static class InputHandler
                 {
                     if (key.Value == InputKey.Type.LMB)
                     {
-                        Globals.pos1 = new Vec3(result.BlockPosition.X, result.BlockPosition.Y, result.BlockPosition.Z);
+                        Selection.pos1 = new Vec3(result.BlockPosition.X, result.BlockPosition.Y, result.BlockPosition.Z);
                         // Onix.Client.Notify("HAHA BLOCKED INPUT1!!!");
                         return true;
 
@@ -34,7 +35,7 @@ public static class InputHandler
 
                     if (key.Value == InputKey.Type.RMB)
                     {
-                        Globals.pos2 = new Vec3(result.BlockPosition.X, result.BlockPosition.Y, result.BlockPosition.Z);
+                        Selection.pos2 = new Vec3(result.BlockPosition.X, result.BlockPosition.Y, result.BlockPosition.Z);
                         // Onix.Client.Notify("HAHA BLOCKED INPUT2!!!");
                         return true;
                     }
@@ -51,21 +52,21 @@ public static class InputHandler
 
         if (Onix.Gui.ScreenName == "hud_screen")
         {
-            if (key.Value == InputKey.Type.Y && isDown && Globals.NotInGui)
+            if (key.Value == InputKey.Type.Y && isDown && Gui.NotInGui)
             {
-                Globals.NotInGui = false;
+                Gui.NotInGui = false;
                 Onix.Gui.MouseGrabbed = false;
             }
 
-            if (key.Value == InputKey.Type.Escape && isDown && Globals.NotInGui == false)
+            if (key.Value == InputKey.Type.Escape && isDown && Gui.NotInGui == false)
             {
 
-                Globals.NotInGui = true;
+                Gui.NotInGui = true;
                 Onix.Gui.MouseGrabbed = true;
                 return true;
             }
 
-            if (Globals.NotInGui == false && key.Value == InputKey.Type.LMB && isDown)
+            if (Gui.NotInGui == false && key.Value == InputKey.Type.LMB && isDown)
             {
                 Vec2 mouseCursor = Onix.Gui.MousePosition;
                 float screenWidth = Onix.Gui.ScreenSize.X;
@@ -87,9 +88,9 @@ public static class InputHandler
 
                 if (Globals.myContains(undo, mouseCursor))
                 {
-                    long targetUUID = Globals.UndoHistory[Globals.undoPoint].UUID;
+                    long targetUUID = HistoryActions.UndoHistory[HistoryActions.undoPoint].UUID;
 
-                    foreach (MyBlock block in Globals.UndoHistoryAsBlocks)
+                    foreach (MyBlock block in HistoryActions.UndoHistoryAsBlocks)
                     {
                         if (block.Action == targetUUID)
                         {
@@ -98,25 +99,25 @@ public static class InputHandler
                         }
                     }
 
-                    Globals.undoPoint -= 1;
-                    if (Globals.undoPoint < 0)
+                    HistoryActions.undoPoint -= 1;
+                    if (HistoryActions.undoPoint < 0)
                     {
-                        Globals.undoPoint = 0;
+                        HistoryActions.undoPoint = 0;
                     }
 
-                    if (Globals.undoPoint > Globals.UndoHistory.Count)
+                    if (HistoryActions.undoPoint > HistoryActions.UndoHistory.Count)
                     {
-                        Globals.undoPoint = Globals.UndoHistory.Count;
+                        HistoryActions.undoPoint = HistoryActions.UndoHistory.Count;
                     }
                 }
 
                 if (Globals.myContains(redo, mouseCursor))
                 {
 
-                    Globals.undoPoint += 1;
+                    HistoryActions.undoPoint += 1;
 
-                    long targetUUID = Globals.UndoHistory[Globals.undoPoint].UUID;
-                    foreach (MyBlock block in Globals.RedoHistoryAsBlocks)
+                    long targetUUID = HistoryActions.UndoHistory[HistoryActions.undoPoint].UUID;
+                    foreach (MyBlock block in HistoryActions.RedoHistoryAsBlocks)
                     {
                         if (block.Action == targetUUID)
                         {
@@ -125,24 +126,24 @@ public static class InputHandler
                         }
                     }
 
-                    if (Globals.undoPoint < 0)
+                    if (HistoryActions.undoPoint < 0)
                     {
-                        Globals.undoPoint = 0;
+                        HistoryActions.undoPoint = 0;
                     }
 
-                    if (Globals.undoPoint > Globals.UndoHistory.Count)
+                    if (HistoryActions.undoPoint > HistoryActions.UndoHistory.Count)
                     {
-                        Globals.undoPoint = Globals.UndoHistory.Count;
+                        HistoryActions.undoPoint = HistoryActions.UndoHistory.Count;
                     }
 
                 }
 
                 if (Globals.myContains(clear, mouseCursor))
                 {
-                    Globals.undoPoint = 0;
-                    for (int i = Globals.UndoHistory.Count - 1; i >= 1; i--)
+                    HistoryActions.undoPoint = 0;
+                    for (int i = HistoryActions.UndoHistory.Count - 1; i >= 1; i--)
                     {
-                        Globals.UndoHistory.RemoveAt(i);
+                        HistoryActions.UndoHistory.RemoveAt(i);
                     }
                 }
 
@@ -154,11 +155,11 @@ public static class InputHandler
 
 
             if (Onix.Gui.ScreenName == "hud_screen" && key.Value == InputKey.Type.Tab && isDown && // increment thgrough options
-                Globals.NotInGui == false)
+                Gui.NotInGui == false)
             {
 
 
-                var (args, argCount) = Globals.SimpleSplit(Globals.CommandBox.Text); // argCount is not 0-based !!
+                var (args, argCount) = Globals.SimpleSplit(Gui.CommandBox.Text); // argCount is not 0-based !!
 
                 if (Autocomplete.currentOptions.Count == 0)
                 {
@@ -167,7 +168,7 @@ public static class InputHandler
 
                 int increment = 1;
                 
-                if (Globals.Shifting)
+                if (Shifting)
                 {
                     increment = -1;
                 }
@@ -191,49 +192,49 @@ public static class InputHandler
 
             }
 
-            if (Globals.NotInGui == false && isDown && key.Value == InputKey.Type.Space) // ACtually filling in the thing
+            if (Gui.NotInGui == false && isDown && key.Value == InputKey.Type.Space) // ACtually filling in the thing
             {
                 Autocomplete.Complete();
             }
             
 
-            if (Globals.NotInGui == false && isDown) 
+            if (Gui.NotInGui == false && isDown) 
             {
                 switch (key.Value)
                 {
                     case InputKey.Type.Up:
-                        if (Globals.commandHistory.Count != 0){ 
-                            Globals.commandHistoryPoint -= 1;
+                        if (HistoryActions.commandHistory.Count != 0){ 
+                            HistoryActions.commandHistoryPoint -= 1;
 
-                            if (Globals.commandHistoryPoint > Globals.commandHistory.Count - 1)
+                            if (HistoryActions.commandHistoryPoint > HistoryActions.commandHistory.Count - 1)
                             {
-                                Globals.commandHistoryPoint = Globals.commandHistory.Count - 1;
+                                HistoryActions.commandHistoryPoint = HistoryActions.commandHistory.Count - 1;
                             }
-                            if (Globals.commandHistoryPoint < 0)
+                            if (HistoryActions.commandHistoryPoint < 0)
                             {
-                                Globals.commandHistoryPoint = 0;
+                                HistoryActions.commandHistoryPoint = 0;
                             }
                             
-                            Globals.CommandBox.Text = Globals.commandHistory[Globals.commandHistoryPoint];
+                            Gui.CommandBox.Text = HistoryActions.commandHistory[HistoryActions.commandHistoryPoint];
                         }
                         break;
                     
                     case InputKey.Type.Down:
 
-                        if (Globals.commandHistory.Count != 0)
+                        if (HistoryActions.commandHistory.Count != 0)
                         {
-                            Globals.commandHistoryPoint += 1;
+                            HistoryActions.commandHistoryPoint += 1;
                                                     
-                            if (Globals.commandHistoryPoint > Globals.commandHistory.Count - 1)
+                            if (HistoryActions.commandHistoryPoint > HistoryActions.commandHistory.Count - 1)
                             {
-                                Globals.commandHistoryPoint = Globals.commandHistory.Count - 1;
+                                HistoryActions.commandHistoryPoint = HistoryActions.commandHistory.Count - 1;
                             }
-                            if (Globals.commandHistoryPoint < 0)
+                            if (HistoryActions.commandHistoryPoint < 0)
                             {
-                                Globals.commandHistoryPoint = 0;
+                                HistoryActions.commandHistoryPoint = 0;
                             }
     
-                            Globals.CommandBox.Text = Globals.commandHistory[Globals.commandHistoryPoint];
+                            Gui.CommandBox.Text = HistoryActions.commandHistory[HistoryActions.commandHistoryPoint];
                             
                         }
                         break;
@@ -241,12 +242,12 @@ public static class InputHandler
                 
             }
             
-            if (Globals.NotInGui == false && key.Value == InputKey.Type.Shift)
+            if (Gui.NotInGui == false && key.Value == InputKey.Type.Shift)
             {
-                Globals.Shifting = isDown;
+                Shifting = isDown;
             }
 
-            if (Globals.NotInGui == false)
+            if (Gui.NotInGui == false)
             {
                 return true;
             }

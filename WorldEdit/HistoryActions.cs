@@ -1,21 +1,38 @@
 ﻿using OnixRuntime.Api;
 using OnixRuntime.Api.Maths;
+using OnixRuntime.Api.Rendering;
 using OnixRuntime.Api.World;
 
 namespace WorldEdit;
 
 public static class HistoryActions
     {
+        public static List<MyBlock> UndoHistoryAsBlocks = new List<MyBlock>(); // list of blocks associated with actions
+        public static List<HistoryActions.HistoryItem> UndoHistory = new List<HistoryActions.HistoryItem>(); // list of action numbers and display text
+        
+        public static List<MyBlock> RedoHistoryAsBlocks = new List<MyBlock>(); // list of blocks associated with actions
+        public static List<HistoryActions.HistoryItem> RedoHistory = new List<HistoryActions.HistoryItem>(); // list of action numbers and display text
+
+        
+        public static TexturePath UndoIcon = TexturePath.Assets("undoIcon");
+        public static TexturePath RedoIcon = TexturePath.Assets("redoIcon");
+        public static TexturePath ClearIcon = TexturePath.Assets("clear");
+        public static int undoPoint = 0;
+        
+        public static List<string> commandHistory = new List<string>();
+        public static int commandHistoryPoint;
+        
+        
         public static void PlaceBlock(String blockName, String data, Vec3 position, long actionNumber, bool undo = true)
         {
             
             
             Block block = Onix.LocalPlayer.Region.GetBlock((int)position.X, (int)position.Y, (int)position.Z);
             MyBlock blockReplaced = new MyBlock(block.NameFull, block.States.ToString(), actionNumber, position);
-            Globals.UndoHistoryAsBlocks.Add(blockReplaced);
+            UndoHistoryAsBlocks.Add(blockReplaced);
         
             MyBlock blockPlaced = new MyBlock(blockName, data, actionNumber, position);
-            Globals.RedoHistoryAsBlocks.Add(blockPlaced);
+            RedoHistoryAsBlocks.Add(blockPlaced);
             
             
             Onix.Client.ExecuteCommand("execute setblock " + position.X + " " + position.Y + " " + position.Z + " " + blockName + " " + data, true);
@@ -28,20 +45,20 @@ public static class HistoryActions
             
             
             
-            if (Globals.undoPoint != Globals.UndoHistory.Count)
+            if (undoPoint != UndoHistory.Count)
             {
                 
-                for (int i = Globals.UndoHistory.Count-1; i >  Globals.undoPoint; i--)
+                for (int i = UndoHistory.Count-1; i >  undoPoint; i--)
                 {
-                    Globals.UndoHistory.RemoveAt(i);
+                    UndoHistory.RemoveAt(i);
                 }
             }
 
-            Globals.undoPoint += 1;
+            undoPoint += 1;
             
             
-            Globals.UndoHistory.Add(new HistoryItem(actionNumber,displayText,true));
-            Globals.RedoHistory.Add(new HistoryItem(actionNumber, displayText, true));
+            UndoHistory.Add(new HistoryItem(actionNumber,displayText,true));
+            RedoHistory.Add(new HistoryItem(actionNumber, displayText, true));
 
 
         }
@@ -56,11 +73,11 @@ public static class HistoryActions
             {
                 if (selected)
                 {
-                    foreach (HistoryActions.HistoryItem item in Globals.UndoHistory)
+                    foreach (HistoryActions.HistoryItem item in UndoHistory)
                     {
                         item.Selected = false;
                     }
-                    foreach (HistoryActions.HistoryItem item in Globals.RedoHistory)
+                    foreach (HistoryActions.HistoryItem item in RedoHistory)
                     {
                         item.Selected = false;
                     }

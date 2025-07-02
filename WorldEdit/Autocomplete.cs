@@ -15,7 +15,7 @@ public static class Autocomplete
     public static bool isPreviewing;
     public static bool isCurrentlyANoisePattern;
     
-    static private string json = File.ReadAllText(Path.Combine(Globals.assetsPath,
+    static private string json = File.ReadAllText(Path.Combine(Gui.assetsPath,
         "blockList.json")); // get blocks
     public static List<string>  blocks =
         JsonSerializer.Deserialize<List<string>>(json); // put them in a list
@@ -102,7 +102,7 @@ public static class Autocomplete
 
     public static bool Complete()
     {
-        var (args, argCount) = Globals.SimpleSplit(Globals.CommandBox.Text); // argCount is not 0-based
+        var (args, argCount) = Globals.SimpleSplit(Gui.CommandBox.Text); // argCount is not 0-based
 
         List<string> noiseOptions = new List<string>();
         noiseOptions.Add("$white");
@@ -113,7 +113,7 @@ public static class Autocomplete
 
         if (!string.IsNullOrEmpty(Autocomplete.Selected))
         {
-            if (Globals.CommandBox.Text.EndsWith("  "))
+            if (Gui.CommandBox.Text.EndsWith("  "))
             {
                 args.Add(Autocomplete.Selected);
             }
@@ -228,7 +228,7 @@ public static class Autocomplete
                     count++;
                 }
 
-                Globals.CommandBox.Text = reconstruction;
+                Gui.CommandBox.Text = reconstruction;
             }
         }
 
@@ -237,7 +237,7 @@ public static class Autocomplete
 
     public static List<String> generateOptions()
     {
-        string[] splitMessage = Globals.CommandBox.Text.Split(' ');
+        string[] splitMessage = Gui.CommandBox.Text.Split(' ');
 
                 
                 
@@ -245,11 +245,11 @@ public static class Autocomplete
         string text = "";
         bool foundOne = false;
         
-        var (args,argCount) = Globals.SimpleSplit(Globals.CommandBox.Text); // argCount is not 0-based !!
+        var (args,argCount) = Globals.SimpleSplit(Gui.CommandBox.Text); // argCount is not 0-based !!
         Autocomplete.isCurrentlyANoisePattern = false;
         foreach (Autocomplete.commandObject command in Autocomplete.commands)
         {
-            if (Globals.CommandBox.Text.StartsWith(command.Name))
+            if (Gui.CommandBox.Text.StartsWith(command.Name))
             {
                 
                 
@@ -267,7 +267,7 @@ public static class Autocomplete
                    
                     
                     string argumentSoFar = "";
-                    if (!Globals.CommandBox.Text.EndsWith(' '))
+                    if (!Gui.CommandBox.Text.EndsWith(' '))
                     {
                         if (Globals.IndexExists(args, argCount - 1))
                         {
@@ -315,12 +315,12 @@ public static class Autocomplete
                                         var thirdSplit = arg.Split('%'); // [50,dirt]
                                         if (thirdSplit.Length == 2) // if the dirt bit exists
                                         {
-                                            string json = File.ReadAllText(Path.Combine(Globals.assetsPath,
+                                            string json = File.ReadAllText(Path.Combine(Gui.assetsPath,
                                                 "blockList.json")); // get blocks
                                             List<string> blocks =
                                                 JsonSerializer.Deserialize<List<string>>(json); // put them in a list
 
-                                            Autocomplete.isCurrentlyANoisePattern =
+                                            isCurrentlyANoisePattern =
                                                 true; // set the autocompelte thing
 
                                             foreach (string block in blocks)
@@ -340,7 +340,7 @@ public static class Autocomplete
                         {
                             if (Globals.IndexExists(args, argCount - 1)) // check we can index it
                             {
-                                string json = File.ReadAllText(Path.Combine(Globals.assetsPath,
+                                string json = File.ReadAllText(Path.Combine(Gui.assetsPath,
                                     "blockList.json")); // get blocks
                                 List<string> options =
                                     JsonSerializer.Deserialize<List<string>>(json); // put them in a list
@@ -375,7 +375,7 @@ public static class Autocomplete
                 }
                 else 
                 {
-                    if (Globals.CommandBox.Text.EndsWith(" ")) // hasn't started typing command yet, show them alll of the optpiopmns
+                    if (Gui.CommandBox.Text.EndsWith(" ")) // hasn't started typing command yet, show them alll of the optpiopmns
                     {
                         if (Globals.IndexExists(command.CompleteOptions, argCount - 1))
                         {
@@ -402,7 +402,7 @@ public static class Autocomplete
             if (splitMessage.Length > 0) // checks it exists
             {
                 string partial = splitMessage[0];
-                foreach (var command in Autocomplete.commands)
+                foreach (var command in commands)
                 {
                     if (command.Name.Contains(partial))
                     {
@@ -412,9 +412,9 @@ public static class Autocomplete
 
                 if (completionOptions.Count > 0 && !completionOptions.Contains(Autocomplete.Selected))
                 {
-                    if (!Autocomplete.isPreviewing)
+                    if (!isPreviewing)
                     {
-                        Autocomplete.Selected = completionOptions[0];
+                        Selected = completionOptions[0];
                     }
                     
                 }
@@ -423,9 +423,9 @@ public static class Autocomplete
 
         if (completionOptions.Count > 0 && !completionOptions.Contains(Autocomplete.Selected))
         {
-            if (!Autocomplete.isPreviewing)
+            if (!isPreviewing)
             {
-                Autocomplete.Selected = completionOptions[0];
+                Selected = completionOptions[0];
             }
 
         }

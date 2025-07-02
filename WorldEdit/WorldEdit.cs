@@ -15,35 +15,10 @@ namespace WorldEdit {
 
     public static class Globals // no i cannot do things without this
     {
-        public static Vec3 pos1 = new Vec3();
-        public static Vec3 pos2 = new Vec3();
-        public static bool NotInGui = true;
-        public static OnixTextbox CommandBox = new OnixTextbox(128, "", "World edit command here");
-        public static List<MyBlock> UndoHistoryAsBlocks = new List<MyBlock>(); // list of blocks associated with actions
-        public static List<HistoryActions.HistoryItem> UndoHistory = new List<HistoryActions.HistoryItem>(); // list of action numbers and display text
-        
-        public static List<MyBlock> RedoHistoryAsBlocks = new List<MyBlock>(); // list of blocks associated with actions
-        public static List<HistoryActions.HistoryItem> RedoHistory = new List<HistoryActions.HistoryItem>(); // list of action numbers and display text
-
-        
-        public static TexturePath UndoIcon = TexturePath.Assets("undoIcon");
-        public static TexturePath RedoIcon = TexturePath.Assets("redoIcon");
-        public static TexturePath ClearIcon = TexturePath.Assets("clear");
 
         public static Random MyRandom = new Random();
 
-        public static int undoPoint = 0;
-
-        public static bool Shifting;
-
-        public static List<string> commandHistory = new List<string>();
-        public static int commandHistoryPoint;
-
-        public static float removeSpace;
         
-
-        public static string assetsPath;
-
         public static bool myContains(Rect rect, Vec2 point)
         {
             if (point.Y > rect.TopLeft.Y && point.Y < rect.BottomLeft.Y && point.X > rect.BottomLeft.X &&
@@ -154,7 +129,7 @@ namespace WorldEdit {
             Instance = this;
             // If you can clean up what the plugin leaves behind manually, please do not unload the plugin when disabling.
             base.DisablingShouldUnloadPlugin = false;
-            Globals.assetsPath = Instance.PluginAssetsPath;
+            Gui.assetsPath = Instance.PluginAssetsPath;
 #if DEBUG
             // base.WaitForDebuggerToBeAttached();
 #endif
@@ -170,10 +145,10 @@ namespace WorldEdit {
             Onix.Events.Common.HudRenderDirect2D += Gui.OnHudRenderDirect2D;
             Onix.Events.Input.Input += InputHandler.OnInput;
             Onix.Events.LocalServer.PlayerChatEvent += MyChatHandler;
-            Globals.NotInGui = true;
+            Gui.NotInGui = true;
 
-            Globals.UndoHistory.Add( new HistoryActions.HistoryItem(0, "Start", false));
-            Globals.RedoHistory.Add (new HistoryActions.HistoryItem(0, "Start", false));
+            HistoryActions.UndoHistory.Add( new HistoryActions.HistoryItem(0, "Start", false));
+            HistoryActions.RedoHistory.Add (new HistoryActions.HistoryItem(0, "Start", false));
 
             Autocomplete.RegisterCommand(Commands.Fill.FillInit());
             Autocomplete.RegisterCommand(Commands.Replace.ReplaceInit());
@@ -210,10 +185,10 @@ namespace WorldEdit {
         }
         private void OnTick() {
             
-            if (Globals.CommandBox.HasConfirmedText)
+            if (Gui.CommandBox.HasConfirmedText)
             {
                 
-                String message = Globals.CommandBox.Text;
+                String message = Gui.CommandBox.Text;
 
                 if (message != "")
                 {
@@ -228,17 +203,17 @@ namespace WorldEdit {
                         if (command.Name == splitMessage[0])
                         {
                             command.OnRan(message);
-                            Globals.commandHistory.Add(message);
-                            Globals.commandHistoryPoint = Globals.commandHistory.Count - 1;
-                            if (Globals.commandHistoryPoint == -1)
+                            HistoryActions.commandHistory.Add(message);
+                            HistoryActions.commandHistoryPoint = HistoryActions.commandHistory.Count - 1;
+                            if (HistoryActions.commandHistoryPoint == -1)
                             {
-                                Globals.commandHistoryPoint = 0;
+                                HistoryActions.commandHistoryPoint = 0;
                             }
                         }
                     }
                 }
 
-                Globals.CommandBox.IsEmpty = true;
+                Gui.CommandBox.IsEmpty = true;
             }
         }
 
@@ -247,7 +222,7 @@ namespace WorldEdit {
         private void OnWorldRender(RendererWorld gfx, float delta)
         {
 
-            (Vec3 posMin, Vec3 posMax) = Globals.FindExtremes(Globals.pos1, Globals.pos2);
+            (Vec3 posMin, Vec3 posMax) = Globals.FindExtremes(Selection.pos1, Selection.pos2);
             
             posMax.X += 1;
             posMax.Y += 1;

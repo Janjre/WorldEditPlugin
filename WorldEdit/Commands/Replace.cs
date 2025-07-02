@@ -30,9 +30,9 @@ public static class Replace
                     
         
 
-        long actionId = WorldEdit.Globals.MyRandom.NextInt64(1, 1_000_000_001);
+        long actionId = Globals.MyRandom.NextInt64(1, 1_000_000_001);
                 
-        (Vec3 posMin, Vec3 posMax) = WorldEdit.Globals.FindExtremes(WorldEdit.Globals.pos1, WorldEdit.Globals.pos2);
+        (Vec3 posMin, Vec3 posMax) = Globals.FindExtremes(Selection.pos1, Selection.pos2);
                 
         for (int x = (int)posMin.X; x <= posMax.X; x++)
         {
@@ -43,21 +43,21 @@ public static class Replace
                     // Console.WriteLine("attempted to do something");
                     if (Onix.LocalPlayer.Region.GetBlock(x, y, z).Name == splitMessage[1])
                     {
-                        WorldEdit.HistoryActions.PlaceBlock(splitMessage[2], "[]",new Vec3(x,y,z),actionId);
+                        HistoryActions.PlaceBlock(splitMessage[2], "[]",new Vec3(x,y,z),actionId);
                     }
                     
                             
                 }
             }
         }
-        WorldEdit.HistoryActions.FinishAction(actionId, $"Replaced {splitMessage[1]} with {splitMessage[2]}");
+        HistoryActions.FinishAction(actionId, $"Replaced {splitMessage[1]} with {splitMessage[2]}");
 
                 
         
         return true;
     }
 
-    public static WorldEdit.Autocomplete.commandObject ReplaceInit()
+    public static Autocomplete.commandObject ReplaceInit()
     {
         List<String> autocomplete = new List<string>();
         autocomplete.Add("<replace what: block>");
@@ -66,7 +66,7 @@ public static class Replace
         List<List<String>> options = new List<List<string>>();
         
 
-        string json = File.ReadAllText(Path.Combine(WorldEdit.Globals.assetsPath,"blockList.json"));
+        string json = File.ReadAllText(Path.Combine(Gui.assetsPath,"blockList.json"));
         
         List<string> argument1 = JsonSerializer.Deserialize<List<string>>(json);
         List<string> argument2 = JsonSerializer.Deserialize<List<string>>(json);
@@ -74,6 +74,6 @@ public static class Replace
         options.Add(argument1);
         options.Add(argument2);
                     
-        return new WorldEdit.Autocomplete.commandObject("replace","test",autocomplete,options,RunReplace);
+        return new Autocomplete.commandObject("replace","test",autocomplete,options,RunReplace);
     }
 }

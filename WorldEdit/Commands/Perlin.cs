@@ -30,7 +30,7 @@ public static class Perlin
             String[] splitMessage = arguments.Split(' ', StringSplitOptions.RemoveEmptyEntries);
             long actionId = WorldEdit.Globals.MyRandom.NextInt64(1, 1_000_000_001);
                 
-            (Vec3 posMin, Vec3 posMax) = WorldEdit.Globals.FindExtremes(WorldEdit.Globals.pos1, WorldEdit.Globals.pos2);
+            (Vec3 posMin, Vec3 posMax) = WorldEdit.Globals.FindExtremes(Selection.pos1, Selection.pos2);
         
             
             for (int x = (int)posMin.X; x <= posMax.X; x++)
