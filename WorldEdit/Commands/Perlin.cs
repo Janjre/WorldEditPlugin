@@ -40,11 +40,11 @@ public static class Perlin
                     for (int z = (int)posMin.Z; z <= posMax.Z; z++)
                     {
                         string block = Noise.BlockFigure(x, y, z, splitMessage[1], actionId);
-                        WorldEdit.HistoryActions.PlaceBlock(block,"[]",new Vec3(x,y,z),actionId);
+                        WorldEdit.History.PlaceBlock(block,"[]",new Vec3(x,y,z),actionId);
                     }
                 }
             }
-            WorldEdit.HistoryActions.FinishAction(actionId, $"Perlined area"); 
+            WorldEdit.History.FinishAction(actionId, $"Perlined area"); 
             return true;
         }
         else

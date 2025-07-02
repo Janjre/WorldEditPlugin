@@ -41,11 +41,11 @@ public static class Fill
                 for (int z = (int)posMin.Z; z <= posMax.Z; z++)
                 {
                     // Console.WriteLine("attempted to do something");
-                    HistoryActions.PlaceBlock(splitMessage[1], "[]",new Vec3(x,y,z),actionId);
+                    History.PlaceBlock(splitMessage[1], "[]",new Vec3(x,y,z),actionId);
                 }
             }
         }
-        HistoryActions.FinishAction(actionId, "Filled area with "+splitMessage[1]);
+        History.FinishAction(actionId, "Filled area with "+splitMessage[1]);
 
                 
         

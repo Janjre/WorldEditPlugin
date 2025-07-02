@@ -88,9 +88,9 @@ public static class InputHandler
 
                 if (Globals.myContains(undo, mouseCursor))
                 {
-                    long targetUUID = HistoryActions.UndoHistory[HistoryActions.undoPoint].UUID;
+                    long targetUUID = History.UndoHistory[History.undoPoint].UUID;
 
-                    foreach (MyBlock block in HistoryActions.UndoHistoryAsBlocks)
+                    foreach (MyBlock block in History.UndoHistoryAsBlocks)
                     {
                         if (block.Action == targetUUID)
                         {
@@ -99,25 +99,25 @@ public static class InputHandler
                         }
                     }
 
-                    HistoryActions.undoPoint -= 1;
-                    if (HistoryActions.undoPoint < 0)
+                    History.undoPoint -= 1;
+                    if (History.undoPoint < 0)
                     {
-                        HistoryActions.undoPoint = 0;
+                        History.undoPoint = 0;
                     }
 
-                    if (HistoryActions.undoPoint > HistoryActions.UndoHistory.Count)
+                    if (History.undoPoint > History.UndoHistory.Count)
                     {
-                        HistoryActions.undoPoint = HistoryActions.UndoHistory.Count;
+                        History.undoPoint = History.UndoHistory.Count;
                     }
                 }
 
                 if (Globals.myContains(redo, mouseCursor))
                 {
 
-                    HistoryActions.undoPoint += 1;
+                    History.undoPoint += 1;
 
-                    long targetUUID = HistoryActions.UndoHistory[HistoryActions.undoPoint].UUID;
-                    foreach (MyBlock block in HistoryActions.RedoHistoryAsBlocks)
+                    long targetUUID = History.UndoHistory[History.undoPoint].UUID;
+                    foreach (MyBlock block in History.RedoHistoryAsBlocks)
                     {
                         if (block.Action == targetUUID)
                         {
@@ -126,24 +126,24 @@ public static class InputHandler
                         }
                     }
 
-                    if (HistoryActions.undoPoint < 0)
+                    if (History.undoPoint < 0)
                     {
-                        HistoryActions.undoPoint = 0;
+                        History.undoPoint = 0;
                     }
 
-                    if (HistoryActions.undoPoint > HistoryActions.UndoHistory.Count)
+                    if (History.undoPoint > History.UndoHistory.Count)
                     {
-                        HistoryActions.undoPoint = HistoryActions.UndoHistory.Count;
+                        History.undoPoint = History.UndoHistory.Count;
                     }
 
                 }
 
                 if (Globals.myContains(clear, mouseCursor))
                 {
-                    HistoryActions.undoPoint = 0;
-                    for (int i = HistoryActions.UndoHistory.Count - 1; i >= 1; i--)
+                    History.undoPoint = 0;
+                    for (int i = History.UndoHistory.Count - 1; i >= 1; i--)
                     {
-                        HistoryActions.UndoHistory.RemoveAt(i);
+                        History.UndoHistory.RemoveAt(i);
                     }
                 }
 
@@ -203,38 +203,38 @@ public static class InputHandler
                 switch (key.Value)
                 {
                     case InputKey.Type.Up:
-                        if (HistoryActions.commandHistory.Count != 0){ 
-                            HistoryActions.commandHistoryPoint -= 1;
+                        if (History.commandHistory.Count != 0){ 
+                            History.commandHistoryPoint -= 1;
 
-                            if (HistoryActions.commandHistoryPoint > HistoryActions.commandHistory.Count - 1)
+                            if (History.commandHistoryPoint > History.commandHistory.Count - 1)
                             {
-                                HistoryActions.commandHistoryPoint = HistoryActions.commandHistory.Count - 1;
+                                History.commandHistoryPoint = History.commandHistory.Count - 1;
                             }
-                            if (HistoryActions.commandHistoryPoint < 0)
+                            if (History.commandHistoryPoint < 0)
                             {
-                                HistoryActions.commandHistoryPoint = 0;
+                                History.commandHistoryPoint = 0;
                             }
                             
-                            Gui.CommandBox.Text = HistoryActions.commandHistory[HistoryActions.commandHistoryPoint];
+                            Gui.CommandBox.Text = History.commandHistory[History.commandHistoryPoint];
                         }
                         break;
                     
                     case InputKey.Type.Down:
 
-                        if (HistoryActions.commandHistory.Count != 0)
+                        if (History.commandHistory.Count != 0)
                         {
-                            HistoryActions.commandHistoryPoint += 1;
+                            History.commandHistoryPoint += 1;
                                                     
-                            if (HistoryActions.commandHistoryPoint > HistoryActions.commandHistory.Count - 1)
+                            if (History.commandHistoryPoint > History.commandHistory.Count - 1)
                             {
-                                HistoryActions.commandHistoryPoint = HistoryActions.commandHistory.Count - 1;
+                                History.commandHistoryPoint = History.commandHistory.Count - 1;
                             }
-                            if (HistoryActions.commandHistoryPoint < 0)
+                            if (History.commandHistoryPoint < 0)
                             {
-                                HistoryActions.commandHistoryPoint = 0;
+                                History.commandHistoryPoint = 0;
                             }
     
-                            Gui.CommandBox.Text = HistoryActions.commandHistory[HistoryActions.commandHistoryPoint];
+                            Gui.CommandBox.Text = History.commandHistory[History.commandHistoryPoint];
                             
                         }
                         break;

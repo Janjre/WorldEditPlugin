@@ -5,13 +5,13 @@ using OnixRuntime.Api.World;
 
 namespace WorldEdit;
 
-public static class HistoryActions
+public static class History
     {
         public static List<MyBlock> UndoHistoryAsBlocks = new List<MyBlock>(); // list of blocks associated with actions
-        public static List<HistoryActions.HistoryItem> UndoHistory = new List<HistoryActions.HistoryItem>(); // list of action numbers and display text
+        public static List<History.HistoryItem> UndoHistory = new List<History.HistoryItem>(); // list of action numbers and display text
         
         public static List<MyBlock> RedoHistoryAsBlocks = new List<MyBlock>(); // list of blocks associated with actions
-        public static List<HistoryActions.HistoryItem> RedoHistory = new List<HistoryActions.HistoryItem>(); // list of action numbers and display text
+        public static List<HistoryItem> RedoHistory = new List<History.HistoryItem>(); // list of action numbers and display text
 
         
         public static TexturePath UndoIcon = TexturePath.Assets("undoIcon");
@@ -73,11 +73,11 @@ public static class HistoryActions
             {
                 if (selected)
                 {
-                    foreach (HistoryActions.HistoryItem item in UndoHistory)
+                    foreach (History.HistoryItem item in UndoHistory)
                     {
                         item.Selected = false;
                     }
-                    foreach (HistoryActions.HistoryItem item in RedoHistory)
+                    foreach (History.HistoryItem item in RedoHistory)
                     {
                         item.Selected = false;
                     }

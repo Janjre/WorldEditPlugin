@@ -29,7 +29,7 @@ public class Gui
             
             if (!Gui.NotInGui)
             {
-                Onix.Render.Direct2D.RenderText(new Vec2(0,0),ColorF.White,HistoryActions.undoPoint.ToString(),1f );
+                Onix.Render.Direct2D.RenderText(new Vec2(0,0),ColorF.White,History.undoPoint.ToString(),1f );
                 float screenWidth = Onix.Gui.ScreenSize.X;
                 float screenHeight = Onix.Gui.ScreenSize.Y;
                 
@@ -142,7 +142,7 @@ public class Gui
                 float characterHeight = 7;
                 float endPoint = screenHeight * 0.83f;
                 
-                for (int i = 0; i <= HistoryActions.UndoHistory.Count; i++)
+                for (int i = 0; i <= History.UndoHistory.Count; i++)
                 {
                     
                     Vec2 tlTextPos = new Vec2 (screenWidth*0.67f, startIterationsPosition + characterHeight * i);
@@ -152,18 +152,18 @@ public class Gui
                     {
                         break;
                     }
-                    if (i >= 0 && i < HistoryActions.UndoHistory.Count)
+                    if (i >= 0 && i < History.UndoHistory.Count)
                     {
                         
                         // if (Globals.UndoHistory[i].Id)
                         ColorF colour = ColorF.White;
-                        if (i == HistoryActions.undoPoint)
+                        if (i == History.undoPoint)
                         {
                             
                             colour = ColorF.Red;
                         }
                         
-                        Onix.Render.Direct2D.RenderText(tlTextPos,colour,HistoryActions.UndoHistory[i].Text,TextAlignment.Left,TextAlignment.Top,characterHeight/6);
+                        Onix.Render.Direct2D.RenderText(tlTextPos,colour,History.UndoHistory[i].Text,TextAlignment.Left,TextAlignment.Top,characterHeight/6);
                         // Rect button = new Rect(
                         //     new Vec2(tlTextPos.X- 10, tlTextPos.Y+2),
                         //     new Vec2(tlTextPos.X -2, tlTextPos.Y + 10));
@@ -177,17 +177,17 @@ public class Gui
                     Rect undo = new Rect(new Vec2(screenWidth * 0.80f, screenHeight * 0.12f),
                         new Vec2((screenWidth * 0.80f)+10, (screenHeight * 0.12f)+10));
                     
-                    Onix.Render.Direct2D.RenderTexture(undo,HistoryActions.UndoIcon,1f);
+                    Onix.Render.Direct2D.RenderTexture(undo,History.UndoIcon,1f);
                     
                     Rect redo = new Rect(new Vec2(screenWidth * 0.815f, screenHeight * 0.12f),
                         new Vec2((screenWidth * 0.815f)+10, (screenHeight * 0.12f)+10));
                     
-                    Onix.Render.Direct2D.RenderTexture(redo,HistoryActions.RedoIcon,1f);
+                    Onix.Render.Direct2D.RenderTexture(redo,History.RedoIcon,1f);
                    
                     Rect clear = new Rect(new Vec2(screenWidth * 0.785f, screenHeight * 0.12f),
                         new Vec2((screenWidth * 0.785f)+9, (screenHeight * 0.12f)+9));
                     
-                    Onix.Render.Direct2D.RenderTexture(clear,HistoryActions.ClearIcon,1f);
+                    Onix.Render.Direct2D.RenderTexture(clear,History.ClearIcon,1f);
                 }
             } 
             CommandBox.IsFocused = !NotInGui;

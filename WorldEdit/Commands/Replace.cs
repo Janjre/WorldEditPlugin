@@ -43,14 +43,14 @@ public static class Replace
                     // Console.WriteLine("attempted to do something");
                     if (Onix.LocalPlayer.Region.GetBlock(x, y, z).Name == splitMessage[1])
                     {
-                        HistoryActions.PlaceBlock(splitMessage[2], "[]",new Vec3(x,y,z),actionId);
+                        History.PlaceBlock(splitMessage[2], "[]",new Vec3(x,y,z),actionId);
                     }
                     
                             
                 }
             }
         }
-        HistoryActions.FinishAction(actionId, $"Replaced {splitMessage[1]} with {splitMessage[2]}");
+        History.FinishAction(actionId, $"Replaced {splitMessage[1]} with {splitMessage[2]}");
 
                 
         

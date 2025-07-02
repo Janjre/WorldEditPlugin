@@ -147,8 +147,8 @@ namespace WorldEdit {
             Onix.Events.LocalServer.PlayerChatEvent += MyChatHandler;
             Gui.NotInGui = true;
 
-            HistoryActions.UndoHistory.Add( new HistoryActions.HistoryItem(0, "Start", false));
-            HistoryActions.RedoHistory.Add (new HistoryActions.HistoryItem(0, "Start", false));
+            History.UndoHistory.Add( new History.HistoryItem(0, "Start", false));
+            History.RedoHistory.Add (new History.HistoryItem(0, "Start", false));
 
             Autocomplete.RegisterCommand(Commands.Fill.FillInit());
             Autocomplete.RegisterCommand(Commands.Replace.ReplaceInit());
@@ -203,11 +203,11 @@ namespace WorldEdit {
                         if (command.Name == splitMessage[0])
                         {
                             command.OnRan(message);
-                            HistoryActions.commandHistory.Add(message);
-                            HistoryActions.commandHistoryPoint = HistoryActions.commandHistory.Count - 1;
-                            if (HistoryActions.commandHistoryPoint == -1)
+                            History.commandHistory.Add(message);
+                            History.commandHistoryPoint = History.commandHistory.Count - 1;
+                            if (History.commandHistoryPoint == -1)
                             {
-                                HistoryActions.commandHistoryPoint = 0;
+                                History.commandHistoryPoint = 0;
                             }
                         }
                     }
