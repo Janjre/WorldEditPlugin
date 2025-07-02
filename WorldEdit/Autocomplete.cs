@@ -1,4 +1,6 @@
-﻿using System.Text.Json;
+﻿using System.Runtime.CompilerServices;
+using System.Text.Json;
+using System.Xml;
 
 namespace WorldEdit;
 
@@ -12,6 +14,12 @@ public static class Autocomplete
     public static int lastTabbed;
     public static bool isPreviewing;
     public static bool isCurrentlyANoisePattern;
+    
+    static private string json = File.ReadAllText(Path.Combine(Globals.assetsPath,
+        "blockList.json")); // get blocks
+    public static List<string>  blocks =
+        JsonSerializer.Deserialize<List<string>>(json); // put them in a list
+
 
     public static void RegisterCommand(commandObject command)
     {
@@ -105,7 +113,6 @@ public static class Autocomplete
 
         if (!string.IsNullOrEmpty(Autocomplete.Selected))
         {
-            Console.WriteLine(Autocomplete.Selected);
             if (Globals.CommandBox.Text.EndsWith("  "))
             {
                 args.Add(Autocomplete.Selected);
@@ -156,10 +163,6 @@ public static class Autocomplete
                         }
                     }
                 }
-                else
-                {
-                    Console.WriteLine("Index does not in fact exist");
-                }
             }
 
 
@@ -202,7 +205,6 @@ public static class Autocomplete
                             }
                             else
                             {
-                                Console.WriteLine($"this is thie right place{count + 1} != {args.Count - 3}");
                                 reconstruction += " ";
                             }
                         }
@@ -219,7 +221,6 @@ public static class Autocomplete
                         }
                         else
                         {
-                            Console.WriteLine($"removeAtEnd = {removeAtEnd}");
                             reconstruction += " ";
                         }
                     }
@@ -335,37 +336,58 @@ public static class Autocomplete
                             }
                             
                         }
+                        else
+                        {
+                            if (Globals.IndexExists(args, argCount - 1)) // check we can index it
+                            {
+                                string json = File.ReadAllText(Path.Combine(Globals.assetsPath,
+                                    "blockList.json")); // get blocks
+                                List<string> options =
+                                    JsonSerializer.Deserialize<List<string>>(json); // put them in a list
+ 
+                                foreach (string option in options) // for each option
+                                {
+                            
+                                
+                                    if (option.Contains(args[argCount - 1])) // if it is in the argument
+                                    {
+                                        completionOptions.Add(option); // add it
+                                    }
+                                
+
+                                }    
+                            }
+                        }
                     } //end of all the pattern stuff
                     else // not in a pattern, are starting with a known commands and command.CompleteOptions[argCount-2] is safe
                     {
                         if (Globals.IndexExists(args, argCount - 1)) // check we can index it
                         {
-                        
                             foreach (string option in command.CompleteOptions[argCount - 1 - 1]) // for each option
                             {
-                            
-                                
                                 if (option.Contains(args[argCount - 1])) // if it is in the argument
                                 {
                                     completionOptions.Add(option); // add it
                                 }
-                                
-
                             }    
                         }
                     }
                 }
-
-                
                 else 
                 {
                     if (Globals.CommandBox.Text.EndsWith(" ")) // hasn't started typing command yet, show them alll of the optpiopmns
                     {
                         if (Globals.IndexExists(command.CompleteOptions, argCount - 1))
                         {
-                            
                             completionOptions = command.CompleteOptions[argCount - 1];
-                            
+                            if (command.CompleteOptions[argCount - 1][0] == "pattern")
+                            {
+                                List<string> potentialOptions = new List<string>(blocks); // make copy of it
+                                potentialOptions.Add("$perlin");
+                                potentialOptions.Add("$white");
+                                potentialOptions.Add("$roughPerlin");
+                                completionOptions = potentialOptions;
+                            }
                         }
                     }
                 }
