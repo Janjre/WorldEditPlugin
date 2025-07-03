@@ -10,6 +10,7 @@ public class Tab
     public string Name;
     public TexturePath Icon;
     public int Type; // 1 = sidebar, 0 = main 
+    public Rect Button;
 
     public Tab (Func<Rect,float,float,bool> render, int tabNumber, string name, TexturePath icon, int type)
     {

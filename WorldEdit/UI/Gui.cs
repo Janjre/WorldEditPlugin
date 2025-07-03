@@ -29,7 +29,7 @@ public class Gui
             
 
             
-            if (!Gui.NotInGui)
+            if (!NotInGui)
             {
                 Onix.Render.Direct2D.RenderText(new Vec2(0,0),ColorF.White,History.undoPoint.ToString(),1f );
                 float screenWidth = Onix.Gui.ScreenSize.X;
@@ -139,6 +139,26 @@ public class Gui
                 Rect sidebarArea = new Rect(new Vec2(screenWidth * 0.65f, screenHeight * 0.10f), new Vec2(screenWidth * 0.85f, screenHeight * 0.85f));
                 Onix.Render.Direct2D.FillRoundedRectangle(sidebarArea,darkGray,10,10);
                 Onix.Render.Direct2D.DrawRoundedRectangle(sidebarArea, ColorF.White , 0.25f, 10);
+
+                float tabHeight = screenHeight * 0.03f;
+                Rect tabArea = new Rect(new Vec2(sidebarArea.BottomLeft.X + 5, sidebarArea.TopLeft.Y+5),
+                    new Vec2(sidebarArea.BottomRight.X - 5, sidebarArea.TopRight.Y + tabHeight+5));
+                
+                float tabSize = ((tabArea.BottomRight.X - tabArea.BottomLeft.X) / TabManager.tabs.Count)-TabManager.tabs.Count*5;
+                
+                float tabPoint = 0.0f;
+
+                tabPoint += 7.5f;
+                foreach (Tab tab in TabManager.tabs)
+                {
+                    tab.Button = new Rect(
+                        new Vec2(tabArea.BottomLeft.X+tabPoint,tabArea.TopLeft.Y),
+                        new Vec2(tabArea.BottomLeft.X+tabPoint+tabSize,tabArea.TopLeft.Y+tabHeight));
+                    Onix.Render.Direct2D.FillRoundedRectangle(tab.Button, new ColorF("268BB6"), 1f);
+                    
+                    Onix.Render.Direct2D.RenderText(tab.Button,ColorF.White,tab.Name,TextAlignment.Left,TextAlignment.Top);
+                    tabPoint += tabSize + 5;
+                }
 
                 TabManager.selectedTab.Render(sidebarArea, screenHeight, screenWidth);
                 

@@ -157,7 +157,7 @@ namespace WorldEdit {
             Autocomplete.RegisterCommand(Commands.Perlin.PerlinInit());
             
             TabManager.registerTab(HistoryUI.tab);
-            
+            TabManager.registerTab(NoiseUI.tab);
             TabManager.selectedTab = HistoryUI.tab;
 
 
