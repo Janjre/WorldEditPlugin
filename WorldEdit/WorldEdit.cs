@@ -10,6 +10,8 @@ using OnixRuntime.Plugin;
 using OnixRuntime.Api.Rendering;
 using OnixRuntime.Api.UI;
 using OnixRuntime.Api.World;
+using WorldEdit.UI;
+using WorldEdit.UI.Sidebar;
 
 namespace WorldEdit {
 
@@ -154,7 +156,11 @@ namespace WorldEdit {
             Autocomplete.RegisterCommand(Commands.Replace.ReplaceInit());
             Autocomplete.RegisterCommand(Commands.Perlin.PerlinInit());
             
+            TabManager.registerTab(HistoryUI.tab);
             
+            TabManager.selectedTab = HistoryUI.tab;
+
+
 
 
         }
