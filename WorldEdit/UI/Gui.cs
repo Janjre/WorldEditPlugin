@@ -22,144 +22,84 @@ using OnixRuntime.Api.World;
 public class Gui
 {
     public static bool NotInGui = true;
-    public static OnixTextbox CommandBox = new OnixTextbox(128, "", "World edit command here");
+    
     public static string assetsPath;
     
     public static void DrawScreen(RendererCommon2D gfx) {
         
-            gfx.RenderText(new Vec2(0,0),ColorF.White,History.undoPoint.ToString(),1f );
-            float screenWidth = Onix.Gui.ScreenSize.X;
-            float screenHeight = Onix.Gui.ScreenSize.Y;
-            
-            Rect consoleArea = new Rect(new Vec2(screenWidth * 0.13f, screenHeight * 0.10f), new Vec2(screenWidth * 0.60f, screenHeight * 0.85f));
-            
-            ColorF darkGray = new ColorF(0.1f, 0.1f, 0.1f,0.95f);
-            Onix.Render.Direct2D.FillRoundedRectangle(consoleArea, darkGray , 10, 10);
-            Onix.Render.Direct2D.DrawRoundedRectangle(consoleArea, ColorF.White , 0.25f, 10);
+        gfx.RenderText(new Vec2(0,0),ColorF.White,History.undoPoint.ToString(),1f );
+        float screenWidth = Onix.Gui.ScreenSize.X;
+        float screenHeight = Onix.Gui.ScreenSize.Y;
+        
+        Rect mainArea = new Rect(new Vec2(screenWidth * 0.13f, screenHeight * 0.10f), new Vec2(screenWidth * 0.60f, screenHeight * 0.85f));
+        
+        ColorF darkGray = new ColorF(0.1f, 0.1f, 0.1f,0.95f);
+        Onix.Render.Direct2D.FillRoundedRectangle(mainArea, darkGray , 10, 10);
+        Onix.Render.Direct2D.DrawRoundedRectangle(mainArea, ColorF.White , 0.25f, 10);
 
-            ColorF lightGray = new ColorF(0.34f, 0.34f, 0.34f, 1f);
-            Rect commandLine = new Rect(new Vec2(screenWidth * 0.15f, screenHeight * 0.75f), new Vec2(screenWidth * 0.58f, screenHeight * 0.82f));
-            gfx.FillRoundedRectangle(commandLine, lightGray , 5f, 10);
-            CommandBox.Render(commandLine);
+        float tabHeightMain = screenHeight * 0.03f;
+        Rect tabAreaMain = new Rect(new Vec2(mainArea.BottomLeft.X + 5, mainArea.TopLeft.Y+5),
+            new Vec2(mainArea.BottomRight.X - 5, mainArea.TopRight.Y + tabHeightMain+5));
+        
+        float tabSizeMain = ((mainArea.BottomRight.X - mainArea.BottomLeft.X) / TabManager.MainTabs.Count)-TabManager.MainTabs.Count*5;
+        
+        float tabPointMain = 0.0f;
 
-            //console area
-            
-            if (CommandBox.Text != Autocomplete.lastCommandBoxText)
+        tabPointMain += 7.5f;
+        
+        foreach (Tab tab in TabManager.MainTabs)
+        {
+            tab.Button = new Rect(
+                new Vec2(tabAreaMain.BottomLeft.X+tabPointMain,tabAreaMain.TopLeft.Y),
+                new Vec2(tabAreaMain.BottomLeft.X+tabPointMain+tabSizeMain,tabAreaMain.TopLeft.Y+tabHeightMain));
+            ColorF colour = new ColorF("383838");
+            if (tab.TabNumber == TabManager.selectedTab.TabNumber)
             {
-                Autocomplete.isPreviewing = false;
+                colour = new ColorF("4c4c4a");
             }
-            Autocomplete.lastCommandBoxText = CommandBox.Text;
+            Onix.Render.Direct2D.FillRoundedRectangle(tab.Button, colour, 1f);
             
-            List<String> completionOptions = new List<string>();
-            string text = "";
-            bool foundOne = false;
             
-            var (args,argCount) = Globals.SimpleSplit(CommandBox.Text); // argCount is not 0-based !!
-
-            completionOptions = Autocomplete.generateOptions();
-
-
-            //create lots of textboxes for autocomplete/previous commands to go
-
-            Vec2 tlTextArea = new Vec2(screenWidth * 0.15f, screenHeight * 0.12f);
-            Vec2 brTextArea = new Vec2(screenWidth * 0.58f, screenHeight * 0.69f);
-            Rect textArea = new Rect(tlTextArea, brTextArea);
-
-            Rect syntaxLine = new Rect(new Vec2(screenWidth * 0.15f, screenHeight * 0.71f), new Vec2(screenWidth * 0.58f, screenHeight * 0.78f));
-            Onix.Render.Direct2D.RenderText(syntaxLine,ColorF.White, text,TextAlignment.Left,TextAlignment.Top,1f);
-
-            if (Globals.IndexExists(args, argCount - 1))
-            {
-                completionOptions = Autocomplete.SortCompletionOptions(completionOptions, args[argCount - 1]);
-            }
             
-            Autocomplete.currentOptions = completionOptions;
-
-            if (completionOptions.Count > 0)
-            {
-                if (!Autocomplete.isPreviewing)
-                {
-                    Autocomplete.Selected = completionOptions[0];
-                }
-            }
-            else
-            {
-                if (!Autocomplete.isPreviewing)
-                {
-                    Autocomplete.Selected = null; 
-                }
-                
-            }
-
-            float lineHeight = 7f; 
-            float startY = screenHeight * 0.68f;
-
-            for (int i = 0; i < completionOptions.Count; i++)
-            {
-                string option = completionOptions[i];
-
-                Vec2 topLeft = new Vec2(screenWidth * 0.15f, startY - i * lineHeight);
-                Vec2 bottomRight = new Vec2(screenWidth * 0.58f, topLeft.Y + lineHeight);
-                Rect textBox = new Rect(topLeft, bottomRight);
-
-                if (textBox.TopLeft.Y < textArea.TopLeft.Y)
-                {
-                    break;
-                }
-
-                ColorF textColour = ColorF.Gray;
-
-                if (Autocomplete.Selected == option)
-                {
-                    textColour = ColorF.White;
-                }
-
-                Onix.Render.Direct2D.RenderText(textBox, textColour , option, TextAlignment.Left, TextAlignment.Top, 1f);
-            }
-
-            Autocomplete.currentOptions = completionOptions;
-            
-
+            Onix.Render.Direct2D.RenderText(tab.Button,ColorF.White,tab.Name,TextAlignment.Center,TextAlignment.Top);
+            tabPointMain += tabSizeMain + 5;
+        }
+        
+        
+        
+        
         
 
 
+        Rect sidebarArea = new Rect(new Vec2(screenWidth * 0.65f, screenHeight * 0.10f), new Vec2(screenWidth * 0.85f, screenHeight * 0.85f));
+        Onix.Render.Direct2D.FillRoundedRectangle(sidebarArea,darkGray,10,10);
+        Onix.Render.Direct2D.DrawRoundedRectangle(sidebarArea, ColorF.White , 0.25f, 10);
 
+        float tabHeightSide = screenHeight * 0.03f;
+        Rect tabAreaSide = new Rect(new Vec2(sidebarArea.BottomLeft.X + 5, sidebarArea.TopLeft.Y+5),
+            new Vec2(sidebarArea.BottomRight.X - 5, sidebarArea.TopRight.Y + tabHeightSide+5));
+        
+        float tabSizeSide = ((tabAreaSide.BottomRight.X - tabAreaSide.BottomLeft.X) / TabManager.SideTabs.Count)-TabManager.SideTabs.Count*5;
+        
+        float tabPointSide = 0.0f;
 
-            Rect sidebarArea = new Rect(new Vec2(screenWidth * 0.65f, screenHeight * 0.10f), new Vec2(screenWidth * 0.85f, screenHeight * 0.85f));
-            Onix.Render.Direct2D.FillRoundedRectangle(sidebarArea,darkGray,10,10);
-            Onix.Render.Direct2D.DrawRoundedRectangle(sidebarArea, ColorF.White , 0.25f, 10);
-
-            float tabHeight = screenHeight * 0.03f;
-            Rect tabArea = new Rect(new Vec2(sidebarArea.BottomLeft.X + 5, sidebarArea.TopLeft.Y+5),
-                new Vec2(sidebarArea.BottomRight.X - 5, sidebarArea.TopRight.Y + tabHeight+5));
-            
-            float tabSize = ((tabArea.BottomRight.X - tabArea.BottomLeft.X) / TabManager.tabs.Count)-TabManager.tabs.Count*5;
-            
-            float tabPoint = 0.0f;
-
-            tabPoint += 7.5f;
-            foreach (Tab tab in TabManager.tabs)
+        tabPointSide += 7.5f;
+        foreach (Tab tab in TabManager.SideTabs)
+        {
+            tab.Button = new Rect(
+                new Vec2(tabAreaSide.BottomLeft.X+tabPointSide,tabAreaSide.TopLeft.Y),
+                new Vec2(tabAreaSide.BottomLeft.X+tabPointSide+tabSizeSide,tabAreaSide.TopLeft.Y+tabHeightSide));
+            ColorF colour = new ColorF("383838");
+            if (tab.TabNumber == TabManager.selectedTab.TabNumber)
             {
-                tab.Button = new Rect(
-                    new Vec2(tabArea.BottomLeft.X+tabPoint,tabArea.TopLeft.Y),
-                    new Vec2(tabArea.BottomLeft.X+tabPoint+tabSize,tabArea.TopLeft.Y+tabHeight));
-                ColorF colour = new ColorF("383838");
-                if (tab.TabNumber == TabManager.selectedTab.TabNumber)
-                {
-                    colour = new ColorF("4c4c4a");
-                }
-                Onix.Render.Direct2D.FillRoundedRectangle(tab.Button, colour, 1f);
-                
-                
-                
-                Onix.Render.Direct2D.RenderText(tab.Button,ColorF.White,tab.Name,TextAlignment.Center,TextAlignment.Top);
-                tabPoint += tabSize + 5;
+                colour = new ColorF("4c4c4a");
             }
-
-            // TabManager.selectedTab.Render(sidebarArea, screenHeight, screenWidth,delta);
+            Onix.Render.Direct2D.FillRoundedRectangle(tab.Button, colour, 1f);
             
-
             
-            CommandBox.IsFocused = !NotInGui;
+            
+            Onix.Render.Direct2D.RenderText(tab.Button,ColorF.White,tab.Name,TextAlignment.Center,TextAlignment.Top);
+            tabPointSide += tabSizeSide + 5;
         }
+    }
 }

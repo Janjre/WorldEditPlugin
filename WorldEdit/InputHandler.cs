@@ -1,6 +1,7 @@
 ﻿using System.Globalization;
 using OnixRuntime.Api.OnixClient;
 using WorldEdit.UI;
+using WorldEdit.UI.Main;
 using WorldEdit.UI.Sidebar;
 
 namespace WorldEdit;
@@ -155,7 +156,7 @@ public static class InputHandler
                 }
             }
 
-            foreach (Tab tab in TabManager.tabs)
+            foreach (Tab tab in TabManager.SideTabs)
             {
                 if (Globals.myContains(tab.Button, mouseCursor))
                 {
@@ -174,7 +175,7 @@ public static class InputHandler
         {
 
 
-            var (args, argCount) = Globals.SimpleSplit(Gui.CommandBox.Text); // argCount is not 0-based !!
+            var (args, argCount) = Globals.SimpleSplit(ConsoleUI.CommandBox.Text); // argCount is not 0-based !!
 
             if (Autocomplete.currentOptions.Count == 0)
             {
@@ -233,7 +234,7 @@ public static class InputHandler
                             History.commandHistoryPoint = 0;
                         }
 
-                        Gui.CommandBox.Text = History.commandHistory[History.commandHistoryPoint];
+                        ConsoleUI.CommandBox.Text = History.commandHistory[History.commandHistoryPoint];
                     }
 
                     break;
@@ -254,7 +255,7 @@ public static class InputHandler
                             History.commandHistoryPoint = 0;
                         }
 
-                        Gui.CommandBox.Text = History.commandHistory[History.commandHistoryPoint];
+                        ConsoleUI.CommandBox.Text = History.commandHistory[History.commandHistoryPoint];
 
                     }
 

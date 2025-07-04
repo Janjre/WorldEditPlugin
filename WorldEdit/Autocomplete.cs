@@ -1,6 +1,7 @@
 ﻿using System.Runtime.CompilerServices;
 using System.Text.Json;
 using System.Xml;
+using WorldEdit.UI.Main;
 
 namespace WorldEdit;
 
@@ -102,7 +103,7 @@ public static class Autocomplete
 
     public static bool Complete()
     {
-        var (args, argCount) = Globals.SimpleSplit(Gui.CommandBox.Text); // argCount is not 0-based
+        var (args, argCount) = Globals.SimpleSplit(ConsoleUI.CommandBox.Text); // argCount is not 0-based
 
         List<string> noiseOptions = new List<string>();
         noiseOptions.Add("$white");
@@ -113,7 +114,7 @@ public static class Autocomplete
 
         if (!string.IsNullOrEmpty(Autocomplete.Selected))
         {
-            if (Gui.CommandBox.Text.EndsWith("  "))
+            if (ConsoleUI.CommandBox.Text.EndsWith("  "))
             {
                 args.Add(Autocomplete.Selected);
             }
@@ -228,7 +229,7 @@ public static class Autocomplete
                     count++;
                 }
 
-                Gui.CommandBox.Text = reconstruction;
+                ConsoleUI.CommandBox.Text = reconstruction;
             }
         }
 
@@ -237,7 +238,7 @@ public static class Autocomplete
 
     public static List<String> generateOptions()
     {
-        string[] splitMessage = Gui.CommandBox.Text.Split(' ');
+        string[] splitMessage = ConsoleUI.CommandBox.Text.Split(' ');
 
                 
                 
@@ -245,11 +246,11 @@ public static class Autocomplete
         string text = "";
         bool foundOne = false;
         
-        var (args,argCount) = Globals.SimpleSplit(Gui.CommandBox.Text); // argCount is not 0-based !!
+        var (args,argCount) = Globals.SimpleSplit(ConsoleUI.CommandBox.Text); // argCount is not 0-based !!
         Autocomplete.isCurrentlyANoisePattern = false;
         foreach (Autocomplete.commandObject command in Autocomplete.commands)
         {
-            if (Gui.CommandBox.Text.StartsWith(command.Name))
+            if (ConsoleUI.CommandBox.Text.StartsWith(command.Name))
             {
                 
                 
@@ -267,7 +268,7 @@ public static class Autocomplete
                    
                     
                     string argumentSoFar = "";
-                    if (!Gui.CommandBox.Text.EndsWith(' '))
+                    if (!ConsoleUI.CommandBox.Text.EndsWith(' '))
                     {
                         if (Globals.IndexExists(args, argCount - 1))
                         {
@@ -375,7 +376,7 @@ public static class Autocomplete
                 }
                 else 
                 {
-                    if (Gui.CommandBox.Text.EndsWith(" ")) // hasn't started typing command yet, show them alll of the optpiopmns
+                    if (ConsoleUI.CommandBox.Text.EndsWith(" ")) // hasn't started typing command yet, show them alll of the optpiopmns
                     {
                         if (Globals.IndexExists(command.CompleteOptions, argCount - 1))
                         {

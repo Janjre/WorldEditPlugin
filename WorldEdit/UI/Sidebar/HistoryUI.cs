@@ -9,8 +9,6 @@ namespace WorldEdit.UI.Sidebar;
 
 public static class HistoryUI
 {
-    
-    
     public static bool render(Rect area, float screenHeight, float screenWidth,float deltaTime)
     {
       

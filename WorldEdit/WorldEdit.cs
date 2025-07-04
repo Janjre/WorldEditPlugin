@@ -12,6 +12,7 @@ using OnixRuntime.Api.Rendering;
 using OnixRuntime.Api.UI;
 using OnixRuntime.Api.World;
 using WorldEdit.UI;
+using WorldEdit.UI.Main;
 using WorldEdit.UI.Sidebar;
 
 namespace WorldEdit {
@@ -159,6 +160,7 @@ namespace WorldEdit {
             
             TabManager.registerTab(HistoryUI.tab);
             TabManager.registerTab(NoiseUI.tab);
+            TabManager.registerTab(TestUI.tab);
             TabManager.selectedTab = HistoryUI.tab;
 
 
@@ -191,10 +193,10 @@ namespace WorldEdit {
         }
         private void OnTick() {
             
-            if (Gui.CommandBox.HasConfirmedText)
+            if (ConsoleUI.CommandBox.HasConfirmedText)
             {
                 
-                String message = Gui.CommandBox.Text;
+                String message = ConsoleUI.CommandBox.Text;
 
                 if (message != "")
                 {
@@ -219,7 +221,7 @@ namespace WorldEdit {
                     }
                 }
 
-                Gui.CommandBox.IsEmpty = true;
+                ConsoleUI.CommandBox.IsEmpty = true;
             }
         }
 
