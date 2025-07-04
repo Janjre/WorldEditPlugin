@@ -19,6 +19,7 @@ namespace WorldEdit {
     public static class Globals // no i cannot do things without this
     {
 
+        public static WorldEditScreen Screen = new WorldEditScreen();
         public static Random MyRandom = new Random();
 
         
@@ -145,14 +146,10 @@ namespace WorldEdit {
             Onix.Events.Common.Tick += OnTick;
             // Onix.Events.Common.HudRender += OnHudRender;
             Onix.Events.Common.WorldRender += OnWorldRender;
-            Onix.Events.Common.HudRenderDirect2D += Gui.OnHudRenderDirect2D;
             Onix.Events.Input.Input += InputHandler.OnInput;
             Onix.Events.LocalServer.PlayerChatEvent += MyChatHandler;
             Gui.NotInGui = true;
-
-            Gui.Screen = new OnixClientScreen("worldEdit", true, true);
             
-
             History.UndoHistory.Add( new History.HistoryItem(0, "Start", false));
             History.RedoHistory.Add (new History.HistoryItem(0, "Start", false));
 
@@ -186,7 +183,6 @@ namespace WorldEdit {
             Onix.Events.Common.Tick -= OnTick;
             // Onix.Events.Common.HudRender -= OnHudRender;
             Onix.Events.Common.WorldRender -= OnWorldRender;
-            Onix.Events.Common.HudRenderDirect2D -= Gui.OnHudRenderDirect2D;
             Onix.Events.Input.Input -= InputHandler.OnInput;
             // Onix.Events.LocalServer.PlayerChatEvent -= MyChatHandler;
 

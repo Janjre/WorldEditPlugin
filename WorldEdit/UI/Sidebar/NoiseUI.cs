@@ -22,9 +22,9 @@ public static class NoiseUI
         ScrollBar.MarginFromLeft = 0f;
         ScrollBar.MarginFromRight = 0f;
         ScrollBar.PanelRect = area;
-        
-        var clickInput = InputHandler.InputTrackers.ClickInput;
-        var scrollCount = InputHandler.InputTrackers.ScrollCount;
+
+        var clickInput = Globals.Screen.ClickInput;
+        var scrollCount = Globals.Screen.ScrollCount;
         var mousePos = Onix.Gui.MousePosition;
 
         if (clickInput != null && mousePos != null)

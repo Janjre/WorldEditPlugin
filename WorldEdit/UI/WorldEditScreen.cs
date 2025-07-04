@@ -1,21 +1,25 @@
 ﻿using OnixRuntime.Api;
+using OnixRuntime.Api.Inputs;
 using OnixRuntime.Api.OnixClient;
 using OnixRuntime.Api.Rendering;
 
 namespace WorldEdit.UI;
 
-public class MyCustomScreen : OnixClientScreen
+public class WorldEditScreen : OnixClientScreen
 {
-    public MyCustomScreen() : base("WorldEdit", true, true)
+    public WorldEditScreen() : base("WorldEdit", true, true)
     {
-        // Initialization code here
+        
     }
 
-    // Override the methods you need, such as rendering or input handling
     public override void OnRender(RendererCommon2D gfx)
     {
-        // Draw your custom UI here
-        gfx.RenderText(new OnixRuntime.Api.Maths.Vec2(100, 100), Onix.Client.ThemeV3.Text, "Hello from MyCustomScreen!", 1.0f);
+        Gui.DrawScreen(gfx);
+    }
+
+    public override bool OnInput(InputKey key, bool isDown)
+    {
+        return InputHandler.screenInput(key,isDown);
     }
 
     public override void OnOpened()
