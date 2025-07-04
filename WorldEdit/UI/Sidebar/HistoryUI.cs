@@ -1,6 +1,7 @@
 ﻿using OnixRuntime.Api;
 using OnixRuntime.Api.Maths;
 using OnixRuntime.Api.Rendering;
+using OnixRuntime.Api.Rendering.Helpers;
 
 namespace WorldEdit.UI.Sidebar;
 
@@ -8,16 +9,20 @@ namespace WorldEdit.UI.Sidebar;
 
 public static class HistoryUI
 {
-    public static bool render(Rect area, float screenHeight, float screenWidth)
+    
+    
+    public static bool render(Rect area, float screenHeight, float screenWidth,float deltaTime)
     {
+      
 
         float startIterationsPosition = screenHeight * 0.17f;
         float characterHeight = 7;
         float endPoint = screenHeight * 0.83f;
 
+        
+        
         for (int i = 0; i <= History.UndoHistory.Count; i++)
         {
-
             Vec2 tlTextPos = new Vec2(screenWidth * 0.67f, startIterationsPosition + characterHeight * i);
             Vec2 brTextPos = new Vec2(screenWidth * 0.83f,
                 startIterationsPosition + (characterHeight * i) + characterHeight);
@@ -29,24 +34,14 @@ public static class HistoryUI
 
             if (i >= 0 && i < History.UndoHistory.Count)
             {
-
-                // if (Globals.UndoHistory[i].Id)
                 ColorF colour = ColorF.White;
                 if (i == History.undoPoint)
                 {
-
                     colour = ColorF.Red;
                 }
 
                 Onix.Render.Direct2D.RenderText(tlTextPos, colour, History.UndoHistory[i].Text, TextAlignment.Left,
                     TextAlignment.Top, characterHeight / 6);
-                // Rect button = new Rect(
-                //     new Vec2(tlTextPos.X- 10, tlTextPos.Y+2),
-                //     new Vec2(tlTextPos.X -2, tlTextPos.Y + 10));
-                //
-                // Globals.RevertButtons[i] = new HistoryActions.HistoryItem(i,false,button,Globals.UndoHistory[i].Id);
-                // Onix.Render.Direct2D.RenderTexture(button,Globals.UndoIcon,1f);
-
             }
 
 

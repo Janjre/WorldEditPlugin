@@ -6,6 +6,7 @@ using OnixRuntime.Api.Entities;
 using OnixRuntime.Api.Events;
 using OnixRuntime.Api.Inputs;
 using OnixRuntime.Api.Maths;
+using OnixRuntime.Api.OnixClient;
 using OnixRuntime.Plugin;
 using OnixRuntime.Api.Rendering;
 using OnixRuntime.Api.UI;
@@ -148,6 +149,9 @@ namespace WorldEdit {
             Onix.Events.Input.Input += InputHandler.OnInput;
             Onix.Events.LocalServer.PlayerChatEvent += MyChatHandler;
             Gui.NotInGui = true;
+
+            Gui.Screen = new OnixClientScreen("worldEdit", true, true);
+            
 
             History.UndoHistory.Add( new History.HistoryItem(0, "Start", false));
             History.RedoHistory.Add (new History.HistoryItem(0, "Start", false));

@@ -1,5 +1,6 @@
 ﻿using System.Net.Http.Headers;
 using System.Text.Json;
+using OnixRuntime.Api.OnixClient;
 using WorldEdit.UI;
 using WorldEdit.UI.Sidebar;
 
@@ -23,6 +24,7 @@ public class Gui
     public static bool NotInGui = true;
     public static OnixTextbox CommandBox = new OnixTextbox(128, "", "World edit command here");
     public static string assetsPath;
+    public static OnixClientScreen Screen;
     
     public static void OnHudRenderDirect2D(RendererDirect2D gfx, float delta) {
             // For example, before the loop:
@@ -154,14 +156,24 @@ public class Gui
                     tab.Button = new Rect(
                         new Vec2(tabArea.BottomLeft.X+tabPoint,tabArea.TopLeft.Y),
                         new Vec2(tabArea.BottomLeft.X+tabPoint+tabSize,tabArea.TopLeft.Y+tabHeight));
-                    Onix.Render.Direct2D.FillRoundedRectangle(tab.Button, new ColorF("268BB6"), 1f);
+                    ColorF colour = new ColorF("383838");
+                    if (tab.TabNumber == TabManager.selectedTab.TabNumber)
+                    {
+                        colour = new ColorF("4c4c4a");
+                    }
+                    Onix.Render.Direct2D.FillRoundedRectangle(tab.Button, colour, 1f);
                     
-                    Onix.Render.Direct2D.RenderText(tab.Button,ColorF.White,tab.Name,TextAlignment.Left,TextAlignment.Top);
+                    
+                    
+                    Onix.Render.Direct2D.RenderText(tab.Button,ColorF.White,tab.Name,TextAlignment.Center,TextAlignment.Top);
                     tabPoint += tabSize + 5;
                 }
 
-                TabManager.selectedTab.Render(sidebarArea, screenHeight, screenWidth);
+                TabManager.selectedTab.Render(sidebarArea, screenHeight, screenWidth,delta);
                 
+                InputHandler.InputTrackers.ScrollCount = 0;
+                InputHandler.InputTrackers.ClickInput = InputKey.ClickType.None;
+
             } 
             CommandBox.IsFocused = !NotInGui;
         }

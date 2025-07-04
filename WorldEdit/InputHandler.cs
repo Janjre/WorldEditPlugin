@@ -1,4 +1,6 @@
 ﻿using System.Globalization;
+using WorldEdit.UI;
+using WorldEdit.UI.Sidebar;
 
 namespace WorldEdit;
 using System.Runtime.InteropServices.JavaScript;
@@ -16,6 +18,11 @@ using OnixRuntime.Api.World;
 public static class InputHandler
 {
     public static bool Shifting;
+    public static class InputTrackers
+    {
+        public static InputKey ClickInput = InputKey.None;
+        public static float ScrollCount = 0f;
+    }
     public static bool OnInput(InputKey key, bool isDown) // split up into relevant parts in different files and functions
     {
         if (isDown && Onix.Gui.MouseGrabbed && Gui.NotInGui)
@@ -28,7 +35,6 @@ public static class InputHandler
                     if (key.Value == InputKey.Type.LMB)
                     {
                         Selection.pos1 = new Vec3(result.BlockPosition.X, result.BlockPosition.Y, result.BlockPosition.Z);
-                        // Onix.Client.Notify("HAHA BLOCKED INPUT1!!!");
                         return true;
 
                     }
@@ -36,7 +42,6 @@ public static class InputHandler
                     if (key.Value == InputKey.Type.RMB)
                     {
                         Selection.pos2 = new Vec3(result.BlockPosition.X, result.BlockPosition.Y, result.BlockPosition.Z);
-                        // Onix.Client.Notify("HAHA BLOCKED INPUT2!!!");
                         return true;
                     }
 
@@ -147,6 +152,14 @@ public static class InputHandler
                     }
                 }
 
+                foreach (Tab tab in TabManager.tabs)
+                {
+                    if (Globals.myContains(tab.Button,mouseCursor))
+                    {
+                        TabManager.selectedTab = tab;
+                    }
+                }
+
                 return true;
 
 
@@ -245,6 +258,25 @@ public static class InputHandler
             if (Gui.NotInGui == false && key.Value == InputKey.Type.Shift)
             {
                 Shifting = isDown;
+            }
+
+            if (!Gui.NotInGui && key.IsMouse)
+            {
+                InputTrackers.ClickInput = key;
+
+                if (key.Value == InputKey.Type.Scroll)
+                {
+                    if (isDown)
+                    {
+                        InputTrackers.ScrollCount += 1;
+                    }
+                    else
+                    {
+                        InputTrackers.ScrollCount -= 1;
+                    }
+                }
+
+                
             }
 
             if (Gui.NotInGui == false)
