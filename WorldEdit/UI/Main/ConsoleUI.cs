@@ -8,7 +8,7 @@ namespace WorldEdit.UI.Main;
 public class ConsoleUI
 {
     public static OnixTextbox CommandBox = new OnixTextbox(128, "", "World edit command here");
-    public static bool render(Rect renderArea, float screenWidth, float screenHeight, float delta)
+    public static bool render(Rect renderArea, float screenHeight, float screenWidth, float delta)
     {
         ColorF lightGray = new ColorF(0.34f, 0.34f, 0.34f, 1f);
         Rect commandLine = new Rect(new Vec2(screenWidth * 0.15f, screenHeight * 0.75f),
@@ -97,5 +97,5 @@ public class ConsoleUI
         return true;
     }
     
-    public static Tab tab = new (render, 1, "Console", History.UndoIcon,0);
+    public static Tab tab = new (render, 4, "Console", History.UndoIcon,0);
 }

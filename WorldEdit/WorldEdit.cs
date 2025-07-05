@@ -161,7 +161,10 @@ namespace WorldEdit {
             TabManager.registerTab(HistoryUI.tab);
             TabManager.registerTab(NoiseUI.tab);
             TabManager.registerTab(TestUI.tab);
-            TabManager.selectedTab = HistoryUI.tab;
+            TabManager.registerTab(ConsoleUI.tab);
+            TabManager.registerTab(NoiseMakerUI.tab);
+            TabManager.selectedTabSide = HistoryUI.tab;
+            TabManager.selectedTabMain = ConsoleUI.tab;
 
 
 

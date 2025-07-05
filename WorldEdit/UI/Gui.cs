@@ -41,29 +41,33 @@ public class Gui
         Rect tabAreaMain = new Rect(new Vec2(mainArea.BottomLeft.X + 5, mainArea.TopLeft.Y+5),
             new Vec2(mainArea.BottomRight.X - 5, mainArea.TopRight.Y + tabHeightMain+5));
         
+        
         float tabSizeMain = ((mainArea.BottomRight.X - mainArea.BottomLeft.X) / TabManager.MainTabs.Count)-TabManager.MainTabs.Count*5;
         
         float tabPointMain = 0.0f;
 
-        tabPointMain += 7.5f;
-        
+        tabPointMain += 0f;
+
         foreach (Tab tab in TabManager.MainTabs)
         {
             tab.Button = new Rect(
                 new Vec2(tabAreaMain.BottomLeft.X+tabPointMain,tabAreaMain.TopLeft.Y),
                 new Vec2(tabAreaMain.BottomLeft.X+tabPointMain+tabSizeMain,tabAreaMain.TopLeft.Y+tabHeightMain));
             ColorF colour = new ColorF("383838");
-            if (tab.TabNumber == TabManager.selectedTab.TabNumber)
+            if (tab.TabNumber == TabManager.selectedTabMain.TabNumber)
             {
                 colour = new ColorF("4c4c4a");
             }
-            Onix.Render.Direct2D.FillRoundedRectangle(tab.Button, colour, 1f);
+
+            gfx.FillRoundedRectangle(tab.Button, colour, 1f);
             
             
             
-            Onix.Render.Direct2D.RenderText(tab.Button,ColorF.White,tab.Name,TextAlignment.Center,TextAlignment.Top);
+            gfx.RenderText(tab.Button,ColorF.White,tab.Name,TextAlignment.Center,TextAlignment.Top);
             tabPointMain += tabSizeMain + 5;
         }
+
+        TabManager.selectedTabMain.Render(mainArea, screenHeight, screenWidth, -1);
         
         
         
@@ -90,7 +94,7 @@ public class Gui
                 new Vec2(tabAreaSide.BottomLeft.X+tabPointSide,tabAreaSide.TopLeft.Y),
                 new Vec2(tabAreaSide.BottomLeft.X+tabPointSide+tabSizeSide,tabAreaSide.TopLeft.Y+tabHeightSide));
             ColorF colour = new ColorF("383838");
-            if (tab.TabNumber == TabManager.selectedTab.TabNumber)
+            if (tab.TabNumber == TabManager.selectedTabSide.TabNumber)
             {
                 colour = new ColorF("4c4c4a");
             }
@@ -101,5 +105,7 @@ public class Gui
             Onix.Render.Direct2D.RenderText(tab.Button,ColorF.White,tab.Name,TextAlignment.Center,TextAlignment.Top);
             tabPointSide += tabSizeSide + 5;
         }
+
+        TabManager.selectedTabSide.Render(sidebarArea,screenHeight,screenWidth,-1);
     }
 }

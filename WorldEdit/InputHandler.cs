@@ -160,7 +160,14 @@ public static class InputHandler
             {
                 if (Globals.myContains(tab.Button, mouseCursor))
                 {
-                    TabManager.selectedTab = tab;
+                    TabManager.selectedTabSide = tab;
+                }
+            }
+            foreach (Tab tab in TabManager.MainTabs)
+            {
+                if (Globals.myContains(tab.Button, mouseCursor))
+                {
+                    TabManager.selectedTabMain = tab;
                 }
             }
 

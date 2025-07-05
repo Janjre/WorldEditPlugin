@@ -13,7 +13,6 @@ public static class TestUI
     
     public static bool render(Rect area, float screenHeight, float screenWidth, float dt)
     {
-        Console.WriteLine("RENDERING TEST");
         return true;
     }
 
