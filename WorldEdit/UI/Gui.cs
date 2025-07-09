@@ -27,6 +27,7 @@ public class Gui
     public static string assetsPath;
     
     public static void DrawScreen(RendererCommon2D gfx) {
+        gfx.RenderText(new Vec2(0,20), ColorF.White, ConsoleUI.CommandBox.IsFocused.ToString());
         
         gfx.RenderText(new Vec2(0,0),ColorF.White,History.undoPoint.ToString(),1f );
         float screenWidth = Onix.Gui.ScreenSize.X;

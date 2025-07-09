@@ -24,7 +24,6 @@ public static class TestUI
 
     public static bool OnOpened()
     {
-        Console.WriteLine("Open test UI");
         return false;
     }
     

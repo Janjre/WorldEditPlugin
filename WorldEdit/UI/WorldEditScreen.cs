@@ -25,13 +25,14 @@ public class WorldEditScreen : OnixClientScreen
 
     public override void OnOpened()
     {
-        ConsoleUI.CommandBox.IsFocused = true;
+        TabManager.selectedTabMain.OnOpened();
+        TabManager.selectedTabSide.OnOpened();
         Console.WriteLine("Opened it");
     }
 
     public override bool OnClosed()
     {
-        ConsoleUI.CommandBox.IsFocused = false;
+        // ConsoleUI.CommandBox.IsFocused = false;
         return false;
     }
 }

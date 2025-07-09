@@ -147,7 +147,7 @@ public class ConsoleUI
 
         if (key == InputKey.Type.LMB && isDown)
         {
-            CommandBox.IsFocused = Globals.myContains(CommandLine, mouseCursor);
+            // CommandBox.IsFocused = Globals.myContains(CommandLine, mouseCursor);
         }
 
 
@@ -204,7 +204,7 @@ public class ConsoleUI
     }
     public static bool OnOpened()
     {
-        Console.WriteLine("Got here");
+        Console.WriteLine("Got here 207");
         CommandBox.IsFocused = true;
         return false;
     }

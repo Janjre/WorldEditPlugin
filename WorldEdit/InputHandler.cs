@@ -78,6 +78,11 @@ public static class InputHandler
 
     public static bool screenInput(InputKey key,bool isDown)
     {
+        
+        TabManager.selectedTabMain.OnInput(key, isDown);
+        TabManager.selectedTabSide.OnInput(key, isDown); 
+        
+        
         if (key.Value == InputKey.Type.LMB && isDown)
         {
             Vec2 mouseCursor = Onix.Gui.MousePosition;
@@ -100,13 +105,11 @@ public static class InputHandler
                 {
                     TabManager.selectedTabMain = tab;
                     TabManager.selectedTabMain.OnOpened();
-                    Console.WriteLine($"Ran {TabManager.selectedTabMain.Name}.OnOpened()");
                 }
             }
         }
 
-        TabManager.selectedTabMain.OnInput(key, isDown);
-        TabManager.selectedTabSide.OnInput(key, isDown); 
+        
 
 
         
