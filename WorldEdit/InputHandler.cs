@@ -104,100 +104,11 @@ public static class InputHandler
             }
         }
 
+        TabManager.selectedTabMain.OnInput(key, isDown);
+        TabManager.selectedTabSide.OnInput(key, isDown); 
 
 
-        if (key.Value == InputKey.Type.Tab && isDown)  // increment thgrough options
-        {
-
-
-            var (args, argCount) = Globals.SimpleSplit(ConsoleUI.CommandBox.Text); // argCount is not 0-based !!
-
-            if (Autocomplete.currentOptions.Count == 0)
-            {
-                return false;
-            }
-
-            int increment = 1;
-
-            if (Shifting)
-            {
-                increment = -1;
-            }
-
-
-            int pointInList = Autocomplete.currentOptions.IndexOf(Autocomplete.Selected) + increment;
-
-            if (pointInList == 0)
-            {
-            }
-
-            if (!Globals.IndexExists(Autocomplete.currentOptions, pointInList))
-            {
-                pointInList = 0;
-            }
-
-            Autocomplete.Selected = Autocomplete.currentOptions[pointInList];
-
-            Autocomplete.isPreviewing = true;
-
-
-
-        }
-
-        if (isDown && key.Value == InputKey.Type.Space) // ACtually filling in the thing
-        {
-            Autocomplete.Complete();
-        }
-
-
-        if (isDown)
-        {
-            switch (key.Value)
-            {
-                case InputKey.Type.Up:
-                    if (History.commandHistory.Count != 0)
-                    {
-                        History.commandHistoryPoint -= 1;
-
-                        if (History.commandHistoryPoint > History.commandHistory.Count - 1)
-                        {
-                            History.commandHistoryPoint = History.commandHistory.Count - 1;
-                        }
-
-                        if (History.commandHistoryPoint < 0)
-                        {
-                            History.commandHistoryPoint = 0;
-                        }
-
-                        ConsoleUI.CommandBox.Text = History.commandHistory[History.commandHistoryPoint];
-                    }
-
-                    break;
-
-                case InputKey.Type.Down:
-
-                    if (History.commandHistory.Count != 0)
-                    {
-                        History.commandHistoryPoint += 1;
-
-                        if (History.commandHistoryPoint > History.commandHistory.Count - 1)
-                        {
-                            History.commandHistoryPoint = History.commandHistory.Count - 1;
-                        }
-
-                        if (History.commandHistoryPoint < 0)
-                        {
-                            History.commandHistoryPoint = 0;
-                        }
-
-                        ConsoleUI.CommandBox.Text = History.commandHistory[History.commandHistoryPoint];
-
-                    }
-
-                    break;
-            }
-
-        }
+        
 
         if (key == InputKey.Type.Escape)
         {

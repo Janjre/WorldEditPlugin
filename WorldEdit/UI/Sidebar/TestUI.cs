@@ -1,4 +1,5 @@
 ﻿using OnixRuntime.Api;
+using OnixRuntime.Api.Inputs;
 using OnixRuntime.Api.Maths;
 using OnixRuntime.Api.Rendering;
 using OnixRuntime.Api.Rendering.Helpers;
@@ -16,6 +17,11 @@ public static class TestUI
         return true;
     }
 
-    public static Tab tab = new (render, 3, "Test", History.RedoIcon,1);
+    public static bool Input(InputKey key, bool isDown)
+    {
+        return false;
+    }
+    
+    public static Tab tab = new (render, Input, 3, "Test", History.RedoIcon,1);
 
 }

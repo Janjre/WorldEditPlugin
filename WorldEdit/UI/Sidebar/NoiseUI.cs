@@ -1,4 +1,5 @@
 ﻿using OnixRuntime.Api;
+using OnixRuntime.Api.Inputs;
 using OnixRuntime.Api.Maths;
 using OnixRuntime.Api.Rendering;
 using OnixRuntime.Api.Rendering.Helpers;
@@ -55,6 +56,11 @@ public static class NoiseUI
         return true;
     }
 
-    public static Tab tab = new (render, 2, "Noise", History.RedoIcon,1);
+    public static bool Input(InputKey key, bool isDown)
+    {
+        return true;
+    }
+
+    public static Tab tab = new (render, Input, 2, "Noise", History.RedoIcon,1);
 
 }

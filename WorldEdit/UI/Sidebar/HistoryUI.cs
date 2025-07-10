@@ -150,6 +150,6 @@ public static class HistoryUI
 
     }
 
-    public static Tab tab = new (render, 1, "History", History.UndoIcon,1);
+    public static Tab tab = new (render, Input,1, "History", History.UndoIcon,1);
 
 }

@@ -11,6 +11,11 @@ public class NoiseMakerUI
     {
         return true;
     }
+
+    public static bool Input(InputKey key, bool isDown)
+    {
+        return false;
+    }
     
-    public static Tab tab = new (render, 5, "Test2", History.UndoIcon,0);
+    public static Tab tab = new (render, Input, 5, "Test2", History.UndoIcon,0);
 }
