@@ -21,7 +21,13 @@ public static class TestUI
     {
         return false;
     }
+
+    public static bool OnOpened()
+    {
+        Console.WriteLine("Open test UI");
+        return false;
+    }
     
-    public static Tab tab = new (render, Input, 3, "Test", History.RedoIcon,1);
+    public static Tab tab = new (render, Input, OnOpened, 3, "Test", History.RedoIcon,1);
 
 }

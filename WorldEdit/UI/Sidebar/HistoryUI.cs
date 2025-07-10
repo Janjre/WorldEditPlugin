@@ -149,7 +149,12 @@ public static class HistoryUI
         return false;
 
     }
+    
+    public static bool OnOpened()
+    {
+        return false;
+    }
 
-    public static Tab tab = new (render, Input,1, "History", History.UndoIcon,1);
+    public static Tab tab = new (render, Input, OnOpened, 1, "History", History.UndoIcon,1);
 
 }

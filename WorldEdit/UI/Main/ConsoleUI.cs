@@ -8,6 +8,7 @@ namespace WorldEdit.UI.Main;
 public class ConsoleUI
 {
     public static OnixTextbox CommandBox = new OnixTextbox(128, "", "World edit command here");
+    public static Rect CommandLine = new ();
     public static bool render(Rect renderArea, float screenHeight, float screenWidth, float delta)
     {
         
@@ -16,6 +17,8 @@ public class ConsoleUI
             new Vec2(screenWidth * 0.58f, screenHeight * 0.82f));
         Onix.Render.Direct2D.FillRoundedRectangle(commandLine, lightGray, 5f, 10);
         CommandBox.Render(commandLine);
+
+        CommandLine = commandLine;
 
         //console area
 
@@ -100,10 +103,9 @@ public class ConsoleUI
     
     public static bool Input(InputKey key, bool isDown)
     {
+        Vec2 mouseCursor = Onix.Gui.MousePosition;
         if (key.Value == InputKey.Type.Tab && isDown)  // increment thgrough options
         {
-
-
             var (args, argCount) = Globals.SimpleSplit(ConsoleUI.CommandBox.Text); // argCount is not 0-based !!
 
             if (Autocomplete.currentOptions.Count == 0)
@@ -141,6 +143,11 @@ public class ConsoleUI
         if (isDown && key.Value == InputKey.Type.Space) // ACtually filling in the thing
         {
             Autocomplete.Complete();
+        }
+
+        if (key == InputKey.Type.LMB && isDown)
+        {
+            CommandBox.IsFocused = Globals.myContains(CommandLine, mouseCursor);
         }
 
 
@@ -195,6 +202,12 @@ public class ConsoleUI
 
         return false;
     }
+    public static bool OnOpened()
+    {
+        Console.WriteLine("Got here");
+        CommandBox.IsFocused = true;
+        return false;
+    }
     
-    public static Tab tab = new (render, Input, 4, "Console", History.UndoIcon,0);
+    public static Tab tab = new (render, Input, OnOpened, 4, "Console", History.UndoIcon,0);
 }

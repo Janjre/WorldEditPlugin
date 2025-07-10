@@ -60,7 +60,12 @@ public static class NoiseUI
     {
         return true;
     }
+    
+    public static bool OnOpened()
+    {
+        return false;
+    }
 
-    public static Tab tab = new (render, Input, 2, "Noise", History.RedoIcon,1);
+    public static Tab tab = new (render, Input, OnOpened, 2, "Noise", History.RedoIcon,1);
 
 }

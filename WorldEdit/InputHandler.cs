@@ -25,7 +25,6 @@ public static class InputHandler
         OnInput(InputKey key, bool isDown) // split up into relevant parts in different files and functions
     {
         
-        Console.WriteLine($"Hit key {key}");
         if (isDown && Onix.Gui.MouseGrabbed && Gui.NotInGui)
         {
             RaycastResult result = Onix.LocalPlayer.Raycast;
@@ -68,7 +67,6 @@ public static class InputHandler
         
         if (Onix.Gui.ScreenName == Globals.Screen.ScreenName)
         {
-            Console.WriteLine("Getting here");
             if (key.Value == InputKey.Type.Escape && isDown)
             {
                 Globals.Screen.CloseScreen();
@@ -93,6 +91,7 @@ public static class InputHandler
                 if (Globals.myContains(tab.Button, mouseCursor))
                 {
                     TabManager.selectedTabSide = tab;
+                    TabManager.selectedTabSide.OnOpened();
                 }
             }
             foreach (Tab tab in TabManager.MainTabs)
@@ -100,6 +99,8 @@ public static class InputHandler
                 if (Globals.myContains(tab.Button, mouseCursor))
                 {
                     TabManager.selectedTabMain = tab;
+                    TabManager.selectedTabMain.OnOpened();
+                    Console.WriteLine($"Ran {TabManager.selectedTabMain.Name}.OnOpened()");
                 }
             }
         }

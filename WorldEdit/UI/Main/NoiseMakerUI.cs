@@ -17,5 +17,10 @@ public class NoiseMakerUI
         return false;
     }
     
-    public static Tab tab = new (render, Input, 5, "Test2", History.UndoIcon,0);
+    public static bool OnOpened()
+    {
+        return false;
+    }
+    
+    public static Tab tab = new (render, Input, OnOpened, 5, "Test2", History.UndoIcon,0);
 }

@@ -13,8 +13,9 @@ public class Tab
     public int Type; // 1 = sidebar, 0 = main 
     public Rect Button;
     public Func<InputKey, bool, bool> OnInput;
+    public Func<bool> OnOpened; 
 
-    public Tab (Func<Rect,float,float,float,bool> render, Func<InputKey, bool, bool> inputHandler, int tabNumber, string name, TexturePath icon, int type)
+    public Tab (Func<Rect,float,float,float,bool> render, Func<InputKey, bool, bool> inputHandler, Func<bool> onOpened, int tabNumber, string name, TexturePath icon, int type)
     {
         Render = render;
         TabNumber = tabNumber;
@@ -22,6 +23,7 @@ public class Tab
         Icon = icon;
         Type = type;
         OnInput = inputHandler;
+        OnOpened = onOpened;
     }
 }
 
