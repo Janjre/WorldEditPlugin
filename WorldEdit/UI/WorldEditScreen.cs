@@ -2,6 +2,7 @@
 using OnixRuntime.Api.Inputs;
 using OnixRuntime.Api.OnixClient;
 using OnixRuntime.Api.Rendering;
+using WorldEdit.UI.Main;
 
 namespace WorldEdit.UI;
 
@@ -24,13 +25,13 @@ public class WorldEditScreen : OnixClientScreen
 
     public override void OnOpened()
     {
-        base.OnOpened();
-        // Code to run when the screen is opened
+        ConsoleUI.CommandBox.IsFocused = true;
+        Console.WriteLine("Opened it");
     }
 
     public override bool OnClosed()
     {
-        // Code to run when the screen is closed
-        return base.OnClosed();
+        ConsoleUI.CommandBox.IsFocused = false;
+        return false;
     }
 }

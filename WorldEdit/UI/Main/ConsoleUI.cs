@@ -10,6 +10,7 @@ public class ConsoleUI
     public static OnixTextbox CommandBox = new OnixTextbox(128, "", "World edit command here");
     public static bool render(Rect renderArea, float screenHeight, float screenWidth, float delta)
     {
+        
         ColorF lightGray = new ColorF(0.34f, 0.34f, 0.34f, 1f);
         Rect commandLine = new Rect(new Vec2(screenWidth * 0.15f, screenHeight * 0.75f),
             new Vec2(screenWidth * 0.58f, screenHeight * 0.82f));

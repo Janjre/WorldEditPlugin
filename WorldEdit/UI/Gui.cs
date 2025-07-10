@@ -2,6 +2,7 @@
 using System.Text.Json;
 using OnixRuntime.Api.OnixClient;
 using WorldEdit.UI;
+using WorldEdit.UI.Main;
 using WorldEdit.UI.Sidebar;
 
 namespace WorldEdit;
@@ -66,12 +67,7 @@ public class Gui
             gfx.RenderText(tab.Button,ColorF.White,tab.Name,TextAlignment.Center,TextAlignment.Top);
             tabPointMain += tabSizeMain + 5;
         }
-
         TabManager.selectedTabMain.Render(mainArea, screenHeight, screenWidth, -1);
-        
-        
-        
-        
         
 
 

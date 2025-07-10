@@ -195,7 +195,6 @@ namespace WorldEdit {
 
         }
         private void OnTick() {
-            
             if (ConsoleUI.CommandBox.HasConfirmedText)
             {
                 

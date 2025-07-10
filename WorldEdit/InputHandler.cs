@@ -24,6 +24,8 @@ public static class InputHandler
     public static bool
         OnInput(InputKey key, bool isDown) // split up into relevant parts in different files and functions
     {
+        
+        Console.WriteLine($"Hit key {key}");
         if (isDown && Onix.Gui.MouseGrabbed && Gui.NotInGui)
         {
             RaycastResult result = Onix.LocalPlayer.Raycast;
@@ -54,7 +56,7 @@ public static class InputHandler
             }
 
 
-        }
+        } 
 
         if (Onix.Gui.ScreenName == "hud_screen")
         {
@@ -62,11 +64,14 @@ public static class InputHandler
             {
                 Globals.Screen.OpenScreen();
             }
-
-            if (key.Value == InputKey.Type.Escape && isDown && Gui.NotInGui == false)
+        }
+        
+        if (Onix.Gui.ScreenName == Globals.Screen.ScreenName)
+        {
+            Console.WriteLine("Getting here");
+            if (key.Value == InputKey.Type.Escape && isDown)
             {
-                Globals.Screen.OpenScreen();
-                return true;
+                Globals.Screen.CloseScreen();
             }
         }
 
@@ -81,80 +86,7 @@ public static class InputHandler
             float screenWidth = Onix.Gui.ScreenSize.X;
             float screenHeight = Onix.Gui.ScreenSize.Y;
 
-            Rect undo = new Rect(new Vec2(screenWidth * 0.80f, screenHeight * 0.12f),
-                new Vec2((screenWidth * 0.80f) + 15, (screenHeight * 0.12f) + 15));
-
-
-
-            Rect redo = new Rect(new Vec2(screenWidth * 0.82f, screenHeight * 0.12f),
-                new Vec2((screenWidth * 0.82f) + 15, (screenHeight * 0.12f) + 15));
-
-            Rect clear = new Rect(new Vec2(screenWidth * 0.785f, screenHeight * 0.12f),
-                new Vec2((screenWidth * 0.785f) + 9, (screenHeight * 0.12f) + 9));
-
-
-
-
-            if (Globals.myContains(undo, mouseCursor))
-            {
-                long targetUUID = History.UndoHistory[History.undoPoint].UUID;
-
-                foreach (MyBlock block in History.UndoHistoryAsBlocks)
-                {
-                    if (block.Action == targetUUID)
-                    {
-                        Onix.Client.ExecuteCommand("execute setblock " + block.Position.X + " " + block.Position.Y +
-                                                   " " + block.Position.Z + " " + block.Name);
-                    }
-                }
-
-                History.undoPoint -= 1;
-                if (History.undoPoint < 0)
-                {
-                    History.undoPoint = 0;
-                }
-
-                if (History.undoPoint > History.UndoHistory.Count)
-                {
-                    History.undoPoint = History.UndoHistory.Count;
-                }
-            }
-
-            if (Globals.myContains(redo, mouseCursor))
-            {
-
-                History.undoPoint += 1;
-
-                long targetUUID = History.UndoHistory[History.undoPoint].UUID;
-                foreach (MyBlock block in History.RedoHistoryAsBlocks)
-                {
-                    if (block.Action == targetUUID)
-                    {
-                        Onix.Client.ExecuteCommand("execute setblock " + block.Position.X + " " + block.Position.Y +
-                                                   " " + block.Position.Z + " " + block.Name);
-                    }
-                }
-
-                if (History.undoPoint < 0)
-                {
-                    History.undoPoint = 0;
-                }
-
-                if (History.undoPoint > History.UndoHistory.Count)
-                {
-                    History.undoPoint = History.UndoHistory.Count;
-                }
-
-            }
-
-            if (Globals.myContains(clear, mouseCursor))
-            {
-                History.undoPoint = 0;
-                for (int i = History.UndoHistory.Count - 1; i >= 1; i--)
-                {
-                    History.UndoHistory.RemoveAt(i);
-                }
-            }
+            
 
             foreach (Tab tab in TabManager.SideTabs)
             {
@@ -170,10 +102,6 @@ public static class InputHandler
                     TabManager.selectedTabMain = tab;
                 }
             }
-
-            return true;
-
-
         }
 
 
@@ -186,7 +114,7 @@ public static class InputHandler
 
             if (Autocomplete.currentOptions.Count == 0)
             {
-                return true;
+                return false;
             }
 
             int increment = 1;
@@ -270,6 +198,12 @@ public static class InputHandler
             }
 
         }
+
+        if (key == InputKey.Type.Escape)
+        {
+            Globals.Screen.CloseScreen();
+        }
+        
 
         return false;
     }
