@@ -27,7 +27,7 @@ public class Gui
     public static string assetsPath;
     
     public static void DrawScreen(RendererCommon2D gfx) {
-        gfx.RenderText(new Vec2(0,20), ColorF.White, ConsoleUI.CommandBox.IsFocused.ToString());
+        gfx.RenderText(new Vec2(0,20), ColorF.White, "NEW" + ConsoleUI.shoudCommandBoxBeFocused.ToString());
         
         gfx.RenderText(new Vec2(0,0),ColorF.White,History.undoPoint.ToString(),1f );
         float screenWidth = Onix.Gui.ScreenSize.X;
@@ -103,6 +103,23 @@ public class Gui
             tabPointSide += tabSizeSide + 5;
         }
 
+
+        if (ConsoleUI.CommandBox.IsFocused == false && ConsoleUI.previousIsFocused == true && ConsoleUI.shoudCommandBoxBeFocused == true )
+        { 
+            
+            //user has pressed escape to leave the textbox, this means we make the artificial setter know its false
+            Console.WriteLine("Reached 111!");
+            ConsoleUI.shoudCommandBoxBeFocused = false;
+            ConsoleUI.previousIsFocused = false;
+        }
+        
+        ConsoleUI.CommandBox.IsFocused = ConsoleUI.shoudCommandBoxBeFocused; // the ONLY place where ConsoleUI.CommandBox.IsFocused should be set
+
+        ConsoleUI.previousIsFocused = ConsoleUI.CommandBox.IsFocused; 
+        
+        
+        
+        
         TabManager.selectedTabSide.Render(sidebarArea,screenHeight,screenWidth,-1);
     }
 }

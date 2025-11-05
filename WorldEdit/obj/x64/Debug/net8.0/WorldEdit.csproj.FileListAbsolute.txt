@@ -13,3 +13,4 @@ C:\Users\ms\AppData\Local\Packages\Microsoft.MinecraftUWP_8wekyb3d8bbwe\RoamingS
 C:\Users\ms\AppData\Local\Packages\Microsoft.MinecraftUWP_8wekyb3d8bbwe\RoamingState\OnixClient\Plugins\makingPlugins\WorldEdit\WorldEdit\obj\x64\Debug\net8.0\WorldEdit.pdb
 C:\Users\ms\AppData\Local\Packages\Microsoft.MinecraftUWP_8wekyb3d8bbwe\RoamingState\OnixClient\Plugins\makingPlugins\WorldEdit\WorldEdit\obj\x64\Debug\net8.0\ref\WorldEdit.dll
 C:\Users\ms\AppData\Local\Packages\Microsoft.MinecraftUWP_8wekyb3d8bbwe\RoamingState\OnixClient\Plugins\makingPlugins\WorldEdit\WorldEdit\obj\x64\Debug\net8.0\WorldEdit.sourcelink.json
+C:\Users\ms\AppData\Local\Packages\Microsoft.MinecraftUWP_8wekyb3d8bbwe\RoamingState\OnixClient\Plugins\makingPlugins\WorldEdit\WorldEdit\bin\x64\Debug\net8.0\OnixRuntime.xml

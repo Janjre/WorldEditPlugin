@@ -143,8 +143,8 @@ namespace WorldEdit {
     
         protected override void OnLoaded() {
             Console.WriteLine($"Plugin {CurrentPluginManifest.Name} loaded!");
-            Config = new WorldEditConfig(PluginDisplayModule);
-            Onix.Events.Common.Tick += OnTick;
+            Config = new WorldEditConfig();
+            // Onix.Events.Common.Tick += OnTick;
             // Onix.Events.Common.HudRender += OnHudRender;
             Onix.Events.Common.WorldRender += OnWorldRender;
             Onix.Events.Input.Input += InputHandler.OnInput;
@@ -185,7 +185,7 @@ namespace WorldEdit {
             // Ensure every task or thread is stopped when this function returns.
             // You can give them base.PluginEjectionCancellationToken which will be cancelled when this function returns. 
             Console.WriteLine($"Plugin {CurrentPluginManifest.Name} unloaded!");
-            Onix.Events.Common.Tick -= OnTick;
+            // Onix.Events.Common.Tick -= OnTick;
             // Onix.Events.Common.HudRender -= OnHudRender;
             Onix.Events.Common.WorldRender -= OnWorldRender;
             Onix.Events.Input.Input -= InputHandler.OnInput;
@@ -195,19 +195,20 @@ namespace WorldEdit {
 
         }
         private void OnTick() {
+            
             if (ConsoleUI.CommandBox.HasConfirmedText)
             {
                 
                 String message = ConsoleUI.CommandBox.Text;
-
+        
                 if (message != "")
                 {
-
-
+        
+        
                     String[] splitMessage = message.Split(' ', StringSplitOptions.RemoveEmptyEntries);
-
-
-
+        
+        
+        
                     foreach (Autocomplete.commandObject command in Autocomplete.commands)
                     {
                         if (command.Name == splitMessage[0])
@@ -222,7 +223,7 @@ namespace WorldEdit {
                         }
                     }
                 }
-
+        
                 ConsoleUI.CommandBox.IsEmpty = true;
             }
         }

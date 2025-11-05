@@ -1,4 +1,5 @@
 ﻿using OnixRuntime.Api;
+using OnixRuntime.Api.Errors;
 using OnixRuntime.Api.Inputs;
 using OnixRuntime.Api.Maths;
 using OnixRuntime.Api.Rendering;
@@ -7,8 +8,11 @@ namespace WorldEdit.UI.Main;
 
 public class ConsoleUI
 {
+
+    public static bool previousIsFocused = true;
     public static OnixTextbox CommandBox = new OnixTextbox(128, "", "World edit command here");
     public static Rect CommandLine = new ();
+    public static bool shoudCommandBoxBeFocused = false;
     public static bool render(Rect renderArea, float screenHeight, float screenWidth, float delta)
     {
         
@@ -103,10 +107,12 @@ public class ConsoleUI
     
     public static bool Input(InputKey key, bool isDown)
     {
+
+        // Globals.Screen.CloseScreen();
         Vec2 mouseCursor = Onix.Gui.MousePosition;
         if (key.Value == InputKey.Type.Tab && isDown)  // increment thgrough options
         {
-            var (args, argCount) = Globals.SimpleSplit(ConsoleUI.CommandBox.Text); // argCount is not 0-based !!
+            
 
             if (Autocomplete.currentOptions.Count == 0)
             {
@@ -147,7 +153,7 @@ public class ConsoleUI
 
         if (key == InputKey.Type.LMB && isDown)
         {
-            // CommandBox.IsFocused = Globals.myContains(CommandLine, mouseCursor);
+            shoudCommandBoxBeFocused = Globals.myContains(CommandLine, mouseCursor);
         }
 
 
@@ -191,7 +197,7 @@ public class ConsoleUI
                             History.commandHistoryPoint = 0;
                         }
 
-                        ConsoleUI.CommandBox.Text = History.commandHistory[History.commandHistoryPoint];
+                        CommandBox.Text = History.commandHistory[History.commandHistoryPoint];
 
                     }
 
@@ -204,8 +210,7 @@ public class ConsoleUI
     }
     public static bool OnOpened()
     {
-        Console.WriteLine("Got here 207");
-        CommandBox.IsFocused = true;
+        shoudCommandBoxBeFocused = true;
         return false;
     }
     

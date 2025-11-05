@@ -21,8 +21,7 @@ public static class InputHandler
 {
     public static bool Shifting;
 
-    public static bool
-        OnInput(InputKey key, bool isDown) // split up into relevant parts in different files and functions
+    public static bool OnInput(InputKey key, bool isDown) // split up into relevant parts in different files and functions
     {
         
         if (isDown && Onix.Gui.MouseGrabbed && Gui.NotInGui)
@@ -65,20 +64,20 @@ public static class InputHandler
             }
         }
         
-        if (Onix.Gui.ScreenName == Globals.Screen.ScreenName)
+        
+        if (key.Value == InputKey.Type.Escape)
         {
-            if (key.Value == InputKey.Type.Escape && isDown)
-            {
-                Globals.Screen.CloseScreen();
-            }
+            Globals.Screen.CloseScreen();
         }
+        
+        
 
         return false;
     }
 
     public static bool screenInput(InputKey key,bool isDown)
     {
-        
+        Console.WriteLine("Got here 80 !");   
         TabManager.selectedTabMain.OnInput(key, isDown);
         TabManager.selectedTabSide.OnInput(key, isDown); 
         
@@ -107,6 +106,7 @@ public static class InputHandler
                     TabManager.selectedTabMain.OnOpened();
                 }
             }
+            
         }
 
         
@@ -114,12 +114,14 @@ public static class InputHandler
 
         
 
-        if (key == InputKey.Type.Escape)
+        if (key == InputKey.Type.Escape || key == InputKey.Type.Y)
         {
+            Console.WriteLine("Got to 118 in InputHandler.cs");
             Globals.Screen.CloseScreen();
         }
         
-
+        
+        
         return false;
     }
 }
