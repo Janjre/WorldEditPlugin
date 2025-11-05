@@ -11,29 +11,15 @@ using OnixRuntime.Plugin;
 using OnixRuntime.Api.Rendering;
 using OnixRuntime.Api.UI;
 using OnixRuntime.Api.World;
-using WorldEdit.UI;
-using WorldEdit.UI.Main;
-using WorldEdit.UI.Sidebar;
+using PluginCommandExample;
+
 
 namespace WorldEdit {
 
     public static class Globals // no i cannot do things without this
     {
 
-        public static WorldEditScreen Screen = new WorldEditScreen();
         public static Random MyRandom = new Random();
-
-        
-        public static bool myContains(Rect rect, Vec2 point)
-        {
-            if (point.Y > rect.TopLeft.Y && point.Y < rect.BottomLeft.Y && point.X > rect.BottomLeft.X &&
-                point.X < rect.BottomRight.X)
-            {
-                return true;
-            }
-
-            return false;
-        }
         
 
 
@@ -53,51 +39,6 @@ namespace WorldEdit {
 
             return (posMin, posMax);
         }
-        
-        public static (List<string> args, int argCount) SimpleSplit(string input)
-        {
-            List<string> args = new();
-            if (string.IsNullOrWhiteSpace(input))
-                return (args, 0);
-
-            int length = input.Length;
-            int i = 0;
-            int count = 0;
-
-            while (i < length)
-            {
-               
-                while (i < length && char.IsWhiteSpace(input[i]))
-                    i++;
-
-                if (i >= length)
-                    break;
-
-                
-                int start = i;
-                while (i < length && !char.IsWhiteSpace(input[i]))
-                    i++;
-
-                args.Add(input.Substring(start, i - start));
-                count++;  
-            }
-            
-            args.Add("");
-            args.Add("");
-            args.Add(""); // No more IndexOutOfBounds errors!!1!!!!!
-
-            return (args, count);
-        }
-
-        
-        
-        public static bool IndexExists<T>(List<T> list, int index)
-        {
-            return index >= 0 && index < list.Count;
-        }
-
-
-
         
     }
 
@@ -134,7 +75,6 @@ namespace WorldEdit {
             Instance = this;
             // If you can clean up what the plugin leaves behind manually, please do not unload the plugin when disabling.
             base.DisablingShouldUnloadPlugin = false;
-            Gui.assetsPath = Instance.PluginAssetsPath;
 #if DEBUG
             // base.WaitForDebuggerToBeAttached();
 #endif
@@ -149,25 +89,12 @@ namespace WorldEdit {
             Onix.Events.Common.WorldRender += OnWorldRender;
             Onix.Events.Input.Input += InputHandler.OnInput;
             Onix.Events.LocalServer.PlayerChatEvent += MyChatHandler;
-            Gui.NotInGui = true;
             
             History.UndoHistory.Add( new History.HistoryItem(0, "Start", false));
             History.RedoHistory.Add (new History.HistoryItem(0, "Start", false));
-
-            Autocomplete.RegisterCommand(Commands.Fill.FillInit());
-            Autocomplete.RegisterCommand(Commands.Replace.ReplaceInit());
-            Autocomplete.RegisterCommand(Commands.Perlin.PerlinInit());
             
-            TabManager.registerTab(HistoryUI.tab);
-            TabManager.registerTab(NoiseUI.tab);
-            TabManager.registerTab(TestUI.tab);
-            TabManager.registerTab(ConsoleUI.tab);
-            TabManager.registerTab(NoiseMakerUI.tab);
-            TabManager.selectedTabSide = HistoryUI.tab;
-            TabManager.selectedTabMain = ConsoleUI.tab;
-
-
-
+            
+            Onix.Client.CommandRegistry.RegisterCommand(new ExampleCommand());
 
         }
         
@@ -194,39 +121,9 @@ namespace WorldEdit {
             
 
         }
-        private void OnTick() {
-            
-            if (ConsoleUI.CommandBox.HasConfirmedText)
-            {
-                
-                String message = ConsoleUI.CommandBox.Text;
-        
-                if (message != "")
-                {
-        
-        
-                    String[] splitMessage = message.Split(' ', StringSplitOptions.RemoveEmptyEntries);
-        
-        
-        
-                    foreach (Autocomplete.commandObject command in Autocomplete.commands)
-                    {
-                        if (command.Name == splitMessage[0])
-                        {
-                            command.OnRan(message);
-                            History.commandHistory.Add(message);
-                            History.commandHistoryPoint = History.commandHistory.Count - 1;
-                            if (History.commandHistoryPoint == -1)
-                            {
-                                History.commandHistoryPoint = 0;
-                            }
-                        }
-                    }
-                }
-        
-                ConsoleUI.CommandBox.IsEmpty = true;
-            }
-        }
+        // private void OnTick() {
+        //     
+        // }
 
 
 

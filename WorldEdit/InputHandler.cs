@@ -1,8 +1,5 @@
 ﻿using System.Globalization;
 using OnixRuntime.Api.OnixClient;
-using WorldEdit.UI;
-using WorldEdit.UI.Main;
-using WorldEdit.UI.Sidebar;
 
 namespace WorldEdit;
 using System.Runtime.InteropServices.JavaScript;
@@ -24,7 +21,7 @@ public static class InputHandler
     public static bool OnInput(InputKey key, bool isDown) // split up into relevant parts in different files and functions
     {
         
-        if (isDown && Onix.Gui.MouseGrabbed && Gui.NotInGui)
+        if (isDown && Onix.Gui.MouseGrabbed)
         {
             RaycastResult result = Onix.LocalPlayer.Raycast;
             if (Onix.LocalPlayer.MainHandItem.Item != null)
@@ -55,72 +52,6 @@ public static class InputHandler
 
 
         } 
-
-        if (Onix.Gui.ScreenName == "hud_screen")
-        {
-            if (key.Value == InputKey.Type.Y && isDown)
-            {
-                Globals.Screen.OpenScreen();
-            }
-        }
-        
-        
-        if (key.Value == InputKey.Type.Escape)
-        {
-            Globals.Screen.CloseScreen();
-        }
-        
-        
-
-        return false;
-    }
-
-    public static bool screenInput(InputKey key,bool isDown)
-    {
-        Console.WriteLine("Got here 80 !");   
-        TabManager.selectedTabMain.OnInput(key, isDown);
-        TabManager.selectedTabSide.OnInput(key, isDown); 
-        
-        
-        if (key.Value == InputKey.Type.LMB && isDown)
-        {
-            Vec2 mouseCursor = Onix.Gui.MousePosition;
-            float screenWidth = Onix.Gui.ScreenSize.X;
-            float screenHeight = Onix.Gui.ScreenSize.Y;
-
-            
-
-            foreach (Tab tab in TabManager.SideTabs)
-            {
-                if (Globals.myContains(tab.Button, mouseCursor))
-                {
-                    TabManager.selectedTabSide = tab;
-                    TabManager.selectedTabSide.OnOpened();
-                }
-            }
-            foreach (Tab tab in TabManager.MainTabs)
-            {
-                if (Globals.myContains(tab.Button, mouseCursor))
-                {
-                    TabManager.selectedTabMain = tab;
-                    TabManager.selectedTabMain.OnOpened();
-                }
-            }
-            
-        }
-
-        
-
-
-        
-
-        if (key == InputKey.Type.Escape || key == InputKey.Type.Y)
-        {
-            Console.WriteLine("Got to 118 in InputHandler.cs");
-            Globals.Screen.CloseScreen();
-        }
-        
-        
         
         return false;
     }
