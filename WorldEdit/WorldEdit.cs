@@ -11,7 +11,6 @@ using OnixRuntime.Plugin;
 using OnixRuntime.Api.Rendering;
 using OnixRuntime.Api.UI;
 using OnixRuntime.Api.World;
-using PluginCommandExample;
 
 
 namespace WorldEdit {
@@ -59,12 +58,6 @@ namespace WorldEdit {
         }
     }
     
-    
-
-    
-
-    
-    
     public class WorldEdit : OnixPluginBase {
         public static WorldEdit Instance { get; private set; } = null!;
         public static WorldEditConfig Config { get; private set; } = null!;
@@ -94,7 +87,7 @@ namespace WorldEdit {
             History.RedoHistory.Add (new History.HistoryItem(0, "Start", false));
             
             
-            Onix.Client.CommandRegistry.RegisterCommand(new ExampleCommand());
+            Onix.Client.CommandRegistry.RegisterCommand(new Commands.Set());
 
         }
         
