@@ -15,48 +15,9 @@ using OnixRuntime.Api.World;
 
 namespace WorldEdit {
 
-    public static class Globals // no i cannot do things without this
-    {
+    
 
-        public static Random MyRandom = new Random();
-        
-
-
-        public static (Vec3, Vec3) FindExtremes (Vec3 a, Vec3 b)
-        {
-            Vec3 posMin = new Vec3(
-                Math.Min(a.X, b.X),
-                Math.Min(a.Y, b.Y),
-                Math.Min(a.Z, b.Z)
-            );
-
-            Vec3 posMax = new Vec3(
-                Math.Max(a.X, b.X),
-                Math.Max(a.Y, b.Y),
-                Math.Max(a.Z, b.Z)
-            );
-
-            return (posMin, posMax);
-        }
-        
-    }
-
-    public class MyBlock
-    {
-        public String Name;
-        public String Data;
-        public Vec3 Position;
-        public long Action;
-
-        public MyBlock(String name, String data, long action, Vec3 position)
-        {
-            Name = name;
-            Data = data;
-            Action = action;
-            Position = position;
-
-        }
-    }
+    
     
     public class WorldEdit : OnixPluginBase {
         public static WorldEdit Instance { get; private set; } = null!;
@@ -88,6 +49,8 @@ namespace WorldEdit {
             
             
             Onix.Client.CommandRegistry.RegisterCommand(new Commands.Set());
+            Onix.Client.CommandRegistry.RegisterCommand(new Commands.Noise());
+            Onix.Client.CommandRegistry.RegisterCommand(new Commands.Replace());
 
         }
         

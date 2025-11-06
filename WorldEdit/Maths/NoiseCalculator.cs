@@ -6,7 +6,7 @@ using System.Security.Cryptography;
 
 namespace WorldEdit;
 
-public class Noise
+public class NoiseCalculator
 {
     public static float Fade(float t)
     {
@@ -134,57 +134,60 @@ public class Noise
 
         return value / max_amplitude;
     }
-    
-    public static string BlockFigure(int x, int y, int z, string fill, long action)
+
+    public static Tuple<List<Tuple<string, float>>,bool> BlockPatternParser(string blockPattern)
     {
-        List<(float, string)> tablifiedFill = new List<(float probability, string name)>();
-        float totalCount = 0f;
-
-        float picker = 0f;
-        var firstSplit = fill.Split('$');
-        // Console.WriteLine($"FirstSplit[0] = {firstSplit[0]} FirstSplit[1] = {firstSplit[1]} FirstSplit[2] = {firstSplit[2]}");
+        List<Tuple<string, float>> output = [];
+        float runningPercentage = 0f;
         
-        if (firstSplit[0] == "perlin")
-        {
-            picker = perlinNoise(x, y, z, float.Parse(firstSplit[1]), action);
-        } else if (firstSplit[0] == "roughPerlin")
-        {
-            picker = layerPerlin(x, y, z, action, float.Parse(firstSplit[1]));
-
-        }else if (firstSplit[0] == "white")
-        {
-            picker = (float)Globals.MyRandom.NextDouble();
-        }
-        
-        var args = firstSplit[2].Split(',');
+        String[] args = blockPattern.Split('/');
         foreach (string arg in args)
         {
             var parts = arg.Split("%");
-            tablifiedFill.Add((   totalCount ,  parts[1]  ));
-            totalCount += (float)int.Parse(parts[0])/100;
-        }
-
-        if (Math.Abs(totalCount - 1f) > 0.0000001f)
-        {
-            Console.WriteLine("Not good, your arguments are bad :(");
-        }
-
-        
-
-        tablifiedFill.Sort((a, b) => a.Item1.CompareTo(b.Item1));
-
-        string output = "FOUND NOTHING";
-
-        foreach ((float b, string label) in tablifiedFill)
-        {
-            if (picker >= b)
-            {
-                output = label;
-            }
+            output.Add( new Tuple<string, float> ( parts[1], runningPercentage) );
+            runningPercentage += (float)int.Parse(parts[0])/100;
         }
         
+        if (Math.Abs(runningPercentage - 1f) > 0.0000001f)
+        {
+            return new Tuple<List<Tuple<string, float>>, bool>(output,false);
+        }
 
-        return output;
-
+        return new Tuple<List<Tuple<string, float>>, bool>(output,true);
     }
+    
+    public static Tuple<bool, string> Noise(int x, int y, int z, string blockPattern, float zoom, string noiseType, long action)
+    {
+        float noiseOutput = 0f;
+
+        if (noiseType == "perlin")
+            noiseOutput = perlinNoise(x, y, z, zoom, action);
+        else if (noiseType == "rough")
+            noiseOutput = layerPerlin(x, y, z, action, zoom);
+        else if (noiseType == "white")
+            noiseOutput = (float)Globals.MyRandom.NextDouble();
+
+        Console.WriteLine($"Noise output {noiseOutput}");
+
+        List<Tuple<string, float>> parsedBlockPattern = new List<Tuple<string, float>>();
+        bool success = false;
+
+        (parsedBlockPattern, success) = BlockPatternParser(blockPattern);
+
+        if (!success)
+            return new Tuple<bool, string>(false, "");
+
+        parsedBlockPattern.Sort((a, b) => a.Item2.CompareTo(b.Item2)); // sort by threshold
+
+        string output = "";
+
+        foreach (var item in parsedBlockPattern)
+        {
+            if (noiseOutput >= item.Item2)
+                output = item.Item1;
+        }
+
+        return new Tuple<bool, string>(output != "", output);
+    }
+
 }
