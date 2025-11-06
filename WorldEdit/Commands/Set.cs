@@ -16,6 +16,8 @@ namespace WorldEdit.Commands {
             {
                 History.PlaceBlock(block.Name,"[]"  ,blockPos,actionId);
             }
+            
+            History.FinishAction(actionId,$"Filled {Selection.Blocks().Count} blocks with {block.Name}");
 
             return Success($"Successfully filled {Selection.Blocks().Count} blocks");
             

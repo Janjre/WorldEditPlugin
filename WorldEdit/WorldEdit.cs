@@ -51,6 +51,8 @@ namespace WorldEdit {
             Onix.Client.CommandRegistry.RegisterCommand(new Commands.Set());
             Onix.Client.CommandRegistry.RegisterCommand(new Commands.Noise());
             Onix.Client.CommandRegistry.RegisterCommand(new Commands.Replace());
+            Onix.Client.CommandRegistry.RegisterCommand(new Commands.Undo());
+            Onix.Client.CommandRegistry.RegisterCommand(new Commands.Redo());
 
         }
         
