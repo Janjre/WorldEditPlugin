@@ -7,6 +7,7 @@ using OnixRuntime.Api.Events;
 using OnixRuntime.Api.Inputs;
 using OnixRuntime.Api.Maths;
 using OnixRuntime.Api.OnixClient;
+using OnixRuntime.Api.OnixClient.Commands;
 using OnixRuntime.Plugin;
 using OnixRuntime.Api.Rendering;
 using OnixRuntime.Api.UI;
@@ -53,7 +54,10 @@ namespace WorldEdit {
             Onix.Client.CommandRegistry.RegisterCommand(new Commands.Replace());
             Onix.Client.CommandRegistry.RegisterCommand(new Commands.Undo());
             Onix.Client.CommandRegistry.RegisterCommand(new Commands.Redo());
+            Onix.Client.CommandRegistry.RegisterCommand(new Commands.HistoryCmd());
 
+            
+            CommandEnumRegistry.RegisterSoftEnum("actions", new List<string>());
         }
         
         

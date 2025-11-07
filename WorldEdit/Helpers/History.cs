@@ -1,5 +1,6 @@
 ﻿using OnixRuntime.Api;
 using OnixRuntime.Api.Maths;
+using OnixRuntime.Api.OnixClient.Commands;
 using OnixRuntime.Api.Rendering;
 using OnixRuntime.Api.World;
 
@@ -47,6 +48,7 @@ public static class History
             for (int i = UndoHistory.Count-1; i >  undoPoint; i--)
             {
                 UndoHistory.RemoveAt(i);
+                CommandEnumRegistry.RemoveSoftEnumValue("actions",UndoHistory[i].UUID.ToString());
             }
         }
 
@@ -55,6 +57,8 @@ public static class History
         
         UndoHistory.Add(new HistoryItem(actionNumber,displayText,true));
         RedoHistory.Add(new HistoryItem(actionNumber, displayText, true));
+        
+        CommandEnumRegistry.AddSoftEnumValue("actions",actionNumber.ToString());
     }
 
     public class HistoryItem
