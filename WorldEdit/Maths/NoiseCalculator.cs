@@ -167,7 +167,7 @@ public class NoiseCalculator
         else if (noiseType == "white")
             noiseOutput = (float)Globals.MyRandom.NextDouble();
 
-        Console.WriteLine($"Noise output {noiseOutput}");
+        
 
         List<Tuple<string, float>> parsedBlockPattern = new List<Tuple<string, float>>();
         bool success = false;

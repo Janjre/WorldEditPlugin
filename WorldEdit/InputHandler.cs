@@ -52,9 +52,7 @@ public static class InputHandler
                         }
                     }
                 }
-
             }
-
 
         } 
         

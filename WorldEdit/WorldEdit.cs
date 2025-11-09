@@ -55,6 +55,8 @@ namespace WorldEdit {
             Onix.Client.CommandRegistry.RegisterCommand(new Commands.Undo());
             Onix.Client.CommandRegistry.RegisterCommand(new Commands.Redo());
             Onix.Client.CommandRegistry.RegisterCommand(new Commands.HistoryCmd());
+            Onix.Client.CommandRegistry.RegisterCommand(new Commands.Up());
+            Onix.Client.CommandRegistry.RegisterCommand(new Commands.SelectionCmd());
 
             
             CommandEnumRegistry.RegisterSoftEnum("actions", new List<string>());
