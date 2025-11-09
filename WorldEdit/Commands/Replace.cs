@@ -12,17 +12,21 @@ namespace WorldEdit.Commands {
         [Overload]
         OnixCommandOutput SetExecute(Block replaceFrom, Block setTo)
         {
+            int blocksPlaced = 0;
             long actionId = Globals.MyRandom.NextInt64(1, 1_000_000_001);
             foreach (Vec3 blockPos in Selection.Blocks())
             {
                 if (Onix.Region.GetBlock((int)blockPos.X, (int)blockPos.Y, (int)blockPos.Z).Name == replaceFrom.Name)
                 {
                     History.PlaceBlock(setTo.Name,"[]"  ,blockPos,actionId);
+                    blocksPlaced += 1;
                 }
                 
             }
+            
+            History.FinishAction(actionId,$"Replaced {blocksPlaced} blocks with {setTo.Name}");
 
-            return Success($"Successfully filled {Selection.Blocks().Count} blocks");
+            return Success($"Successfully filled {blocksPlaced} blocks");
             
         }
     }

@@ -16,75 +16,43 @@ using OnixRuntime.Api.World;
 
 public static class InputHandler
 {
-    public static bool Shifting;
-
     public static bool OnInput(InputKey key, bool isDown) // split up into relevant parts in different files and functions
     {
         
         if (isDown && Onix.Gui.MouseGrabbed)
         {
-            RaycastResult result = Onix.LocalPlayer.Raycast;
             if (Onix.LocalPlayer.MainHandItem.Item != null)
             {
-                if (Onix.LocalPlayer.MainHandItem.Item.Name == "wooden_axe")
+                foreach (Tools.BaseTool tool in Tools.ToolManager.RegisteredTools ?? Enumerable.Empty<Tools.BaseTool>())
                 {
-                    if (key.Value == InputKey.Type.LMB)
+                    if (tool == null)
                     {
-                        Selection.pos1 = new Vec3(result.BlockPosition.X, result.BlockPosition.Y,
-                            result.BlockPosition.Z);
-                        return true;
-
+                        Console.WriteLine("Null tool found in RegisteredTools");
+                        continue;
                     }
 
-                    if (key.Value == InputKey.Type.RMB)
+                    var heldItemName = Onix.LocalPlayer?.MainHandItem?.Item?.Name;
+                    if (heldItemName == null)
                     {
-                        Selection.pos2 = new Vec3(result.BlockPosition.X, result.BlockPosition.Y,
-                            result.BlockPosition.Z);
-                        return true;
+                        // Probably between worlds or no item in hand
+                        continue;
                     }
 
-                    if (key.Value == InputKey.Type.MMB)
+                    // Console.WriteLine("Got here");
+                    if (tool.Item == heldItemName)
                     {
-                        Vec3 toInclude = new Vec3(result.BlockPosition.X, result.BlockPosition.Y,
-                            result.BlockPosition.Z);
-
-                        if (!Selection.Blocks().Contains(toInclude))
+                        
+                        try
                         {
-                            
-                            if (toInclude.X > Selection.LargestPoint.X)
-                            {
-                                Selection.LargestPoint = new Vec3(toInclude.X, Selection.LargestPoint.Y, Selection.LargestPoint.Z);
-                            }
-                            if (toInclude.X < Selection.SmallestPoint.X)
-                            {
-                                Selection.SmallestPoint = new Vec3(toInclude.X, Selection.SmallestPoint.Y, Selection.SmallestPoint.Z);
-                            }
-
-
-                            if (toInclude.Y > Selection.LargestPoint.Y)
-                            {
-                                Selection.LargestPoint = new Vec3(Selection.LargestPoint.X, toInclude.Y, Selection.LargestPoint.Z);
-                            }
-                            if (toInclude.Y < Selection.SmallestPoint.Y)
-                            {
-                                Selection.SmallestPoint = new Vec3(Selection.SmallestPoint.X, toInclude.Y, Selection.SmallestPoint.Z);
-                            }
-
-
-                            if (toInclude.Z > Selection.LargestPoint.Z)
-                            {
-                                Selection.LargestPoint = new Vec3(Selection.LargestPoint.X, Selection.LargestPoint.Y, toInclude.Z);
-                            }
-                            if (toInclude.Z < Selection.SmallestPoint.Z)
-                            {
-                                Selection.SmallestPoint = new Vec3(Selection.SmallestPoint.X, Selection.SmallestPoint.Y, toInclude.Z);
-                            }
-
+                            return tool.OnPressed(key, isDown);
                         }
-
-                        return true;
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine($"Error rendering tool {tool.Item}: {ex}");
+                        }
                     }
                 }
+
             }
 
 

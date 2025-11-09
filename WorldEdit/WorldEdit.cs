@@ -58,6 +58,9 @@ namespace WorldEdit {
 
             
             CommandEnumRegistry.RegisterSoftEnum("actions", new List<string>());
+            CommandEnumRegistry.RegisterSoftEnum("tools", new List<string>());
+            
+            Tools.ToolManager.AddTool(new Tools.Tools.SelectionTool());
         }
         
         
@@ -83,11 +86,6 @@ namespace WorldEdit {
             
 
         }
-        // private void OnTick() {
-        //     
-        // }
-
-
 
         private void OnWorldRender(RendererWorld gfx, float delta)
         {
@@ -118,6 +116,35 @@ namespace WorldEdit {
             Onix.Render.World.DrawLine(new Vec3(posMax.X, posMax.Y, posMax.Z), new Vec3(posMin.X, posMax.Y, posMax.Z), colour);
             Onix.Render.World.DrawLine(new Vec3(posMin.X, posMax.Y, posMax.Z), new Vec3(posMin.X, posMax.Y, posMin.Z), colour);
 
+            
+            foreach (Tools.BaseTool tool in Tools.ToolManager.RegisteredTools ?? Enumerable.Empty<Tools.BaseTool>())
+            {
+                if (tool == null)
+                {
+                    Console.WriteLine("Null tool found in RegisteredTools");
+                    continue;
+                }
+
+                var heldItemName = Onix.LocalPlayer?.MainHandItem?.Item?.Name;
+                if (heldItemName == null)
+                {
+                    // Probably between worlds or no item in hand
+                    continue;
+                }
+
+                if (tool.Item == heldItemName)
+                {
+                    try
+                    {
+                        tool.OnRender(gfx, delta);
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"Error rendering tool {tool.Item}: {ex}");
+                    }
+                }
+            }
+
 
         }
 
@@ -128,14 +155,14 @@ namespace WorldEdit {
         
         bool MyChatHandler(ServerPlayer player, string message)
         {
-            if (message.Contains("Error"))
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            // if (message.Contains("Error"))
+            // {
+            //     return true;
+            // }
+            // else
+            // {
+            return false;
+            // }
         }
         
     } 
