@@ -15,6 +15,11 @@ public class SelectionTool: BaseTool
         RaycastResult result = Onix.LocalPlayer.Raycast;
          if (key.Value == InputKey.Type.LMB)
         {
+            if (Selection.SelectionType == Selection.SelectionTypeEnum.Arbitrary)
+            {
+                Console.WriteLine("Selection type is arbitrary - changing to cuboid");
+                Selection.SelectionType = Selection.SelectionTypeEnum.Cuboid;
+            }
             Selection.pos1 = new Vec3(result.BlockPosition.X, result.BlockPosition.Y,
                 result.BlockPosition.Z);
             return true;
@@ -23,6 +28,11 @@ public class SelectionTool: BaseTool
 
         if (key.Value == InputKey.Type.RMB)
         {
+            if (Selection.SelectionType == Selection.SelectionTypeEnum.Arbitrary)
+            {
+                Console.WriteLine("Selection type is arbitrary - changing to cuboid");
+                Selection.SelectionType = Selection.SelectionTypeEnum.Cuboid;
+            }
             Selection.pos2 = new Vec3(result.BlockPosition.X, result.BlockPosition.Y,
                 result.BlockPosition.Z);
             return true;
@@ -30,6 +40,12 @@ public class SelectionTool: BaseTool
 
         if (key.Value == InputKey.Type.MMB)
         {
+            if (Selection.SelectionType == Selection.SelectionTypeEnum.Arbitrary)
+            {
+                Console.WriteLine("Selection type is arbitrary - changing to cuboid");
+                Selection.SelectionType = Selection.SelectionTypeEnum.Cuboid;
+            }
+            
             Vec3 toInclude = new Vec3(result.BlockPosition.X, result.BlockPosition.Y,
                 result.BlockPosition.Z);
 
@@ -77,6 +93,6 @@ public class SelectionTool: BaseTool
 
     public override void OnRender(RendererWorld gfx, float delta)
     {
-        base.OnRender(gfx, delta);
+        
     }
 }

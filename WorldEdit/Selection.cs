@@ -2,30 +2,50 @@
 
 namespace WorldEdit;
 
+
 public class Selection
 {
+    public enum SelectionTypeEnum
+    {
+        Cuboid,
+        Arbitrary
+    }
+    
     public static Vec3 pos1 = new Vec3();
     public static Vec3 pos2 = new Vec3();
 
+    public static SelectionTypeEnum SelectionType = SelectionTypeEnum.Cuboid;
+    public static List<Vec3> ArbitraryBitmap = new List<Vec3>();
+    
+
     public static List<Vec3> Blocks() // returns a List of all the block positions in your selections so you can for (block in Selection.Blocks){set(block,air)}
     {
-        List<Vec3> blocks = [];
-
-        Vec3 smallest = SmallestPoint;
-        Vec3 largest = LargestPoint;
-        
-        for (int x= (int)smallest.X;x<=largest.X; x++)
+        if (SelectionType == SelectionTypeEnum.Cuboid)
         {
-            for (int y= (int)smallest.Y;y<=largest.Y; y++)
+            List<Vec3> blocks = [];
+
+            Vec3 smallest = SmallestPoint;
+            Vec3 largest = LargestPoint;
+
+            for (int x = (int)smallest.X; x <= largest.X; x++)
             {
-                for (int z= (int)smallest.Z;z<=largest.Z; z++)
+                for (int y = (int)smallest.Y; y <= largest.Y; y++)
                 {
-                    blocks.Add(new Vec3(x,y,z));
+                    for (int z = (int)smallest.Z; z <= largest.Z; z++)
+                    {
+                        blocks.Add(new Vec3(x, y, z));
+                    }
                 }
             }
+
+            return blocks;
+        }
+        if (SelectionType == SelectionTypeEnum.Arbitrary)
+        {
+            return ArbitraryBitmap;
         }
 
-        return blocks;
+        return new List<Vec3>();
     }
     public static Vec3 SmallestPoint
     {
