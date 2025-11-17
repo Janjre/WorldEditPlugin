@@ -1,5 +1,7 @@
-﻿using System.Threading.Channels;
+﻿using System.Drawing;
+using System.Threading.Channels;
 using OnixRuntime.Api;
+using OnixRuntime.Api.Entities;
 using OnixRuntime.Api.Inputs;
 using OnixRuntime.Api.Maths;
 using OnixRuntime.Api.Rendering;
@@ -12,7 +14,8 @@ public class BezierTool: BaseTool
 {
 
     public static List<Vec3> Points = new List<Vec3>();
-    public static Vec3 SelectedPoint = new();
+    public static int SelectedPointIndex = -1;
+    public static float SelectionPointDist = 0f;
 
     public BezierTool() : base("bezier", "wooden_hoe") {}
     public override bool OnPressed(InputKey key, bool isDown)
@@ -27,8 +30,8 @@ public class BezierTool: BaseTool
                 Selection.SelectionType = Selection.SelectionTypeEnum.Arbitrary;
             }
             
-            Points.Add(new Vec3(result.BlockPosition.X, result.BlockPosition.Y,
-                result.BlockPosition.Z));
+            Points.Add(new Vec3(result.HitPosition.X, result.HitPosition.Y,
+                result.HitPosition.Z));
 
             Console.WriteLine($"Added point, {Points.Count} in total");
             return true;
@@ -37,14 +40,17 @@ public class BezierTool: BaseTool
         if (key.Value == InputKey.Type.RMB)
         {
             
-            if (Points.Count > 0)
+            if (Points.Count > 1)
             {
+                SelectedPointIndex = -1;
                 Selection.ArbitraryBitmap = new List<Vec3>();
-                
-                Points.Add(new Vec3(result.BlockPosition.X, result.BlockPosition.Y,
-                    result.BlockPosition.Z));
 
-                float length = (Points[0] - Points[Points.Count - 1]).Length;
+                float length = 0;
+                for (int i = 0; i < Points.Count - 1; i++)
+                {
+                    length += (Points[i + 1] - Points[i]).Length;
+                }
+
 
                 List<Vec3> curvePoints = new List<Vec3>();
                 float steps = length * 10;
@@ -55,7 +61,6 @@ public class BezierTool: BaseTool
                     
                     if (!Selection.ArbitraryBitmap.Contains(output))
                     {
-                        Console.WriteLine($"Vec: {output} t: {t}");
                         Selection.ArbitraryBitmap.Add(output);
                     }                
                 }
@@ -65,7 +70,8 @@ public class BezierTool: BaseTool
             }
             else
             {
-                Console.WriteLine("You need to left click to start a path");
+                Console.WriteLine("Cleared arbitrary selection");
+                Selection.ArbitraryBitmap = new List<Vec3>();
             }
 
             return true;
@@ -73,6 +79,12 @@ public class BezierTool: BaseTool
 
         if (key == InputKey.Type.MMB)
         {
+            if (SelectedPointIndex != -1)
+            {
+                SelectedPointIndex = -1;
+                return true;
+            }
+            
             Angles rotation = Onix.LocalPlayer.Rotation;
             float x = (float)(Math.Cos(rotation.Pitch * Math.PI/180) * Math.Sin(rotation.Yaw * Math.PI/180));
             float y = (float)Math.Sin(rotation.Pitch * Math.PI/180);
@@ -100,17 +112,14 @@ public class BezierTool: BaseTool
                     
                     if (box.Contains(headPos))
                     {
-                        SelectedPoint = point;
+                        SelectedPointIndex = Points.IndexOf(point);
+                        SelectionPointDist = Points[SelectedPointIndex].Distance(Onix.LocalPlayer.Position);
                     }
                 }
-
-                
             }
             
             return true;
-
         }
-        
         return false;
     }
     
@@ -120,14 +129,22 @@ public class BezierTool: BaseTool
         foreach (Vec3 point in Points)
         {
             BoundingBox box = new BoundingBox(point - 0.2f, point + 0.2f);
-            if (point == SelectedPoint)
+            if (SelectedPointIndex != -1)
             {
-                Onix.Render.World.RenderBoundingBoxFill(box,ColorF.Red);
+                if (Points.IndexOf(point) == SelectedPointIndex)
+                {
+                    Onix.Render.World.RenderBoundingBoxFill(box,ColorF.Red);
+                }
+                else
+                {
+                    Onix.Render.World.RenderBoundingBoxFill(box,ColorF.White);
+                }
             }
             else
             {
                 Onix.Render.World.RenderBoundingBoxFill(box,ColorF.White);
             }
+            
             
             
         }
@@ -136,8 +153,32 @@ public class BezierTool: BaseTool
         {
             Onix.Render.World.DrawLine(Points[i],Points[i+1], ColorF.Red);
         }
-        
-        
+
+
+
+        if (Points.Count > 2)
+        {
+            float length = (Points[0] - Points[Points.Count - 1]).Length;
+
+            List<Vec3> curvePoints = new List<Vec3>();
+            float steps = length * 10;
+            for (int n = 0; n <= steps; n++)
+            {
+                float t = n / steps;
+                Vec3 output = BezierCalculator.BezierPoint(Points, t);
+                curvePoints.Add(output);
+            }
+            
+            for (int i = 0; i < curvePoints.Count - 1; i++)
+            {
+                Onix.Render.World.DrawLine(curvePoints[i],curvePoints[i+1], ColorF.Green);
+            }
+        }
+
+        if (SelectedPointIndex != -1)
+        {
+            Points[SelectedPointIndex] = Onix.LocalPlayer.ForwardPosition(SelectionPointDist);
+        }
         
     }
 }
