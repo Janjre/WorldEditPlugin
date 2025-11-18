@@ -36,7 +36,7 @@ public static class History
         RedoHistoryAsBlocks.Add(blockPlaced);
         
         
-        Onix.Client.ExecuteCommand("execute setblock " + position.X + " " + position.Y + " " + position.Z + " " + blockName + " " + data, true);
+        Onix.Client.ExecuteCommand("execute setblock " + position.X + " " + position.Y + " " + position.Z + " " + blockName + " " + data, false);
     }
     
     

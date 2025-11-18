@@ -130,7 +130,7 @@ namespace WorldEdit.Commands {
         }
         
         [Overload]
-        OnixCommandOutput Near(OnixCommandOrigin origin, [CommandPath("near")]string near, int radius)
+        OnixCommandOutput Cube(OnixCommandOrigin origin, [CommandPath("cube")]string cube, int radius)
         {
             if (Selection.SelectionType == Selection.SelectionTypeEnum.Arbitrary)
             {
@@ -141,6 +141,35 @@ namespace WorldEdit.Commands {
             Selection.pos1 = position - radius;
             Selection.pos2 = position + radius;
             return Success("Set selection");
+        }
+        
+        [Overload]
+        OnixCommandOutput Sphere(OnixCommandOrigin origin, [CommandPath("sphere")]string sphere, int radius)
+        {
+            if (Selection.SelectionType == Selection.SelectionTypeEnum.Cuboid)
+            {
+                Console.WriteLine("Changed selection type to arbitrary");
+                Selection.SelectionType = Selection.SelectionTypeEnum.Arbitrary;
+            }
+
+            Selection.ArbitraryBitmap = new List<Vec3>();
+            
+            Vec3 position = Onix.LocalPlayer.Position.Floor();
+            
+            for (int x = (int)position.X - radius - 1; x <= (int)position.X + radius + 1; x++)
+            {
+                for (int y = (int)position.X - radius - 1; y <= (int)position.Y + radius + 1; y++)
+                {
+                    for (int z = (int)position.Z - radius - 1; z <= (int)position.Z + radius + 1; z++)
+                    {
+                        if ((position - new Vec3(x, y, z)).Length < radius)
+                        {
+                            Selection.ArbitraryBitmap.Add(new Vec3(x, y, z));
+                        }
+                    }
+                }   
+            }
+            return Success($"Set selection to a sphere of radius {radius}");
         }
         
         [Overload]
@@ -188,6 +217,28 @@ namespace WorldEdit.Commands {
             }
 
             return Success($"Moved selection {distance} blocks");
+        }
+        [Overload]
+        OnixCommandOutput Mode(OnixCommandOrigin origin, [CommandPath("mode")]string mode, Selection.SelectionTypeEnum target)
+        {
+            Selection.SelectionType = target;
+            String newType = Selection.SelectionType == Selection.SelectionTypeEnum.Cuboid ? "Cuboid" : "Arbitrary";
+            return Success($"Selection type is now {newType}");
+        }
+        
+        [Overload]
+        OnixCommandOutput Clear(OnixCommandOrigin origin, [CommandPath("clear")]string clear)
+        {
+            if (Selection.SelectionType == Selection.SelectionTypeEnum.Arbitrary)
+            {
+                Selection.ArbitraryBitmap = new List<Vec3>();
+            }else if (Selection.SelectionType == Selection.SelectionTypeEnum.Cuboid)
+            {
+                Selection.pos1 = Vec3.Zero;
+                Selection.pos2 = Vec3.Zero;
+            }
+            String typeCleared = Selection.SelectionType == Selection.SelectionTypeEnum.Cuboid ? "Cuboid" : "Arbitrary";
+            return Success($"{typeCleared} cleared");
         }
     }
 }

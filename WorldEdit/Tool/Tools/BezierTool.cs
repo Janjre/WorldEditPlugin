@@ -95,9 +95,6 @@ public class BezierTool: BaseTool
             x *= -1;
             y *= -1;
             
-            Console.WriteLine($"x {x} y {y} z {z}");
-             
-            
             Vec3 headPos = Onix.LocalPlayer.Position.WithY(Onix.LocalPlayer.Position.Y+1.5f);
             for (int i = 0; i < 500;i++)
             {
@@ -105,7 +102,6 @@ public class BezierTool: BaseTool
                 headPos.Y += y;
                 headPos.Z += z;
 
-                // Console.WriteLine($"headPos: {headPos}");
                 foreach (Vec3 point in Points)
                 {
                     BoundingBox box = new BoundingBox(point- 0.5f, point + 0.5f);

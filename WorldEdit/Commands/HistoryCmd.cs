@@ -32,7 +32,7 @@ namespace WorldEdit.Commands {
             {
                 depth = History.UndoHistory.Count - 1;
             }
-            for (int i = 0; i < depth; i++)
+            for (int i = 0; i <= depth; i++)
             {
                 Console.WriteLine($"{(History.UndoHistory[i].Selected ? "-> §e" : "")} {i+1}: {History.UndoHistory[i].Text}, uuid: {History.UndoHistory[i].UUID}");
             }

@@ -60,6 +60,7 @@ namespace WorldEdit {
             Onix.Client.CommandRegistry.RegisterCommand(new Commands.Up());
             Onix.Client.CommandRegistry.RegisterCommand(new Commands.SelectionCmd());
             Onix.Client.CommandRegistry.RegisterCommand(new Commands.Sphere());
+            Onix.Client.CommandRegistry.RegisterCommand(new Commands.Line());
 
             
             CommandEnumRegistry.RegisterSoftEnum("actions", new List<string>());
@@ -87,7 +88,7 @@ namespace WorldEdit {
             // Onix.Events.Common.HudRender -= OnHudRender;
             Onix.Events.Common.WorldRender -= OnWorldRender;
             Onix.Events.Input.Input -= InputHandler.OnInput;
-            // Onix.Events.LocalServer.PlayerChatEvent -= MyChatHandler;
+            Onix.Events.LocalServer.PlayerChatEvent -= MyChatHandler;
 
             
 
@@ -190,14 +191,8 @@ namespace WorldEdit {
         
         bool MyChatHandler(ServerPlayer player, string message)
         {
-            // if (message.Contains("Error"))
-            // {
-            //     return true;
-            // }
-            // else
-            // {
+            // if (message.Contains())
             return false;
-            // }
         }
         
     } 

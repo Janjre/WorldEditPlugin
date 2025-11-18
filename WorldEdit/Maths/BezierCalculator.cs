@@ -4,7 +4,7 @@ namespace WorldEdit.Maths
 {
     public static class BezierCalculator
     {
-        private static Vec3 Interpolate(Vec3 point1, Vec3 point2, float t)
+        public static Vec3 Interpolate(Vec3 point1, Vec3 point2, float t)
         {
             return ((point2 - point1) * t) + point1;
         }
