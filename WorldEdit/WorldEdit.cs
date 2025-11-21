@@ -51,16 +51,19 @@ namespace WorldEdit {
             History.RedoHistory.Add (new History.HistoryItem(0, "Start", false));
             
             
-            Onix.Client.CommandRegistry.RegisterCommand(new Commands.Set());
-            Onix.Client.CommandRegistry.RegisterCommand(new Commands.Noise());
-            Onix.Client.CommandRegistry.RegisterCommand(new Commands.Replace());
-            Onix.Client.CommandRegistry.RegisterCommand(new Commands.Undo());
-            Onix.Client.CommandRegistry.RegisterCommand(new Commands.Redo());
-            Onix.Client.CommandRegistry.RegisterCommand(new Commands.HistoryCmd());
-            Onix.Client.CommandRegistry.RegisterCommand(new Commands.Up());
-            Onix.Client.CommandRegistry.RegisterCommand(new Commands.SelectionCmd());
-            Onix.Client.CommandRegistry.RegisterCommand(new Commands.Sphere());
-            Onix.Client.CommandRegistry.RegisterCommand(new Commands.Line());
+            Onix.Client.CommandRegistry.RegisterCommand(new Set());
+            Onix.Client.CommandRegistry.RegisterCommand(new Noise());
+            Onix.Client.CommandRegistry.RegisterCommand(new Replace());
+            Onix.Client.CommandRegistry.RegisterCommand(new Undo());
+            Onix.Client.CommandRegistry.RegisterCommand(new Redo());
+            Onix.Client.CommandRegistry.RegisterCommand(new HistoryCmd());
+            Onix.Client.CommandRegistry.RegisterCommand(new Up());
+            Onix.Client.CommandRegistry.RegisterCommand(new SelectionCmd());
+            Onix.Client.CommandRegistry.RegisterCommand(new Sphere());
+            Onix.Client.CommandRegistry.RegisterCommand(new Line());
+            Onix.Client.CommandRegistry.RegisterCommand(new Extrude());
+            Onix.Client.CommandRegistry.RegisterCommand(new Walls());
+            Onix.Client.CommandRegistry.RegisterCommand(new Box());
 
             
             CommandEnumRegistry.RegisterSoftEnum("actions", new List<string>());

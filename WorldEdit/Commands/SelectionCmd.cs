@@ -12,12 +12,7 @@ namespace WorldEdit.Commands {
     public class SelectionCmd : OnixCommandBase {
         public SelectionCmd() : base("selection", "provides various tools related to area selection", CommandExecutionTarget.Client, CommandPermissionLevel.Any) { }
 
-        private enum Axis
-        {
-            X,
-            Y,
-            Z
-        }
+        
 
 
         [Overload]
@@ -173,25 +168,13 @@ namespace WorldEdit.Commands {
         }
         
         [Overload]
-        OnixCommandOutput Move(OnixCommandOrigin origin, [CommandPath("move")]string move, Axis axis, int distance)
+        OnixCommandOutput Move(OnixCommandOrigin origin, [CommandPath("move")]string move, AxisCalculator.DirectionEnum axis, int distance)
         {
+            AxisCalculator.Direction direction = new AxisCalculator.Direction(axis);
             if (Selection.SelectionType == Selection.SelectionTypeEnum.Cuboid)
             {
-                switch (axis)
-                {
-                    case Axis.X:
-                        Selection.pos1.X += distance;
-                        Selection.pos2.X += distance;
-                        break;
-                    case Axis.Y:
-                        Selection.pos1.Y += distance;
-                        Selection.pos2.Y += distance;
-                        break;
-                    case Axis.Z:
-                        Selection.pos1.Z += distance;
-                        Selection.pos2.Z += distance;
-                        break;
-                }
+                Selection.pos1 += direction.DirectionVector * distance;
+                Selection.pos2 += direction.DirectionVector * distance;
             }
             else
             {
@@ -199,18 +182,8 @@ namespace WorldEdit.Commands {
                 {
                     
                     Vec3 point = Selection.ArbitraryBitmap[i];
-                    switch (axis)
-                    {
-                        case Axis.X:
-                            point.X += distance;
-                            break;
-                        case Axis.Y:
-                            point.Y += distance;
-                            break;
-                        case Axis.Z:
-                            point.Z += distance;
-                            break;
-                    }
+
+                    point += direction.DirectionVector * distance;
                     Selection.ArbitraryBitmap[i] = point; 
                 }
 

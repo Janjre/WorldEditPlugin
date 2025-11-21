@@ -1,4 +1,5 @@
 ﻿using OnixRuntime.Api.OnixClient.Commands;
+using OnixRuntime.Api.Rendering;
 
 namespace WorldEdit.Tools;
 
@@ -17,4 +18,10 @@ public static class ToolManager
         RegisteredTools.Remove(baseTool);
         CommandEnumRegistry.RemoveSoftEnumValue("tools",baseTool.Name);
     }
+
+    // public static bool RenderTenthSlot(RendererCommon2D gfx)
+    // {
+    //     
+    //     return true;
+    // }
 }

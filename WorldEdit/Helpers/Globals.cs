@@ -1,9 +1,9 @@
 ﻿using OnixRuntime.Api.Maths;
 
-public static class Globals // no i cannot do things without this
+public static class Globals 
 {
 
-    public static Random MyRandom = new Random();
+    public static Random MyRandom = new ();
         
 
 
