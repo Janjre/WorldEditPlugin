@@ -1,5 +1,7 @@
 ﻿using System.Globalization;
 using OnixRuntime.Api.OnixClient;
+using OnixRuntime.Api.OnixClient.Settings;
+using WorldEdit.Tools;
 
 namespace WorldEdit;
 using System.Runtime.InteropServices.JavaScript;
@@ -16,11 +18,14 @@ using OnixRuntime.Api.World;
 
 public static class InputHandler
 {
+    // public OnixSettingKeybind HotBarSlot1 = new OnixSettingKeybind()
+    
     public static bool OnInput(InputKey key, bool isDown) // split up into relevant parts in different files and functions
     {
         
         if (isDown && Onix.Gui.MouseGrabbed)
         {
+            // ToolManager.OnKeyPressed(key, isDown);
             if (Onix.LocalPlayer.MainHandItem.Item != null)
             {
                 foreach (Tools.BaseTool tool in Tools.ToolManager.RegisteredTools ?? Enumerable.Empty<Tools.BaseTool>())

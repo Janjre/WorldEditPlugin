@@ -13,6 +13,7 @@ using OnixRuntime.Api.Rendering;
 using OnixRuntime.Api.UI;
 using OnixRuntime.Api.World;
 using WorldEdit.Commands;
+using WorldEdit.Tools;
 using WorldEdit.Tools.Tools;
 
 
@@ -42,7 +43,7 @@ namespace WorldEdit {
             Console.WriteLine($"Plugin {CurrentPluginManifest.Name} loaded!");
             Config = new WorldEditConfig();
             // Onix.Events.Common.Tick += OnTick;
-            // Onix.Events.Common.HudRender += OnHudRender;
+            Onix.Events.Common.HudRender += OnHudRender;
             Onix.Events.Common.WorldRender += OnWorldRender;
             Onix.Events.Input.Input += InputHandler.OnInput;
             Onix.Events.LocalServer.PlayerChatEvent += MyChatHandler;
@@ -69,8 +70,10 @@ namespace WorldEdit {
             CommandEnumRegistry.RegisterSoftEnum("actions", new List<string>());
             CommandEnumRegistry.RegisterSoftEnum("tools", new List<string>());
             
-            Tools.ToolManager.AddTool(new SelectionTool());
-            Tools.ToolManager.AddTool(new BezierTool());
+            ToolManager.AddTool(new SelectionTool());
+            ToolManager.AddTool(new BezierTool());
+            
+        
         }
         
         
@@ -88,7 +91,7 @@ namespace WorldEdit {
             // You can give them base.PluginEjectionCancellationToken which will be cancelled when this function returns. 
             Console.WriteLine($"Plugin {CurrentPluginManifest.Name} unloaded!");
             // Onix.Events.Common.Tick -= OnTick;
-            // Onix.Events.Common.HudRender -= OnHudRender;
+            Onix.Events.Common.HudRender -= OnHudRender;
             Onix.Events.Common.WorldRender -= OnWorldRender;
             Onix.Events.Input.Input -= InputHandler.OnInput;
             Onix.Events.LocalServer.PlayerChatEvent -= MyChatHandler;
@@ -97,6 +100,10 @@ namespace WorldEdit {
 
         }
 
+        private void OnHudRender(RendererCommon2D gfx, float delta)
+        {
+            // ToolManager.RenderTenthSlot(gfx);
+        }
         private void OnWorldRender(RendererWorld gfx, float delta)
         {
 

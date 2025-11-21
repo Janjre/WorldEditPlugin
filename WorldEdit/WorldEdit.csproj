@@ -36,6 +36,10 @@
         <Analyzer Condition="'$(ServerPluginBuild)' != 'TRUE'" Include="$(LOCALAPPDATA)\Packages\Microsoft.MinecraftUWP_8wekyb3d8bbwe\RoamingState\OnixClient\Plugins\runtime\OnixRuntime.CodeGenerators.dll"/>
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Assets\" />
+    </ItemGroup>
+
     <PropertyGroup Condition="'$(ServerPluginBuild)' == 'TRUE'">
         <AssemblySearchPaths>$(ServerPluginBuildRuntime);$(AssemblySearchPaths);</AssemblySearchPaths>
     </PropertyGroup>
