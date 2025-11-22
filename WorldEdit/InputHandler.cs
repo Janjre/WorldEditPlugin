@@ -1,7 +1,8 @@
 ﻿using System.Globalization;
 using OnixRuntime.Api.OnixClient;
 using OnixRuntime.Api.OnixClient.Settings;
-using WorldEdit.Tools;
+using WorldEdit.Tool;
+using WorldEdit.Tool.Tools;
 
 namespace WorldEdit;
 using System.Runtime.InteropServices.JavaScript;
@@ -25,10 +26,10 @@ public static class InputHandler
         
         if (isDown && Onix.Gui.MouseGrabbed)
         {
-            // ToolManager.OnKeyPressed(key, isDown);
+            ToolManager.OnKeyPressed(key, isDown);
             if (Onix.LocalPlayer.MainHandItem.Item != null)
             {
-                foreach (Tools.BaseTool tool in Tools.ToolManager.RegisteredTools ?? Enumerable.Empty<Tools.BaseTool>())
+                foreach (Tool.BaseTool tool in Tool.ToolManager.RegisteredTools ?? Enumerable.Empty<Tool.BaseTool>())
                 {
                     if (tool == null)
                     {

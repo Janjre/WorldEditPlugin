@@ -3,8 +3,9 @@ using OnixRuntime.Api.Inputs;
 using OnixRuntime.Api.Maths;
 using OnixRuntime.Api.Rendering;
 using OnixRuntime.Api.World;
+using WorldEdit.Tool;
 
-namespace WorldEdit.Tools.Tools;
+namespace WorldEdit.Tool.Tools;
 
 public class SelectionTool: BaseTool
 {

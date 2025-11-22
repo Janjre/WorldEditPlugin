@@ -5,7 +5,14 @@ using OnixRuntime.Api.OnixClient;
 
 namespace WorldEdit {
     public partial class WorldEditConfig : OnixModuleSettingRedirector {
-        [Category("Tool HUD Settomgs")]
+        
+        [Category("Tool HUD Settings")]
+        
+        [Value(false)]
+        [Name("Do tenth slot", "Should show the tenth slot of your hotbar. If false, you would get tools from your inventory as normal")]
+        
+        
+        public partial bool Do10ThSlot { get; set; }
         
         [Value(InputKey.Type.Num0)]
         [Name("10th slot key", "The key to select the 10th slot of your inventory. Just mirror what is in your settings")]
@@ -47,6 +54,8 @@ namespace WorldEdit {
         [Value(InputKey.Type.Num9)]
         [Name("9th slot key", "The key to select the 9th slot of your inventory. Just mirror what is in your settings")]
         public partial InputKey HotbarKey9 { get; set; } 
+        
+        
         
         
         

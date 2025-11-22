@@ -13,8 +13,9 @@ using OnixRuntime.Api.Rendering;
 using OnixRuntime.Api.UI;
 using OnixRuntime.Api.World;
 using WorldEdit.Commands;
-using WorldEdit.Tools;
-using WorldEdit.Tools.Tools;
+using WorldEdit.Tool.Tools;
+using WorldEdit.Tool;
+using WorldEdit.Tool.Tools;
 
 
 namespace WorldEdit {
@@ -41,7 +42,8 @@ namespace WorldEdit {
     
         protected override void OnLoaded() {
             Console.WriteLine($"Plugin {CurrentPluginManifest.Name} loaded!");
-            Config = new WorldEditConfig();
+            Config = new WorldEditConfig(PluginDisplayModule,true);
+            
             // Onix.Events.Common.Tick += OnTick;
             Onix.Events.Common.HudRender += OnHudRender;
             Onix.Events.Common.WorldRender += OnWorldRender;
@@ -70,8 +72,8 @@ namespace WorldEdit {
             CommandEnumRegistry.RegisterSoftEnum("actions", new List<string>());
             CommandEnumRegistry.RegisterSoftEnum("tools", new List<string>());
             
-            ToolManager.AddTool(new SelectionTool());
-            ToolManager.AddTool(new BezierTool());
+            Tool.ToolManager.AddTool(new SelectionTool());
+            Tool.ToolManager.AddTool(new BezierTool());
             
         
         }
@@ -102,7 +104,7 @@ namespace WorldEdit {
 
         private void OnHudRender(RendererCommon2D gfx, float delta)
         {
-            // ToolManager.RenderTenthSlot(gfx);
+            Tool.ToolManager.RenderTenthSlot(gfx);
         }
         private void OnWorldRender(RendererWorld gfx, float delta)
         {
@@ -163,7 +165,7 @@ namespace WorldEdit {
             
 
             
-            foreach (Tools.BaseTool tool in Tools.ToolManager.RegisteredTools ?? Enumerable.Empty<Tools.BaseTool>())
+            foreach (Tool.BaseTool tool in Tool.ToolManager.RegisteredTools ?? Enumerable.Empty<Tool.BaseTool>())
             {
                 if (tool == null)
                 {

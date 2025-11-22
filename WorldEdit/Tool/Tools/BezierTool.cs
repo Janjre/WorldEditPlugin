@@ -7,8 +7,9 @@ using OnixRuntime.Api.Maths;
 using OnixRuntime.Api.Rendering;
 using OnixRuntime.Api.World;
 using WorldEdit.Maths;
+using WorldEdit.Tool;
 
-namespace WorldEdit.Tools.Tools;
+namespace WorldEdit.Tool.Tools;
 
 public class BezierTool: BaseTool
 {

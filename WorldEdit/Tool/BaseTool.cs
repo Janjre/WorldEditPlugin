@@ -2,7 +2,7 @@
 using OnixRuntime.Api.Items;
 using OnixRuntime.Api.Rendering;
 
-namespace WorldEdit.Tools;
+namespace WorldEdit.Tool;
 
 public class BaseTool
 {
