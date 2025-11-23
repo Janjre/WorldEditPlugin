@@ -21,6 +21,10 @@ public class BezierTool: BaseTool
     public BezierTool() : base("bezier", "wooden_hoe") {}
     public override bool OnPressed(InputKey key, bool isDown)
     {
+        if (isDown == false)
+        {
+            return false;
+        }
         RaycastResult result = Onix.LocalPlayer.Raycast;
         
         if (key.Value == InputKey.Type.LMB)
@@ -123,6 +127,8 @@ public class BezierTool: BaseTool
 
     public override void OnRender(RendererWorld gfx, float delta)
     {
+        
+        
         foreach (Vec3 point in Points)
         {
             BoundingBox box = new BoundingBox(point - 0.2f, point + 0.2f);

@@ -45,7 +45,7 @@ namespace WorldEdit {
             Config = new WorldEditConfig(PluginDisplayModule,true);
             
             // Onix.Events.Common.Tick += OnTick;
-            Onix.Events.Common.HudRender += OnHudRender;
+            Onix.Events.Rendering.HudRenderGame += OnHudRenderGame;
             Onix.Events.Common.WorldRender += OnWorldRender;
             Onix.Events.Input.Input += InputHandler.OnInput;
             Onix.Events.LocalServer.PlayerChatEvent += MyChatHandler;
@@ -72,8 +72,8 @@ namespace WorldEdit {
             CommandEnumRegistry.RegisterSoftEnum("actions", new List<string>());
             CommandEnumRegistry.RegisterSoftEnum("tools", new List<string>());
             
-            Tool.ToolManager.AddTool(new SelectionTool());
-            Tool.ToolManager.AddTool(new BezierTool());
+            ToolManager.AddTool(new SelectionTool());
+            ToolManager.AddTool(new BezierTool());
             
         
         }
@@ -93,7 +93,7 @@ namespace WorldEdit {
             // You can give them base.PluginEjectionCancellationToken which will be cancelled when this function returns. 
             Console.WriteLine($"Plugin {CurrentPluginManifest.Name} unloaded!");
             // Onix.Events.Common.Tick -= OnTick;
-            Onix.Events.Common.HudRender -= OnHudRender;
+            Onix.Events.Rendering.HudRenderGame -= OnHudRenderGame;
             Onix.Events.Common.WorldRender -= OnWorldRender;
             Onix.Events.Input.Input -= InputHandler.OnInput;
             Onix.Events.LocalServer.PlayerChatEvent -= MyChatHandler;
@@ -102,13 +102,15 @@ namespace WorldEdit {
 
         }
 
-        private void OnHudRender(RendererCommon2D gfx, float delta)
+        private void OnHudRenderGame(RendererGame gfx, float delta)
         {
-            Tool.ToolManager.RenderTenthSlot(gfx);
+            ToolManager.RenderTenthSlot(gfx, delta);
         }
         private void OnWorldRender(RendererWorld gfx, float delta)
         {
-
+            ToolManager.OnWorldRender(gfx,delta);
+            
+            
             if (Selection.SelectionType == Selection.SelectionTypeEnum.Cuboid)
             {
                 (Vec3 posMin, Vec3 posMax) = Globals.FindExtremes(Selection.pos1, Selection.pos2);
@@ -121,8 +123,9 @@ namespace WorldEdit {
                 BoundingBox boundingBox = new BoundingBox(posMin, posMax);
                 
                 Onix.Render.World.RenderBoundingBoxOutline(boundingBox,colour);
-
             }
+            
+            
 
             if (Selection.SelectionType == Selection.SelectionTypeEnum.Arbitrary)
             {

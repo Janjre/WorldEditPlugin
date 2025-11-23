@@ -1,4 +1,5 @@
-﻿using OnixRuntime.Api.Inputs;
+﻿using System.Net.Mime;
+using OnixRuntime.Api.Inputs;
 using OnixRuntime.Api.Items;
 using OnixRuntime.Api.Rendering;
 
@@ -16,4 +17,5 @@ public class BaseTool
     public virtual bool OnPressed(InputKey key, bool isDown) { return true; }
     public virtual void OnRender (RendererWorld gfx, float delta){} 
     public string Name;
+    public TexturePath Texture;
 }

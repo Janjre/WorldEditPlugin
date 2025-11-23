@@ -13,6 +13,10 @@ public class SelectionTool: BaseTool
     public SelectionTool() : base("selection", "wooden_axe") {}
     public override bool OnPressed(InputKey key, bool isDown)
     {
+        if ((key == InputKey.Type.LMB || key == InputKey.Type.RMB || key == InputKey.Type.MMB) && !isDown)
+        {
+            return true;
+        }
         RaycastResult result = Onix.LocalPlayer.Raycast;
          if (key.Value == InputKey.Type.LMB)
         {

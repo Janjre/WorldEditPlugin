@@ -1,5 +1,6 @@
 ﻿using OnixRuntime.Api;
 using OnixRuntime.Api.Inputs;
+using OnixRuntime.Api.Items;
 using OnixRuntime.Api.Maths;
 using OnixRuntime.Api.OnixClient.Commands;
 using OnixRuntime.Api.Rendering;
@@ -12,6 +13,7 @@ public static class ToolManager
     public static List<BaseTool> RegisteredTools = new List<BaseTool>();
     public static BaseTool SelectedTool = new SelectionTool();
     public static bool SelectingTool = false;
+    public static BaseTool WhenSelectingToolSelectedTool = SelectedTool;
     
     public static bool ToolSlotSelected = false;
     
@@ -27,38 +29,66 @@ public static class ToolManager
         RegisteredTools.Remove(baseTool);
         CommandEnumRegistry.RemoveSoftEnumValue("tools",baseTool.Name);
     }
-
-    public static bool RenderTenthSlot(RendererCommon2D gfx)
+    
+    public static void RenderTenthSlot(RendererGame gfx, float delta)
     {
-        float screenWidth = Onix.Gui.ScreenSize.X;
-        float screenHeight = Onix.Gui.ScreenSize.Y;
         
-        Vec2 topLeft = new Vec2(screenWidth * 0.63794f, screenHeight * 0.9230f);
-        Vec2 sizeVec = new Vec2(screenWidth * 0.02920f, screenWidth * 0.02920f);
-    
-        Rect tenthSlot = new Rect(topLeft, topLeft + sizeVec);
-        
-        Vec2 expandFactor   = new Vec2(sizeVec.X / 16f, sizeVec.Y / 16f);
-        Vec2 expandedTopLeft = topLeft - expandFactor;
-        Vec2 expandedSize    = sizeVec + expandFactor * 2f;
-    
-        Rect tenthSlotExpanded = new Rect(expandedTopLeft, expandedTopLeft + expandedSize);
-    
         TexturePath unselectedTexture = TexturePath.Game("textures/ui/hotbar_0.png");
         TexturePath selectedTexture = TexturePath.Game("textures/ui/selected_hotbar_slot.png");
-    
-        gfx.RenderTexture(tenthSlot,unselectedTexture);
+        TexturePath startCap = TexturePath.Game("textures/ui/hotbar_start_cap.png");
+        TexturePath endCap = TexturePath.Game("textures/ui/hotbar_end_cap.png");
         
-        if (ToolSlotSelected)
+        if (SelectingTool)
         {
-            gfx.RenderTexture(tenthSlotExpanded,selectedTexture);
+            int n = 0;
+            
+            foreach (BaseTool tool in RegisteredTools)
+            {
+                
+                SlotRects thisSlot = SlotDrawer.GetSlotRects(n);
+                gfx.RenderTexture(thisSlot.FullSlot,unselectedTexture);
+                gfx.RenderTexture(thisSlot.LeftSixteenth,startCap);
+                gfx.RenderTexture(thisSlot.RightSixteenth,endCap);
+                
+                gfx.RenderItem(thisSlot.ItemPos,new ItemStack(tool.Item,1),true,1.2f);
+
+                if (tool == WhenSelectingToolSelectedTool)
+                {
+                    gfx.RenderTexture(thisSlot.ExpandedSlot,selectedTexture);
+                    
+                }
+                
+                n++;
+            }
+            
+        }
+        else
+        {
+            SlotRects slotRects = SlotDrawer.GetSlotRects(0);
+        
+            
+        
+            gfx.RenderTexture(slotRects.FullSlot,unselectedTexture);
+            gfx.RenderTexture(slotRects.LeftSixteenth,startCap);
+            gfx.RenderTexture(slotRects.RightSixteenth,endCap);
+        
+        
+        
+            gfx.RenderItem(slotRects.ItemPos,new ItemStack(SelectedTool.Item,1),true,1.2f);
+
+            if (ToolSlotSelected)
+            {
+                gfx.RenderTexture(slotRects.ExpandedSlot, selectedTexture);
+            }
+            
         }
         
         
         
         
+        
         // gfx.DrawRectangle(tenthSlot,ColorF,1);
-        return true;
+        
     }
     
     private static bool IsKeyNumber(InputKey key)
@@ -97,13 +127,68 @@ public static class ToolManager
                 ToolSlotSelected = false;
                 return false; 
             }
+            else
+            {
+                int index = RegisteredTools.IndexOf(WhenSelectingToolSelectedTool);
+                if (isDown)
+                {
+                    index += 1;
+                    if (index > RegisteredTools.Count - 1)
+                    {
+                        index = 0;
+                    }
+                }
+                else
+                {
+                    index -= 1;
+                    if (index < 0)
+                    {
+                        index = RegisteredTools.Count-1;
+                    }
+                }
+
+                WhenSelectingToolSelectedTool = RegisteredTools[index];
+            }
         }
 
-        if (key == InputKey.Type.Alt && ToolSlotSelected)
+        if (key == InputKey.Type.Alt)
         {
-            SelectingTool = isDown;
+            if (ToolSlotSelected)
+            {
+                if (isDown)
+                {
+                    SelectingTool = true;
+                }
+                else
+                {
+                    SelectingTool = false;
+                    SelectedTool = WhenSelectingToolSelectedTool;
+                }
+            }else if (isDown == false) 
+            {
+                SelectingTool = false;
+            }
+
+        }
+
+        if (ToolSlotSelected)
+        {
+            if (key.IsMouse)
+            {
+                return SelectedTool.OnPressed(key,isDown);
+            }
         }
         
         return false;
     }
+
+    public static void OnWorldRender (RendererWorld gfx, float delta)
+    {
+        if (ToolSlotSelected)
+        {
+            SelectedTool.OnRender(gfx,delta);
+        }
+    }
+    
+    
 }

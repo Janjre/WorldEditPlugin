@@ -23,42 +23,48 @@ public static class InputHandler
     
     public static bool OnInput(InputKey key, bool isDown) // split up into relevant parts in different files and functions
     {
+        if (Onix.Gui.MouseGrabbed)
+        {
+            return ToolManager.OnKeyPressed(key, isDown); 
+        }
         
         if (isDown && Onix.Gui.MouseGrabbed)
         {
-            ToolManager.OnKeyPressed(key, isDown);
-            if (Onix.LocalPlayer.MainHandItem.Item != null)
-            {
-                foreach (Tool.BaseTool tool in Tool.ToolManager.RegisteredTools ?? Enumerable.Empty<Tool.BaseTool>())
-                {
-                    if (tool == null)
-                    {
-                        Console.WriteLine("Null tool found in RegisteredTools");
-                        continue;
-                    }
-
-                    var heldItemName = Onix.LocalPlayer?.MainHandItem?.Item?.Name;
-                    if (heldItemName == null)
-                    {
-                        // Probably between worlds or no item in hand
-                        continue;
-                    }
-
-                    // Console.WriteLine("Got here");
-                    if (tool.Item == heldItemName)
-                    {
-                        
-                        try
-                        {
-                            return tool.OnPressed(key, isDown);
-                        }
-                        catch (Exception ex)
-                        {
-                            Console.WriteLine($"Error rendering tool {tool.Item}: {ex}");
-                        }
-                    }
-                }
-            }
+            
+            
+            
+            // if (Onix.LocalPlayer.MainHandItem.Item != null)
+            // {
+            //     foreach (Tool.BaseTool tool in Tool.ToolManager.RegisteredTools ?? Enumerable.Empty<Tool.BaseTool>())
+            //     {
+            //         if (tool == null)
+            //         {
+            //             Console.WriteLine("Null tool found in RegisteredTools");
+            //             continue;
+            //         }
+            //
+            //         var heldItemName = Onix.LocalPlayer?.MainHandItem?.Item?.Name;
+            //         if (heldItemName == null)
+            //         {
+            //             // Probably between worlds or no item in hand
+            //             continue;
+            //         }
+            //
+            //         // Console.WriteLine("Got here");
+            //         if (tool.Item == heldItemName)
+            //         {
+            //             
+            //             try
+            //             {
+            //                 return tool.OnPressed(key, isDown);
+            //             }
+            //             catch (Exception ex)
+            //             {
+            //                 Console.WriteLine($"Error rendering tool {tool.Item}: {ex}");
+            //             }
+            //         }
+            //     }
+            // }
 
         } 
         
