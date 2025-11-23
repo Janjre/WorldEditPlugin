@@ -74,6 +74,7 @@ namespace WorldEdit {
             
             ToolManager.AddTool(new SelectionTool());
             ToolManager.AddTool(new BezierTool());
+            ToolManager.AddTool(new CircleTool());
             
         
         }

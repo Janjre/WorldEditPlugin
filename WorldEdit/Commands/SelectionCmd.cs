@@ -5,6 +5,7 @@ using OnixRuntime.Api.Entities;
 using OnixRuntime.Api.Maths;
 using OnixRuntime.Api.OnixClient.Commands;
 using OnixRuntime.Api.World;
+using WorldEdit.Maths;
 
 namespace WorldEdit.Commands {
     
