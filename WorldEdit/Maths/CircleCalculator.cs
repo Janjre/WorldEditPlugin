@@ -24,6 +24,7 @@ public static class CircleCalculator
         // Local basis axes on the circle plane
         Vec3 u = v1.Normalized;                  // "0 degrees"
         Vec3 v = normal.Cross(u).Normalized;  // perpendicular to u in the plane
+        
 
         return (u, v,C);
 
@@ -70,6 +71,30 @@ public static class CircleCalculator
         return (false, Vec3.Zero);
 
         
+    }
+    
+    public static (Vec3 u,Vec3 v) getUvFromNormal(Vec3 normal)
+    {
+        // Normalize the normal just to be safe
+        Vec3 n = normal.Normalized;
+
+        Vec3 temp;
+
+        // Pick the helper vector
+        if (MathF.Abs(n.X) > MathF.Abs(n.Z))
+        {
+            temp = new Vec3(-n.Y, n.X, 0f);
+        }
+        else
+        {
+            temp = new Vec3(0f, -n.Z, n.Y);
+        }
+
+        Vec3 u = temp.Normalized;
+
+        Vec3 v = n.Cross(u).Normalized;
+
+        return (u, v);
     }
     
 }

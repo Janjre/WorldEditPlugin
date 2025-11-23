@@ -130,7 +130,7 @@ public static class ToolManager
             else
             {
                 int index = RegisteredTools.IndexOf(WhenSelectingToolSelectedTool);
-                if (isDown)
+                if (!isDown)
                 {
                     index += 1;
                     if (index > RegisteredTools.Count - 1)
