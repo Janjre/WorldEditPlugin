@@ -34,9 +34,21 @@ public static class History
     
         MyBlock blockPlaced = new MyBlock(blockName, data, actionNumber, position);
         RedoHistoryAsBlocks.Add(blockPlaced);
+
+        bool doIt = true;
+        if (Onix.Region.GetBlock((int)position.X, (int)position.Y, (int)position.Z).Name == blockName)
+        {
+            if (Onix.Region.GetBlock((int)position.X, (int)position.Y, (int)position.Z).RawStates == Array.Empty<BlockState>() && data == "[]")
+            {
+                doIt = false; // skipped block to avoid chat message and is more efficient
+            }
+        }
+
+        if (doIt)
+        {
+            Onix.Client.ExecuteCommand("execute setblock " + position.X + " " + position.Y + " " + position.Z + " " + blockName + " " + data, true);
+        }
         
-        
-        Onix.Client.ExecuteCommand("execute setblock " + position.X + " " + position.Y + " " + position.Z + " " + blockName + " " + data, false);
     }
     
     
@@ -83,6 +95,6 @@ public static class History
             UUID = uuid;
             Text = text;
             Selected = selected;
-        }
+        } //TODO: Look at Onix.Region.SetBlock() - maybe no chat spam and fixes block states? Will it work on servers
     }
 }

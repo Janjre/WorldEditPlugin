@@ -67,14 +67,18 @@ namespace WorldEdit {
             Onix.Client.CommandRegistry.RegisterCommand(new Extrude());
             Onix.Client.CommandRegistry.RegisterCommand(new Walls());
             Onix.Client.CommandRegistry.RegisterCommand(new Box());
-
+            Onix.Client.CommandRegistry.RegisterCommand(new ToolCmd());
+            Onix.Client.CommandRegistry.RegisterCommand(new BrushCmd());
+            
             
             CommandEnumRegistry.RegisterSoftEnum("actions", new List<string>());
             CommandEnumRegistry.RegisterSoftEnum("tools", new List<string>());
             
+            
             ToolManager.AddTool(new SelectionTool());
             ToolManager.AddTool(new BezierTool());
             ToolManager.AddTool(new CircleTool());
+            
             
         
         }

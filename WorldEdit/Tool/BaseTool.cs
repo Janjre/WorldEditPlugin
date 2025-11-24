@@ -7,13 +7,15 @@ namespace WorldEdit.Tool;
 
 public class BaseTool
 {
-    public BaseTool(string name, string item)
+    public BaseTool(string name, string item, bool removable)
     {
         Name = name;
         Item = item;
+        Removable = removable;
     }
     
     public string Item;
+    public bool Removable;
     public virtual bool OnPressed(InputKey key, bool isDown) { return true; }
     public virtual void OnRender (RendererWorld gfx, float delta){} 
     public string Name;

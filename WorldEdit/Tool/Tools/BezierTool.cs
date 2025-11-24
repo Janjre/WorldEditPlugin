@@ -18,7 +18,7 @@ public class BezierTool: BaseTool
     public static int SelectedPointIndex = -1;
     public static float SelectionPointDist = 0f;
 
-    public BezierTool() : base("bezier", "wooden_hoe") {}
+    public BezierTool() : base("bezier", "wooden_hoe",false) {}
     public override bool OnPressed(InputKey key, bool isDown)
     {
         if (isDown == false)

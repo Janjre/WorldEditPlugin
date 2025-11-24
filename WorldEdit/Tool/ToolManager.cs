@@ -82,13 +82,6 @@ public static class ToolManager
             }
             
         }
-        
-        
-        
-        
-        
-        // gfx.DrawRectangle(tenthSlot,ColorF,1);
-        
     }
     
     private static bool IsKeyNumber(InputKey key)

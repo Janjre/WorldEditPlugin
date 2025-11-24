@@ -20,12 +20,32 @@ namespace WorldEdit.Commands
             long targetUuid = History.UndoHistory[History.undoPoint].UUID;
             string targetActionDescriptor = History.UndoHistory[History.undoPoint].Text;
 
+            
+            
             foreach (MyBlock block in History.UndoHistoryAsBlocks)
             {
                 if (block.Action == targetUuid)
                 {
-                    Onix.Client.ExecuteCommand("execute setblock " + block.Position.X + " " + block.Position.Y +
-                                               " " + block.Position.Z + " " + block.Name);
+                    bool doIt = true;
+                    
+                    
+                    
+                    if ("minecraft:" + Onix.Region.GetBlock((int)block.Position.X, (int)block.Position.Y, (int)block.Position.Z).Name == block.Name)
+                    {
+                        Console.WriteLine(block.Data);
+                        if (Onix.Region.GetBlock((int)block.Position.X, (int)block.Position.Y, (int)block.Position.Z).RawStates == Array.Empty<BlockState>() && block.Data == "")
+                        {
+                            
+                            doIt = false; // skipped block to avoid chat message and is more efficient
+                        }
+                    }
+
+                    if (doIt)
+                    {
+                        Onix.Client.ExecuteCommand("execute setblock " + block.Position.X + " " + block.Position.Y +
+                                                                       " " + block.Position.Z + " " + block.Name);
+                    }
+                    
                 }
             }
 

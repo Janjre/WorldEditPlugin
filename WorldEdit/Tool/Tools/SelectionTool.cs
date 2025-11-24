@@ -10,7 +10,7 @@ namespace WorldEdit.Tool.Tools;
 public class SelectionTool: BaseTool
 {
 
-    public SelectionTool() : base("selection", "wooden_axe") {}
+    public SelectionTool() : base("selection", "wooden_axe",false) {}
     public override bool OnPressed(InputKey key, bool isDown)
     {
         if ((key == InputKey.Type.LMB || key == InputKey.Type.RMB || key == InputKey.Type.MMB) && !isDown)

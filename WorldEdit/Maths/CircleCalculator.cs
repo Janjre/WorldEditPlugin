@@ -43,7 +43,7 @@ public static class CircleCalculator
         float dx = (float)(Math.Cos(rotation.Pitch * Math.PI / 180) * Math.Sin(rotation.Yaw * Math.PI / 180));
         float dy = (float)Math.Sin(rotation.Pitch * Math.PI / 180);
         float dz = (float)(Math.Cos(rotation.Pitch * Math.PI / 180) * Math.Cos(rotation.Yaw * Math.PI / 180));
-        Vec3 dir = new Vec3(-dx, -dy, -dz).Normalized;
+        Vec3 dir = new Vec3(-dx, -dy, dz).Normalized;
 
         Vec3 L = origin - centre;
 
