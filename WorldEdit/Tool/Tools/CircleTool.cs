@@ -26,7 +26,7 @@ public class CircleTool: BaseTool
 
     
 
-    public CircleTool() : base("circle", "wooden_shovel",false) {}
+    public CircleTool() : base("circle", "wooden_shovel",true) {}
     public override bool OnPressed(InputKey key, bool isDown)
     {
         

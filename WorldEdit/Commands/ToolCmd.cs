@@ -54,6 +54,24 @@ namespace WorldEdit.Commands {
 
         }
         
+        [Overload]
+        OnixCommandOutput SmoothRadius(OnixCommandOrigin origin, [CommandPath("smooth_radius")]string smoothRadius, int radius)
+        {
+
+            SmoothToolManager.Size = radius;
+
+            return Success("Changed tool radius");
+
+        }
+        
+        [Overload]
+        OnixCommandOutput SmoothKernel(OnixCommandOrigin origin, [CommandPath("large_kernel")]string smoothRadius, bool isLarge)
+        {
+            SmoothToolManager.LargeKernel = isLarge;
+
+            return Success("Changed kernel size");
+        }
+        
         
 
         
