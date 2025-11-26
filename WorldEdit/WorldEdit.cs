@@ -21,9 +21,6 @@ using WorldEdit.Tool.Tools;
 namespace WorldEdit {
 
     
-
-    //TODO: None tenth slot tool
-    
     public class WorldEdit : OnixPluginBase {
         public static WorldEdit Instance { get; private set; } = null!;
         public static WorldEditConfig Config { get; private set; } = null!;
@@ -112,7 +109,10 @@ namespace WorldEdit {
 
         private void OnHudRenderGame(RendererGame gfx, float delta)
         {
-            ToolManager.RenderTenthSlot(gfx, delta);
+            if (WorldEdit.Config.Do10ThSlot)
+            {
+                ToolManager.RenderTenthSlot(gfx, delta);
+            }
         }
         private void OnWorldRender(RendererWorld gfx, float delta)
         {

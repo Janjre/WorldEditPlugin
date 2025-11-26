@@ -8,14 +8,14 @@ namespace WorldEdit {
         
         [Category("Tool HUD Settings")]
         
-        [Value(false)]
+        [Value(true)]
         [Name("Do tenth slot", "Should show the tenth slot of your hotbar. If false, you would get tools from your inventory as normal")]
         
         
         public partial bool Do10ThSlot { get; set; }
         
         [Value(InputKey.Type.Num0)]
-        [Name("10th slot key", "The key to select the 10th slot of your inventory. Just mirror what is in your settings")]
+        [Name("10th slot key", "The key to select the 10th slot of your inventory.")]
         public partial InputKey HotbarKey10 { get; set; } 
         
         [Value(InputKey.Type.Num1)]

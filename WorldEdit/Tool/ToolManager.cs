@@ -177,10 +177,45 @@ public static class ToolManager
 
     public static void OnWorldRender (RendererWorld gfx, float delta)
     {
-        if (ToolSlotSelected)
+        if (WorldEdit.Config.Do10ThSlot)
         {
-            SelectedTool.OnRender(gfx,delta);
+            if (ToolSlotSelected)
+            {
+                SelectedTool.OnRender(gfx,delta);
+            }
         }
+        else
+        {
+            foreach (Tool.BaseTool tool in Tool.ToolManager.RegisteredTools ?? Enumerable.Empty<Tool.BaseTool>())
+            {
+                if (tool == null)
+                {
+                    Console.WriteLine("Null tool found in RegisteredTools");
+                    continue;
+                }
+
+                var heldItemName = Onix.LocalPlayer?.MainHandItem?.Item?.Name;
+                if (heldItemName == null)
+                {
+                    // Probably between worlds or no item in hand
+                    continue;
+                }
+
+                if (tool.Item == heldItemName)
+                {
+
+                    try
+                    {
+                        tool.OnRender(gfx, delta);
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"Error rendering tool {tool.Item}: {ex}");
+                    }
+                }
+            }
+        }
+        
     }
     
     
