@@ -22,7 +22,7 @@ namespace WorldEdit {
 
     
 
-    
+    //TODO: None tenth slot tool
     
     public class WorldEdit : OnixPluginBase {
         public static WorldEdit Instance { get; private set; } = null!;
@@ -69,6 +69,9 @@ namespace WorldEdit {
             Onix.Client.CommandRegistry.RegisterCommand(new Box());
             Onix.Client.CommandRegistry.RegisterCommand(new ToolCmd());
             Onix.Client.CommandRegistry.RegisterCommand(new BrushCmd());
+            Onix.Client.CommandRegistry.RegisterCommand(new Copy());
+            Onix.Client.CommandRegistry.RegisterCommand(new Paste());
+            Onix.Client.CommandRegistry.RegisterCommand(new Wall());
             
             
             CommandEnumRegistry.RegisterSoftEnum("actions", new List<string>());

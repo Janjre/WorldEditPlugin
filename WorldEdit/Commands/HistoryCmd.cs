@@ -50,17 +50,7 @@ namespace WorldEdit.Commands {
             // return Success("");
         }
         
-        // [Overload]
-        // OnixCommandOutput Export(OnixCommandOrigin origin, [CommandPath("export")]string list,string fileName)
-        // {
-        //
-        //     var all = (History.UndoHistory, History.UndoHistoryAsBlocks);
-        //     String json = JsonSerializer.Serialize(all);
-        //     File.WriteAllText(fileName,json);
-        //
-        //     return Success($"Sucessfully put history into {fileName}");
-        // }
-        //TODO: Make this work
+        
         
     }
 }
