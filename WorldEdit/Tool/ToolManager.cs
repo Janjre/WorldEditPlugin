@@ -51,6 +51,8 @@ public static class ToolManager
                 gfx.RenderTexture(thisSlot.RightSixteenth,endCap);
                 
                 gfx.RenderItem(thisSlot.ItemPos,new ItemStack(tool.Item,1),true,1.2f);
+                
+                gfx.RenderText(thisSlot.TextSlot,ColorF.White, tool.Name,TextAlignment.Left,TextAlignment.Center);
 
                 if (tool == WhenSelectingToolSelectedTool)
                 {

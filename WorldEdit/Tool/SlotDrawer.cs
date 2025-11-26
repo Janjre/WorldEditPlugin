@@ -45,7 +45,20 @@ public static class SlotDrawer
         Rect rightSixteenth = new Rect(rightSixteenthTl, rightSixteenthBr);
 
         
-        // ItemPos
+        // Text slot
+        float horizontalPadding = sizeVec.X / 16f;
+
+        Vec2 textSlotTopLeft = new Vec2(
+            expandedTopLeft.X + expandedSize.X + horizontalPadding,
+            topLeft.Y
+        );
+
+        Vec2 textSlotBottomRight = new Vec2(
+            textSlotTopLeft.X + sizeVec.X * 2f,
+            textSlotTopLeft.Y + sizeVec.Y
+        );
+
+        Rect textSlot = new Rect(textSlotTopLeft, textSlotBottomRight);
         
 
         Vec2 shrinkFactor = new Vec2(sizeVec.X / 16f, sizeVec.Y / 16f);
@@ -59,7 +72,8 @@ public static class SlotDrawer
             ExpandedSlot  = expandedSlot,
             LeftSixteenth = leftSixteenth,
             RightSixteenth= rightSixteenth,
-            ItemPos       = itemPos
+            ItemPos       = itemPos,
+            TextSlot      = textSlot
         };
     }
 

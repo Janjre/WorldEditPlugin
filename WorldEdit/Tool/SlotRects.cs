@@ -9,5 +9,6 @@ namespace WorldEdit.Tool
         public Rect LeftSixteenth;
         public Rect RightSixteenth;
         public Vec2 ItemPos;
+        public Rect TextSlot;
     }
 }
