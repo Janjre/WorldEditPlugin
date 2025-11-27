@@ -20,10 +20,21 @@ namespace WorldEdit.Commands {
                 {
                     for (int z = (int)Selection.pos1.Z - radius - 1; z <= (int)Selection.pos1.Z + radius + 1; z++)
                     {
-                        if ((Selection.pos1 - new Vec3(x, y, z)).Length < radius)
+                        if (fill)
                         {
-                            History.PlaceBlock(block.Name,"[]",new Vec3(x,y,z),actionId);
+                            if ((Selection.pos1 - new Vec3(x, y, z)).Length < radius)
+                            {
+                                History.PlaceBlock(block.Name,"[]",new Vec3(x,y,z),actionId);
+                            }
                         }
+                        else
+                        {
+                            if ((int)((Selection.pos1 - new Vec3(x, y, z)).Length) ==radius)
+                            {
+                                History.PlaceBlock(block.Name,"[]",new Vec3(x,y,z),actionId);
+                            }
+                        }
+                        
                     }
                 }   
             }

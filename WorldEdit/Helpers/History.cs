@@ -46,7 +46,8 @@ public static class History
 
         if (doIt)
         {
-            Onix.Client.ExecuteCommand("execute setblock " + position.X + " " + position.Y + " " + position.Z + " " + blockName + " " + data, true);
+            Block blockAsBlock = Onix.World.BlockRegistry.GetBlock(blockName);
+            Onix.Region.SetBlock(new BlockPos(position),blockAsBlock);
         }
         
     }

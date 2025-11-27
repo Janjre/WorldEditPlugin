@@ -72,6 +72,15 @@ namespace WorldEdit.Commands {
             return Success("Changed kernel size");
         }
         
+        [Overload]
+        OnixCommandOutput ShowAllTools(OnixCommandOrigin origin, [CommandPath("show_all_tools")]string showAllTools, bool show)
+        {
+            ToolManager.showAllTools = show;
+
+            return Success(show ? "Shown all tools" : "Shown only selected tool");
+        }
+        
+        
         
 
         

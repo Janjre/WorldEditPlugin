@@ -17,6 +17,8 @@ public static class ToolManager
     
     public static bool ToolSlotSelected = false;
     
+    public static bool showAllTools = false;
+    
     
     public static void AddTool(BaseTool baseTool)
     {
@@ -179,6 +181,13 @@ public static class ToolManager
 
     public static void OnWorldRender (RendererWorld gfx, float delta)
     {
+        if (showAllTools)
+        {
+            foreach (BaseTool tool in RegisteredTools)
+            {
+                tool.OnRender(gfx,delta);
+            }
+        }
         if (WorldEdit.Config.Do10ThSlot)
         {
             if (ToolSlotSelected)

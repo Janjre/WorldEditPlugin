@@ -17,6 +17,8 @@ using WorldEdit.Tool.Tools;
 using WorldEdit.Tool;
 using WorldEdit.Tool.Tools;
 
+//TODO: Make sure 10th slot works on other aspect rations
+
 
 namespace WorldEdit {
 
@@ -38,7 +40,7 @@ namespace WorldEdit {
 
     
         protected override void OnLoaded() {
-            Console.WriteLine($"Plugin {CurrentPluginManifest.Name} loaded!");
+            Console.WriteLine($"WorldEdit loaded!");
             Config = new WorldEditConfig(PluginDisplayModule,true);
             
             // Onix.Events.Common.Tick += OnTick;
@@ -96,7 +98,7 @@ namespace WorldEdit {
         protected override void OnUnloaded() {
             // Ensure every task or thread is stopped when this function returns.
             // You can give them base.PluginEjectionCancellationToken which will be cancelled when this function returns. 
-            Console.WriteLine($"Plugin {CurrentPluginManifest.Name} unloaded!");
+            Console.WriteLine($"Unloaded WorldEdit!");
             // Onix.Events.Common.Tick -= OnTick;
             Onix.Events.Rendering.HudRenderGame -= OnHudRenderGame;
             Onix.Events.Common.WorldRender -= OnWorldRender;

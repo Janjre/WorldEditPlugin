@@ -20,7 +20,7 @@
 		<Exec Command="rm &quot;$(OutDir)OnixRuntime.dll&quot; &gt; NUL" IgnoreExitCode="true" />
 		<Exec Condition="'$(ServerPluginBuild)' != 'TRUE'" Command="rmdir /Q /S &quot;$(LOCALAPPDATA)\Packages\Microsoft.MinecraftUWP_8wekyb3d8bbwe\RoamingState\OnixClient\Plugins\plugins\$(OnixPluginUUID)&quot;" IgnoreExitCode="true" />
 		<Exec Condition="'$(ServerPluginBuild)' != 'TRUE'" Command="xcopy /S /C /I /Y &quot;$(OutDir)&quot; &quot;$(LOCALAPPDATA)\Packages\Microsoft.MinecraftUWP_8wekyb3d8bbwe\RoamingState\OnixClient\Plugins\plugins\$(OnixPluginUUID)&quot;" />
-		<Exec Condition="'$(ServerPluginBuild)' != 'TRUE'" Command="xcopy /E /C /I /Y &quot;$(ProjectDir)Assets&quot; &quot;$(LOCALAPPDATA)\Packages\Microsoft.MinecraftUWP_8wekyb3d8bbwe\RoamingState\OnixClient\Plugins\plugins\$(OnixPluginUUID)\assets&quot;" />
+		<Exec Condition="'$(ServerPluginBuild)' != 'TRUE'" Command="xcopy /E /C /I /Y &quot;$(ProjectDir)Assets&quot; &quot;$(LOCALAPPDATA)\Packages\Microsoft.MinecraftUWP_8wekyb3d8bbwe\RoamingState\OnixClient\Plugins\plugins\$(OnixPluginUUID)\Assets&quot;" />
 		<Exec Condition="'$(ServerPluginBuild)' != 'TRUE'" Command="xcopy /C /Y &quot;$(ProjectDir)manifest.json&quot; &quot;$(LOCALAPPDATA)\Packages\Microsoft.MinecraftUWP_8wekyb3d8bbwe\RoamingState\OnixClient\Plugins\plugins\$(OnixPluginUUID)&quot;" />
 		<Exec Condition="'$(ServerPluginBuild)' != 'TRUE'" Command="echo OnixClient > &quot;$(LOCALAPPDATA)\Packages\Microsoft.MinecraftUWP_8wekyb3d8bbwe\RoamingState\OnixClient\Plugins\plugins\$(OnixPluginUUID)\CompletePluginFlag.txt&quot;" />
 		<Exec Condition="'$(ServerPluginBuild)' == 'TRUE'" Command="echo OnixClient > &quot;$(SolutionDir)BuildSuccessful.txt&quot;" />
@@ -34,10 +34,6 @@
 
         <Analyzer Condition="'$(ServerPluginBuild)' == 'TRUE'" Include="$(ServerPluginBuildRuntime)/OnixRuntime.CodeGenerators.dll"/>
         <Analyzer Condition="'$(ServerPluginBuild)' != 'TRUE'" Include="$(LOCALAPPDATA)\Packages\Microsoft.MinecraftUWP_8wekyb3d8bbwe\RoamingState\OnixClient\Plugins\runtime\OnixRuntime.CodeGenerators.dll"/>
-    </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Assets\" />
     </ItemGroup>
 
     <PropertyGroup Condition="'$(ServerPluginBuild)' == 'TRUE'">
