@@ -214,5 +214,29 @@ namespace WorldEdit.Commands {
             String typeCleared = Selection.SelectionType == Selection.SelectionTypeEnum.Cuboid ? "Cuboid" : "Arbitrary";
             return Success($"{typeCleared} cleared");
         }
+        
+        [Overload]
+        OnixCommandOutput Replace(OnixCommandOrigin origin, [CommandPath("replace")]string replace, Block block)
+        {
+            List<Vec3> newBlocks = new();
+            
+            foreach (Vec3 blockPos in Selection.Blocks())
+            {
+                if (Onix.Region.GetBlock(new BlockPos(blockPos)).Name == block.Name)
+                {
+                    newBlocks.Add(blockPos);
+                }
+            }
+
+            Selection.ArbitraryBitmap = newBlocks;
+            
+            if (Selection.SelectionType == Selection.SelectionTypeEnum.Cuboid)
+            {
+                Console.WriteLine("Changed selection type to arbitrary");
+                Selection.SelectionType = Selection.SelectionTypeEnum.Arbitrary;
+            }
+
+            return Success($"Made new arbitrary selection of all blocks in previous selection of name {block.Name}");
+        }
     }
 }

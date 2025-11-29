@@ -34,7 +34,7 @@ namespace WorldEdit.Commands {
             }
             for (int i = 0; i <= depth; i++)
             {
-                Console.WriteLine($"{(History.UndoHistory[i].Selected ? "-> §e" : "")} {i+1}: {History.UndoHistory[i].Text}, uuid: {History.UndoHistory[i].UUID}");
+                Console.WriteLine($"{(i == History.undoPoint ? "-> §e" : "")} {i+1}: {History.UndoHistory[i].Text}, uuid: {History.UndoHistory[i].UUID}");
             }
 
             return Success("");
@@ -49,6 +49,13 @@ namespace WorldEdit.Commands {
             return Success($"{targetItem.UUID}: desc: {targetItem.Text}, numberOfBlocks: {targetBlocks.Count}");
             // return Success("");
         }
+        
+        [Overload]
+        OnixCommandOutput PrintUndoPoint(OnixCommandOrigin origin, [CommandPath("print_undo_point")]string printUndoPoint)
+        {
+            return Success($"Undo point: {History.undoPoint}");
+        }
+        
         
         
         

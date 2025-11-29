@@ -17,6 +17,10 @@ namespace WorldEdit.Commands
         OnixCommandOutput UndoExecute()
         {
 
+            if (History.undoPoint < 1)
+            {
+                return Error("Cannot undo past this point");
+            }
             long targetUuid = History.UndoHistory[History.undoPoint].UUID;
             string targetActionDescriptor = History.UndoHistory[History.undoPoint].Text;
 
@@ -32,7 +36,6 @@ namespace WorldEdit.Commands
                     
                     if ("minecraft:" + Onix.Region.GetBlock((int)block.Position.X, (int)block.Position.Y, (int)block.Position.Z).Name == block.Name)
                     {
-                        Console.WriteLine(block.Data);
                         if (Onix.Region.GetBlock((int)block.Position.X, (int)block.Position.Y, (int)block.Position.Z).RawStates == Array.Empty<BlockState>() && block.Data == "")
                         {
                             

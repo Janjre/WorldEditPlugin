@@ -2,6 +2,7 @@ using OnixRuntime.Api;
 using OnixRuntime.Api.Entities;
 using OnixRuntime.Api.Inputs;
 using OnixRuntime.Api.OnixClient;
+using WorldEdit.Tool;
 
 namespace WorldEdit {
     public partial class WorldEditConfig : OnixModuleSettingRedirector {
@@ -16,6 +17,34 @@ namespace WorldEdit {
         [Name("Show tool names", "Should show the names of the tools when selecting them. This is redundant if you do not have the tenth slot")]
         public partial bool ShowToolNames { get; set; }
         
+        [Air(5)]
+        
+        
+        [Value(0.63794f)]
+        [MinMax(0f, 1f)]
+        [Name("Tenth slot x", "The X position of the tenth slot. Use configure to adjust.")]
+        public partial float TenthSlotX { get; set; }
+        
+        [Value(0.9200f)]
+        [MinMax(0f, 1f)]
+        [Name("Tenth slot y", "The Y position of the tenth slot. Use configure to adjust.")]
+        public partial float TenthSlotY { get; set; }
+        
+        [Value(0.03120f)]
+        [MinMax(0f, 1f)]
+        [Name("Tenth slot size", "The size the tenth slot. Use configure to adjust.")]
+        public partial float TenthSlotSize { get; set; }
+        
+        
+        void Configure() {
+            Console.WriteLine("Button pressed");
+            ToolManager.Configure();
+        }
+        [Button(nameof(Configure), "Configure")]
+        [Name("Adjust tenth slot position", "Once pressed, you can use the arrow keys to change the position of the tenth slot and pg up and pg down to change the size. Once finished, press enter to save you changes or escape to cancel")]
+        public partial OnixSetting.SettingChangedDelegate ConfigureButtonPressed { get; set; }
+        
+        [Air(5)]
         
         
         [Value(InputKey.Type.Num0)]

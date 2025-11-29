@@ -22,7 +22,7 @@ namespace WorldEdit.Commands {
             {
                 for (float t = 0; t <= distance * 10; t++)
                 {
-                    float usingT = t / 100;
+                    float usingT = t / distance / 10;
                     Vec3 point = BezierCalculator.Interpolate(Selection.pos1.WithY(y), Selection.pos2.WithY(y), usingT);
                     History.PlaceBlock(block.Name,"[]",point.Floor(),actionId);
                 }

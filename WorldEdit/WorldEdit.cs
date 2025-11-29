@@ -17,9 +17,6 @@ using WorldEdit.Tool.Tools;
 using WorldEdit.Tool;
 using WorldEdit.Tool.Tools;
 
-//TODO: Make sure 10th slot works on other aspect rations
-
-
 namespace WorldEdit {
 
     
@@ -47,7 +44,7 @@ namespace WorldEdit {
             Onix.Events.Rendering.HudRenderGame += OnHudRenderGame;
             Onix.Events.Common.WorldRender += OnWorldRender;
             Onix.Events.Input.Input += InputHandler.OnInput;
-            Onix.Events.LocalServer.PlayerChatEvent += MyChatHandler;
+            Onix.Events.Common.ChatMessage += MyChatHandler;
             
             History.UndoHistory.Add( new History.HistoryItem(0, "Start", false));
             History.RedoHistory.Add (new History.HistoryItem(0, "Start", false));
@@ -71,6 +68,7 @@ namespace WorldEdit {
             Onix.Client.CommandRegistry.RegisterCommand(new Copy());
             Onix.Client.CommandRegistry.RegisterCommand(new Paste());
             Onix.Client.CommandRegistry.RegisterCommand(new Wall());
+            Onix.Client.CommandRegistry.RegisterCommand(new Move());
             
             
             CommandEnumRegistry.RegisterSoftEnum("actions", new List<string>());
@@ -103,7 +101,7 @@ namespace WorldEdit {
             Onix.Events.Rendering.HudRenderGame -= OnHudRenderGame;
             Onix.Events.Common.WorldRender -= OnWorldRender;
             Onix.Events.Input.Input -= InputHandler.OnInput;
-            Onix.Events.LocalServer.PlayerChatEvent -= MyChatHandler;
+            Onix.Events.Common.ChatMessage -= MyChatHandler;
 
             
 
@@ -172,11 +170,7 @@ namespace WorldEdit {
                 
                    
             } 
-
             
-            
-            
-
             
             foreach (Tool.BaseTool tool in Tool.ToolManager.RegisteredTools ?? Enumerable.Empty<Tool.BaseTool>())
             {
@@ -208,15 +202,14 @@ namespace WorldEdit {
 
 
         }
-
         
-        
-        
-        
-        
-        bool MyChatHandler(ServerPlayer player, string message)
+        bool MyChatHandler(string message, string username, string xuid, ChatMessageType type)
         {
-            // if (message.Contains())
+            if (message == "§cThe block couldn't be placed" || message == "Block placed" || message == "§cCannot place block outside the world")
+            {
+                return true;
+            }
+
             return false;
         }
         

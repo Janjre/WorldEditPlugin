@@ -15,19 +15,12 @@ public static class History
     public static List<HistoryItem> RedoHistory = new List<History.HistoryItem>(); // list of action numbers and display text
 
     
-    public static TexturePath UndoIcon = TexturePath.Assets("undoIcon");
-    public static TexturePath RedoIcon = TexturePath.Assets("redoIcon");
-    public static TexturePath ClearIcon = TexturePath.Assets("clear");
     public static int undoPoint = 0;
-    
-    public static List<string> commandHistory = new List<string>();
-    public static int commandHistoryPoint;
+
     
     
     public static void PlaceBlock(String blockName, String data, Vec3 position, long actionNumber, bool undo = true)
     {
-        
-        
         Block block = Onix.LocalPlayer.Region.GetBlock((int)position.X, (int)position.Y, (int)position.Z);
         MyBlock blockReplaced = new MyBlock(block.NameFull, block.State.ToString(), actionNumber, position);
         UndoHistoryAsBlocks.Add(blockReplaced);
@@ -46,8 +39,7 @@ public static class History
 
         if (doIt)
         {
-            Block blockAsBlock = Onix.World.BlockRegistry.GetBlock(blockName);
-            Onix.Region.SetBlock(new BlockPos(position),blockAsBlock);
+            Onix.Client.ExecuteCommand($"execute setblock {position.X} {position.Y} {position.Z} {blockName}",true);
         }
         
     }
@@ -56,12 +48,13 @@ public static class History
 
     public static void FinishAction(long actionNumber,string displayText) // logic around removing redo options after an action are here
     {
-        if (undoPoint != UndoHistory.Count)
+        
+        if (undoPoint != UndoHistory.Count-1)
         {
             for (int i = UndoHistory.Count-1; i >  undoPoint; i--)
             {
                 UndoHistory.RemoveAt(i);
-                CommandEnumRegistry.RemoveSoftEnumValue("actions",UndoHistory[i].UUID.ToString());
+                // CommandEnumRegistry.RemoveSoftEnumValue("actions",UndoHistory[i].UUID.ToString());
             }
         }
 
@@ -96,6 +89,6 @@ public static class History
             UUID = uuid;
             Text = text;
             Selected = selected;
-        } //TODO: Look at Onix.Region.SetBlock() - maybe no chat spam and fixes block states? Will it work on servers
+        } 
     }
 }

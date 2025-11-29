@@ -4,25 +4,22 @@ namespace WorldEdit.Maths;
 
 public static class CircleCalculator
 {
-    public static (Vec3,Vec3,Vec3) GetPlane(Vec3 centre, Vec3 radiusOne, Vec3 radiusTwo)
+    public static (Vec3,Vec3,Vec3) GetPlane(Vec3 centre, Vec3 radiusOne, Vec3 radiusTwo) 
     {
-        // Known points
         Vec3 C = centre;
         Vec3 R1 = radiusOne;
         Vec3 R2 = radiusTwo; 
 
-        // Direction vectors
+        // direction vectors
         Vec3 v1 = R1 - C;
         Vec3 v2 = R2 - C;
 
-        // Plane normal
         Vec3 normal = v1.Cross(v2).Normalized;
 
-        // Circle radius 
         float circleRadius = v1.Length;
 
-        // Local basis axes on the circle plane
-        Vec3 u = v1.Normalized;                  // "0 degrees"
+        // 2d x and y on plane
+        Vec3 u = v1.Normalized;                  
         Vec3 v = normal.Cross(u).Normalized;  // perpendicular to u in the plane
         
 
@@ -63,7 +60,7 @@ public static class CircleCalculator
 
             if (t > 0)
             {
-                Vec3 hit = origin + dir * t;// where the player clicked on the sphere
+                Vec3 hit = origin + dir * t;
                 return (true, hit);
             }
         }

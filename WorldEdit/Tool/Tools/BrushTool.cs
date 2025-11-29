@@ -54,7 +54,10 @@ public class BrushTool: BaseTool
                         {
                             if ((targetPosition - new Vec3(x, y, z)).Length <= _size)
                             {
-                                History.PlaceBlock(_block.Name,"[]",new Vec3(x,y,z),actionId);   
+                                if (Onix.Region.GetBlock(x, y, z).Name == _mask || _mask == "")
+                                {
+                                    History.PlaceBlock(_block.Name,"[]",new Vec3(x,y,z),actionId);  
+                                }
                             }
                         }
                     }

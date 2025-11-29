@@ -18,6 +18,17 @@ public class SelectionTool: BaseTool
             return true;
         }
         RaycastResult result = Onix.LocalPlayer.Raycast;
+        Vec3 resultPos = Vec3.One;
+        
+        if (result.Type == RaycastResultType.None)
+        {
+            resultPos = Onix.LocalPlayer.ForwardPosition(3).Floor();
+        }
+        else
+        {
+            resultPos = new Vec3(result.BlockPosition);
+        }
+        
          if (key.Value == InputKey.Type.LMB)
         {
             if (Selection.SelectionType == Selection.SelectionTypeEnum.Arbitrary)
@@ -25,8 +36,8 @@ public class SelectionTool: BaseTool
                 Console.WriteLine("Selection type is arbitrary - changing to cuboid");
                 Selection.SelectionType = Selection.SelectionTypeEnum.Cuboid;
             }
-            Selection.pos1 = new Vec3(result.BlockPosition.X, result.BlockPosition.Y,
-                result.BlockPosition.Z);
+
+            Selection.pos1 = resultPos;
             return true;
 
         }
@@ -38,8 +49,7 @@ public class SelectionTool: BaseTool
                 Console.WriteLine("Selection type is arbitrary - changing to cuboid");
                 Selection.SelectionType = Selection.SelectionTypeEnum.Cuboid;
             }
-            Selection.pos2 = new Vec3(result.BlockPosition.X, result.BlockPosition.Y,
-                result.BlockPosition.Z);
+            Selection.pos2 = resultPos;
             return true;
         }
 
@@ -50,9 +60,8 @@ public class SelectionTool: BaseTool
                 Console.WriteLine("Selection type is arbitrary - changing to cuboid");
                 Selection.SelectionType = Selection.SelectionTypeEnum.Cuboid;
             }
-            
-            Vec3 toInclude = new Vec3(result.BlockPosition.X, result.BlockPosition.Y,
-                result.BlockPosition.Z);
+
+            Vec3 toInclude = resultPos;
 
             if (!Selection.Blocks().Contains(toInclude))
             {

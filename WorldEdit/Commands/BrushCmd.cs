@@ -13,7 +13,7 @@ namespace WorldEdit.Commands {
 
         
         [Overload]
-        OnixCommandOutput Register(Item item, Block block, int size, string name = "", string mask = "")
+        OnixCommandOutput Register(Item item, Block block, int size, string mask = "", string name = "")
         {
             ToolManager.AddTool(new BrushTool(item,block,size,name,mask));
             return Success($"Added tool {name}");

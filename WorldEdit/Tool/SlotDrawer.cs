@@ -6,15 +6,24 @@ namespace WorldEdit.Tool;
 
 public static class SlotDrawer
 {
-    
+    public static float StartX = 0.63794f; 
+    public static float StartY = 0.9200f;
+    public static float Size =  0.03120f;
 
     public static SlotRects GetSlotRects(int nAbove)
     {
         float screenWidth  = Onix.Gui.ScreenSize.X;
         float screenHeight = Onix.Gui.ScreenSize.Y;
 
-        Vec2 baseTopLeft = new Vec2(screenWidth * 0.63794f, screenHeight * 0.9200f);
-        Vec2 sizeVec     = new Vec2(screenWidth * 0.03120f, screenWidth * 0.03120f);
+        if (!ToolManager.Configuring)
+        {
+            StartX = WorldEdit.Config.TenthSlotX;
+            StartY = WorldEdit.Config.TenthSlotY;
+            Size = WorldEdit.Config.TenthSlotSize;
+        }
+        
+        Vec2 baseTopLeft = new Vec2(screenWidth * StartX, screenHeight * StartY);
+        Vec2 sizeVec     = new Vec2(screenWidth * Size, screenWidth * Size);
 
         // Offset upwards by nAbove slots
         Vec2 topLeft = new Vec2(

@@ -16,6 +16,12 @@ namespace WorldEdit.Commands
         [Overload]
         OnixCommandOutput RedoExecute()
         {
+            
+            if (History.undoPoint+1 >= History.UndoHistory.Count)
+            {
+                return Error("Cannot redo past this point");
+            }
+            
             History.undoPoint += 1;
 
             long targetUUID = History.UndoHistory[History.undoPoint].UUID;

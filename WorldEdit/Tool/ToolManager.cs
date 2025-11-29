@@ -18,6 +18,8 @@ public static class ToolManager
     public static bool ToolSlotSelected = false;
     
     public static bool showAllTools = false;
+
+    public static bool Configuring = false;
     
     
     public static void AddTool(BaseTool baseTool)
@@ -148,6 +150,66 @@ public static class ToolManager
             }
         }
 
+        
+
+        if (ToolManager.Configuring)
+        {
+            float changeQuantity = 0.001f;
+            
+            if (Onix.Input.IsDown(InputKey.Type.Shift))
+            {
+                changeQuantity = 0.0001f;
+            }
+            else if (Onix.Input.IsDown(InputKey.Type.Ctrl))
+            {
+                changeQuantity = 0.01f;
+            }
+            
+            if (key == InputKey.Type.Left)
+            {
+                SlotDrawer.StartX -= changeQuantity;
+            }
+            if (key == InputKey.Type.Right)
+            {
+                SlotDrawer.StartX += changeQuantity;
+            }
+            if (key == InputKey.Type.Up)
+            {
+                SlotDrawer.StartY -= changeQuantity;
+            }
+            if (key == InputKey.Type.Down)
+            {
+                SlotDrawer.StartY += changeQuantity;
+            }
+        
+            if (key == InputKey.Type.PageUp)
+            {
+                SlotDrawer.Size += changeQuantity;
+            }
+            if (key == InputKey.Type.PageDown)
+            {
+                SlotDrawer.Size -= changeQuantity;
+            }
+
+            if (key == InputKey.Type.Enter)
+            {
+                WorldEdit.Config.TenthSlotX = SlotDrawer.StartX;
+                WorldEdit.Config.TenthSlotY = SlotDrawer.StartY;
+                WorldEdit.Config.TenthSlotSize = SlotDrawer.Size;
+                Console.WriteLine("Completed configuration - changed settings");
+                Configuring = false;
+                return true;
+            }
+            
+            if (key == InputKey.Type.Delete)
+            {
+                Console.WriteLine("Cancelled configuration - settings stayed the same");
+                Configuring = false;
+            }
+        }
+        
+        
+        
         if (key == InputKey.Type.Alt)
         {
             if (ToolSlotSelected)
@@ -226,6 +288,12 @@ public static class ToolManager
                 }
             }
         }
+        
+    }
+
+    public static void Configure()
+    {
+        Configuring = true;
         
     }
     
