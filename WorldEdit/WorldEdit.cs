@@ -69,6 +69,7 @@ namespace WorldEdit {
             Onix.Client.CommandRegistry.RegisterCommand(new Paste());
             Onix.Client.CommandRegistry.RegisterCommand(new Wall());
             Onix.Client.CommandRegistry.RegisterCommand(new Move());
+            Onix.Client.CommandRegistry.RegisterCommand(new WEHelp());
             
             
             CommandEnumRegistry.RegisterSoftEnum("actions", new List<string>());

@@ -2,7 +2,7 @@
   "uuid": "b5be7ebc-0af7-495a-a29d-d4f1995437dd",
   "plugin_name": "WorldEdit",
   "plugin_author": "Janjre",
-  "plugin_description": "A port of the java mod WorldEdit that allows you to efficiently manipulate the world with tools and commands",
+  "plugin_description": "A port of the java mod WorldEdit that allows you to efficiently manipulate the world with tools and commands. Run .WEhelp and read the summary",
   "plugin_version": "2.0.0",
   "game_version": "1.21.82",
   "supported_game_version_ranges": [

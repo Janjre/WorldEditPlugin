@@ -1,8 +1,10 @@
 ﻿using System.Text.Json;
+using OnixRuntime.Api;
 using OnixRuntime.Api.Entities;
 using OnixRuntime.Api.Items;
 using OnixRuntime.Api.Maths;
 using OnixRuntime.Api.OnixClient.Commands;
+using OnixRuntime.Api.Utils;
 using OnixRuntime.Api.World;
 using WorldEdit.Tool;
 
@@ -79,6 +81,28 @@ namespace WorldEdit.Commands {
 
             return Success(show ? "Shown all tools" : "Shown only selected tool");
         }
+        
+        [Overload]
+        OnixCommandOutput CopyTenthSlotInfo(OnixCommandOrigin origin, [CommandPath("copy_info")]string copyInfo)
+        {
+            Clipboard.SetText($"Screen size: X {Onix.Gui.ScreenSize.X}, Y {Onix.Gui.ScreenSize.Y}" +
+                              $"Tenth slot X: {SlotDrawer.StartX}" +
+                              $"Tenth slot Y {SlotDrawer.StartY}" +
+                              $"Tenth slot size {SlotDrawer.Size}");
+
+            return Success("Copied info to clipboard");
+        }
+        
+        [Overload]
+        OnixCommandOutput AutoFit(OnixCommandOrigin origin, [CommandPath("auto_fit")]string autoFit)
+        {
+            Console.WriteLine(Onix.Gui.ScreenSize);
+            WorldEdit.Config.TenthSlotX = SlotDrawer.GetTenthSlot(Onix.Gui.ScreenSize.X, Onix.Gui.ScreenSize.Y).pos.X;
+            WorldEdit.Config.TenthSlotY = SlotDrawer.GetTenthSlot(Onix.Gui.ScreenSize.X, Onix.Gui.ScreenSize.Y).pos.Y;
+            WorldEdit.Config.TenthSlotSize = SlotDrawer.GetTenthSlot(Onix.Gui.ScreenSize.X, Onix.Gui.ScreenSize.Y).size;
+            return Success("Fitted tenth slot");
+        }
+
         
         
         

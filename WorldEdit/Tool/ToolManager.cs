@@ -36,6 +36,15 @@ public static class ToolManager
     
     public static void RenderTenthSlot(RendererGame gfx, float delta)
     {
+
+        if (Configuring)
+        {
+            Onix.Gui.SetActionbarText(
+                "Use your arrow keys to move the tenth slot. Use page up and down to scale it. \n" +
+                "You can do these quicker by holding control and slow by holding shift \n" +
+                "Once you are done press enter. To cancel press delete."
+            );
+        }
         
         TexturePath unselectedTexture = TexturePath.Game("textures/ui/hotbar_0.png");
         TexturePath selectedTexture = TexturePath.Game("textures/ui/selected_hotbar_slot.png");
@@ -198,6 +207,7 @@ public static class ToolManager
                 WorldEdit.Config.TenthSlotSize = SlotDrawer.Size;
                 Console.WriteLine("Completed configuration - changed settings");
                 Configuring = false;
+                Onix.Gui.SetActionbarText("");
                 return true;
             }
             
@@ -205,6 +215,7 @@ public static class ToolManager
             {
                 Console.WriteLine("Cancelled configuration - settings stayed the same");
                 Configuring = false;
+                Onix.Gui.SetActionbarText("");
             }
         }
         

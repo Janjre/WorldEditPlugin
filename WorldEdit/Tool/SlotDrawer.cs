@@ -9,6 +9,17 @@ public static class SlotDrawer
     public static float StartX = 0.63794f; 
     public static float StartY = 0.9200f;
     public static float Size =  0.03120f;
+    
+    public static (Vec2 pos, float size) GetTenthSlot(float screenW, float screenH)
+    {
+        float slotX = 0.847099f - 0.0002806f * screenW;
+        float slotY = 0.884802f + 0.00012399f * screenH;
+        float slotSize = 0.0762968f - 0.00006194f * screenW;
+
+        return (new Vec2(slotX, slotY), slotSize);
+    }
+
+
 
     public static SlotRects GetSlotRects(int nAbove)
     {

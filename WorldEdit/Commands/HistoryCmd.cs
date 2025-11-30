@@ -13,13 +13,15 @@ namespace WorldEdit.Commands {
 
 
         [Overload]
-        OnixCommandOutput Clear(OnixCommandOrigin origin, [CommandPath("clear")]string clear) {
+        OnixCommandOutput Clear(OnixCommandOrigin origin, [CommandPath("clear")]string clear) { 
             History.undoPoint = 0;
-            for (int i = History.UndoHistory.Count - 1; i >= 1; i--)
-            {
-                History.UndoHistory.RemoveAt(i);
-                CommandEnumRegistry.RemoveSoftEnumValue("actions",History.UndoHistory[i].UUID.ToString());
-            }
+            History.RedoHistory = new List<History.HistoryItem>();
+            History.RedoHistoryAsBlocks = new List<MyBlock>();
+            History.UndoHistory = new List<History.HistoryItem>();
+            History.UndoHistoryAsBlocks = new List<MyBlock>();
+            
+            History.UndoHistory.Add( new History.HistoryItem(0, "Start", false));
+            History.RedoHistory.Add (new History.HistoryItem(0, "Start", false));
 
             return Success("Cleared all history");
         }

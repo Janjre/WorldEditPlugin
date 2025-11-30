@@ -54,7 +54,7 @@ public static class History
             for (int i = UndoHistory.Count-1; i >  undoPoint; i--)
             {
                 UndoHistory.RemoveAt(i);
-                // CommandEnumRegistry.RemoveSoftEnumValue("actions",UndoHistory[i].UUID.ToString());
+                CommandEnumRegistry.RemoveSoftEnumValue("actions",UndoHistory[i].UUID.ToString());
             }
         }
 

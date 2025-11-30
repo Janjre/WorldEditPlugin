@@ -16,7 +16,7 @@ namespace WorldEdit.Commands {
             int radius = (int)(Selection.pos2 - Selection.pos1).Length;
             for (int x = (int)Selection.pos1.X - radius - 1; x <= (int)Selection.pos1.X + radius + 1; x++)
             {
-                for (int y = (int)Selection.pos1.X - radius - 1; y <= (int)Selection.pos1.Y + radius + 1; y++)
+                for (int y = (int)Selection.pos1.Y - radius - 1; y <= (int)Selection.pos1.Y + radius + 1; y++)
                 {
                     for (int z = (int)Selection.pos1.Z - radius - 1; z <= (int)Selection.pos1.Z + radius + 1; z++)
                     {
