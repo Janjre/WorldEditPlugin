@@ -13,15 +13,18 @@ public class BrushTool: BaseTool
     private Block _block;
     private int _size;
     private string _mask;
+    private bool _onlyOutside;
 
-    public BrushTool(Item item, Block block, int size, string name = "", string mask = "") : base(name == "" ? item.Name : name, item.Name,true)
+    public BrushTool(Item item, Block block, int size, string name = "", bool onlyOutside = false, string mask = "") : base(name == "" ? item.Name : name, item.Name,true)
     {
         _block = block;
         _size = size;
         _mask = mask;
+        _onlyOutside = onlyOutside;
     }
     public override bool OnPressed(InputKey key, bool isDown)
     {
+        
         if (key == InputKey.Type.LMB && isDown)
         {
             Vec3 targetPosition = new Vec3();
@@ -56,7 +59,30 @@ public class BrushTool: BaseTool
                             {
                                 if (Onix.Region.GetBlock(x, y, z).Name == _mask || _mask == "")
                                 {
-                                    History.PlaceBlock(_block.Name,"[]",new Vec3(x,y,z),actionId);  
+                                    if (_onlyOutside)
+                                    {
+                                        
+                                        Vec3 targetPos = new Vec3(x, y, z);
+                                        if (Onix.Region.GetBlock(new BlockPos(targetPos.WithX(targetPos.X + 1))).Name ==
+                                            "air" ||
+                                            Onix.Region.GetBlock(new BlockPos(targetPos.WithX(targetPos.X - 1))).Name ==
+                                            "air" ||
+                                            Onix.Region.GetBlock(new BlockPos(targetPos.WithY(targetPos.Y + 1))).Name ==
+                                            "air" ||
+                                            Onix.Region.GetBlock(new BlockPos(targetPos.WithY(targetPos.Y - 1))).Name ==
+                                            "air" ||
+                                            Onix.Region.GetBlock(new BlockPos(targetPos.WithZ(targetPos.Z + 1))).Name ==
+                                            "air" ||
+                                            Onix.Region.GetBlock(new BlockPos(targetPos.WithZ(targetPos.Z - 1))).Name ==
+                                            "air")
+                                        {
+                                            History.PlaceBlock(_block.Name,"[]",new Vec3(x,y,z),actionId);  
+                                        }
+                                    } // 
+                                    else
+                                    {
+                                        History.PlaceBlock(_block.Name,"[]",new Vec3(x,y,z),actionId);   
+                                    }
                                 }
                             }
                         }

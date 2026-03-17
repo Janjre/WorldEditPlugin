@@ -13,9 +13,9 @@ namespace WorldEdit.Commands {
 
         
         [Overload]
-        OnixCommandOutput Register(Item item, Block block, int size, string mask = "", string name = "")
+        OnixCommandOutput Register(Item item, Block block, int size, string mask = "", bool onlyOutside = false, string name = "")
         {
-            ToolManager.AddTool(new BrushTool(item,block,size,name,mask));
+            ToolManager.AddTool(new BrushTool(item,block,size,name,onlyOutside,mask));
             return Success($"Added tool {name}");
         }
     }

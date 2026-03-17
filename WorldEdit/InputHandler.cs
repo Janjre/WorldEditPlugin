@@ -31,7 +31,7 @@ public static class InputHandler
             }
             
 
-            
+             
             if (Onix.LocalPlayer.MainHandItem.Item != null)
             {
                 foreach (Tool.BaseTool tool in Tool.ToolManager.RegisteredTools ?? Enumerable.Empty<Tool.BaseTool>())

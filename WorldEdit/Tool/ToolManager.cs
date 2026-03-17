@@ -1,4 +1,5 @@
-﻿using OnixRuntime.Api;
+﻿using System.Diagnostics;
+using OnixRuntime.Api;
 using OnixRuntime.Api.Inputs;
 using OnixRuntime.Api.Items;
 using OnixRuntime.Api.Maths;
@@ -20,6 +21,8 @@ public static class ToolManager
     public static bool showAllTools = false;
 
     public static bool Configuring = false;
+    
+    public static Stopwatch Timing = System.Diagnostics.Stopwatch.StartNew();
     
     
     public static void AddTool(BaseTool baseTool)
@@ -113,6 +116,8 @@ public static class ToolManager
     
         return false;
     }
+
+    public static long LastScroll = 0;
     
     public static bool OnKeyPressed(InputKey key, bool isDown)
     {
@@ -135,9 +140,12 @@ public static class ToolManager
                 ToolSlotSelected = false;
                 return false; 
             }
-            else
+            
+            int index = RegisteredTools.IndexOf(WhenSelectingToolSelectedTool);
+            var now = Timing.ElapsedMilliseconds;
+
+            if (now - LastScroll > 50)
             {
-                int index = RegisteredTools.IndexOf(WhenSelectingToolSelectedTool);
                 if (!isDown)
                 {
                     index += 1;
@@ -151,12 +159,15 @@ public static class ToolManager
                     index -= 1;
                     if (index < 0)
                     {
-                        index = RegisteredTools.Count-1;
+                        index = RegisteredTools.Count - 1;
                     }
                 }
-
-                WhenSelectingToolSelectedTool = RegisteredTools[index];
             }
+
+            LastScroll = now;
+
+            WhenSelectingToolSelectedTool = RegisteredTools[index];
+            
         }
 
         
