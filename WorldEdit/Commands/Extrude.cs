@@ -13,7 +13,7 @@ namespace WorldEdit.Commands {
         [Overload]
         OnixCommandOutput ExtrudeExecute(Block block, AxisCalculator.DirectionEnum direction,int distance)
         {
-            long actionId = Globals.MyRandom.NextInt64(1, 1_000_000_001);
+            long actionId = History.GenerateId();
 
             AxisCalculator.Direction directionAsClass = new AxisCalculator.Direction(direction);
             

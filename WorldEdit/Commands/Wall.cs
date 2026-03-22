@@ -14,7 +14,7 @@ namespace WorldEdit.Commands {
         {
             
             
-            long actionId = Globals.MyRandom.NextInt64(1, 1_000_000_001);
+            long actionId = History.GenerateId();
 
             float distance = (Selection.pos1 - Selection.pos2.WithY(Selection.pos1.Y)).Length;
 

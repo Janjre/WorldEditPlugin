@@ -1,4 +1,5 @@
-﻿using OnixRuntime.Api.Entities;
+﻿using OnixRuntime.Api;
+using OnixRuntime.Api.Entities;
 using OnixRuntime.Api.Maths;
 using OnixRuntime.Api.OnixClient.Commands;
 using OnixRuntime.Api.World;
@@ -6,12 +7,12 @@ using OnixRuntime.Api.World;
 namespace WorldEdit.Commands {
     
     public class Set : OnixCommandBase {
-        public Set() : base("set", "Sets the selected area with a block", CommandExecutionTarget.Client, CommandPermissionLevel.Any) { }
+        public Set() : base("set", "Sets the selected area with a block", CommandExecutionTarget.Client) { }
 
         [Overload]
         OnixCommandOutput SetExecute(Block block)
         {
-            long actionId = Globals.MyRandom.NextInt64(1, 1_000_000_001);
+            long actionId = History.GenerateId();
             foreach (Vec3 blockPos in Selection.Blocks())
             {
                 History.PlaceBlock(block.Name,"[]"  ,blockPos,actionId);

@@ -13,7 +13,7 @@ namespace WorldEdit.Commands {
         OnixCommandOutput SetExecute(Block replaceFrom, Block setTo)
         {
             int blocksPlaced = 0;
-            long actionId = Globals.MyRandom.NextInt64(1, 1_000_000_001);
+            long actionId = History.GenerateId();
             foreach (Vec3 blockPos in Selection.Blocks())
             {
                 if (Onix.Region.GetBlock((int)blockPos.X, (int)blockPos.Y, (int)blockPos.Z).Name == replaceFrom.Name)

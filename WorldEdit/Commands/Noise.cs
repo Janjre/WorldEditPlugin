@@ -13,7 +13,7 @@ namespace WorldEdit.Commands {
 
         [Overload]
         OnixCommandOutput Perlin(OnixCommandOrigin origin, [CommandPath("perlin")]string perlin, string pattern, float zoom) {
-            long actionId = Globals.MyRandom.NextInt64(1, 1_000_000_001);
+            long actionId = History.GenerateId();
             foreach (Vec3 blockPos in Selection.Blocks())
             {
                 string output = "";

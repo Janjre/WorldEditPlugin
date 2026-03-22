@@ -13,7 +13,7 @@ namespace WorldEdit.Commands {
         OnixCommandOutput MoveExecute(int x, int y, int z)
         {
 
-            long actionId = Globals.MyRandom.NextInt64(1, 1_000_000_001);
+            long actionId = History.GenerateId();
 
             List<(string, Vec3)> blocks = new List<(string, Vec3)>();
 

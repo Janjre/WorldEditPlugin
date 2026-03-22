@@ -11,7 +11,7 @@ namespace WorldEdit.Commands {
         [Overload]
         OnixCommandOutput WallExecute(Block block)
         {
-            long actionId = Globals.MyRandom.NextInt64(1, 1_000_000_001);
+            long actionId = History.GenerateId();
             int count = 0;
             foreach (Vec3 blockPos in Selection.Blocks())
             {

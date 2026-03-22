@@ -11,7 +11,7 @@ namespace WorldEdit.Commands {
         [Overload]
         OnixCommandOutput SphereExecute(Block block, bool fill = true)
         {
-            long actionId = Globals.MyRandom.NextInt64(1, 1_000_000_001);
+            long actionId = History.GenerateId();
 
             int radius = (int)(Selection.pos2 - Selection.pos1).Length;
             for (int x = (int)Selection.pos1.X - radius - 1; x <= (int)Selection.pos1.X + radius + 1; x++)

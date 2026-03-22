@@ -16,6 +16,11 @@ public static class History
 
     
     public static int undoPoint = 0;
+    
+    public static long GenerateId()
+    {
+        return Globals.MyRandom.NextInt64(long.MinValue, long.MaxValue);
+    }
 
     
     
@@ -39,7 +44,7 @@ public static class History
 
         if (doIt)
         {
-            Onix.Client.ExecuteCommand($"execute setblock {position.X} {position.Y} {position.Z} {blockName}",true);
+            Onix.Game.ExecuteCommand($"/setblock {position.X} {position.Y} {position.Z} {blockName}");
         }
         
     }

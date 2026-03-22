@@ -12,13 +12,13 @@ namespace WorldEdit.Commands {
         [Overload]
         OnixCommandOutput LineExecute(Block block)
         {
-            long actionId = Globals.MyRandom.NextInt64(1, 1_000_000_001);
+            long actionId = History.GenerateId();
 
             float distance = (Selection.pos1 - Selection.pos2).Length;
 
             for (float t = 0; t <= distance * 100; t++)
             {
-                float usingT = t / 100;
+                float usingT = t / (distance * 100);
                 Vec3 point = BezierCalculator.Interpolate(Selection.pos1, Selection.pos2, usingT);
                 History.PlaceBlock(block.Name,"[]",point.Floor(),actionId);
             }
